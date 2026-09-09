@@ -142,6 +142,8 @@ import {
     NPCS_LEFT_RANGE_RECEIVED,
     IN_UI_MAKE_SERVER_CELL_OCCUPIED_MODE,
     IN_UI_PLAYER_TELEPORT_REQUEST_MODE,
+    IN_UI_GM_TELEPORT_TO_CELL,
+    IN_UI_GM_COMMAND,
     IN_UI_CHANGE_GRACE_PERIOD,
     PLAYER_CAST_ANIMATION_STARTED,
     PLAYER_CONFIRM_SPELL_TARGET,
@@ -478,6 +480,12 @@ export class GameWorld extends Scene {
             if (serverDialogStore.state.syncWithServer) {
                 getNetworkManager(this.game)?.changePlayerMovementSpeed(baseMs);
             }
+        });
+        subscribeSafe('GameWorld', IN_UI_GM_TELEPORT_TO_CELL, (payload: { x: number; y: number }) => {
+            getNetworkManager(this.game)?.sendPlayerTeleportRequested(payload.x, payload.y);
+        });
+        subscribeSafe('GameWorld', IN_UI_GM_COMMAND, (command: string) => {
+            getNetworkManager(this.game)?.sendChatMessage(`/gm ${command}`);
         });
 
         // Listen for player attack speed changes from React
@@ -3394,6 +3402,8 @@ export class GameWorld extends Scene {
             EventBus.off(IN_UI_CHANGE_MAP);
             EventBus.off(IN_UI_MAKE_SERVER_CELL_OCCUPIED_MODE);
             EventBus.off(IN_UI_PLAYER_TELEPORT_REQUEST_MODE);
+            EventBus.off(IN_UI_GM_TELEPORT_TO_CELL);
+            EventBus.off(IN_UI_GM_COMMAND);
             EventBus.off(IN_UI_CHANGE_GRACE_PERIOD);
             EventBus.off(PLAYER_POSITION_CHANGED);
             EventBus.off(TILE_OCCUPANCY_REAPPLY_REQUESTED);

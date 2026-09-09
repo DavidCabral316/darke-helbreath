@@ -60,7 +60,8 @@ public sealed record PlayerPersistenceState(
     int? MaxHp = null,
     long SnapshotVersion = 0,
     Server.Helpers.ProgressState? Progress = null,
-    string PersistenceKey = "");
+    string PersistenceKey = "",
+    bool IsGameMaster = false);
 
 /// <summary>State carried across worlds during a transfer: session identity plus the player settings snapshot to reapply in the target world.</summary>
 public sealed record TransferredPlayerState(Guid SessionId, PlayerPersistenceState State);

@@ -14,6 +14,12 @@ public static class GlobalPacketRouting {
 
     public static bool ShouldRouteToGlobalWorld(ClientMessage message) {
         ArgumentNullException.ThrowIfNull(message);
+        // GM commands use the existing bounded chat envelope but are handled only
+        // by the current game world, where the selected character permission is verified.
+        if (message.PayloadCase == ClientMessage.PayloadOneofCase.ChatMessageSendRequest &&
+            message.ChatMessageSendRequest.Message.TrimStart().StartsWith("/gm ", StringComparison.OrdinalIgnoreCase)) {
+            return false;
+        }
         return ShouldRouteToGlobalWorld(message.PayloadCase);
     }
 

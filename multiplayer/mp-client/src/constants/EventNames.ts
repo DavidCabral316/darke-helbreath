@@ -54,6 +54,10 @@ export const IN_UI_REQUEST_PLAYER_LOGOUT = 'ui-request-player-logout';
 export const IN_UI_MAKE_SERVER_CELL_OCCUPIED_MODE = 'ui-make-server-cell-occupied-mode';
 /** Emitted when user clicks "Teleport to cell" - GameWorld captures next left click and sends coords as a server teleport request */
 export const IN_UI_PLAYER_TELEPORT_REQUEST_MODE = 'ui-player-teleport-request-mode';
+/** Character-scoped GM requests an immediate teleport to an authoritative free cell. */
+export const IN_UI_GM_TELEPORT_TO_CELL = 'ui-gm-teleport-to-cell';
+/** Character-scoped GM command sent inside the existing bounded chat transport. */
+export const IN_UI_GM_COMMAND = 'ui-gm-command';
 /** Emitted when player previous action grace period slider changes. Payload: number (ms). */
 export const IN_UI_CHANGE_GRACE_PERIOD = 'ui-change-grace-period';
 /** Emitted by React UI to briefly suppress leaked pointer input reaching Phaser after dismissing a dialog. Payload: number (ms). */

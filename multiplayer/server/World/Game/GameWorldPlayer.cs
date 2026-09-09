@@ -91,6 +91,8 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
     private int underwearColorIndex;
     /// <summary>Client-supplied character display name from authenticate; persisted in <see cref="PlayerPersistenceState"/>.</summary>
     private string characterName = "";
+    private bool isGameMaster;
+    private bool gameMasterInvulnerable;
 
     public Guid SessionId { get; }
     public long PlayerId { get; }
@@ -178,6 +180,8 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
 
     /// <summary>Client-supplied character display name from authenticate; persisted with player saves.</summary>
     public string CharacterName => characterName;
+    public bool IsGameMaster => isGameMaster;
+    public bool GameMasterInvulnerable => gameMasterInvulnerable;
 
     public GameWorldPlayer(
         Guid sessionId,
@@ -353,6 +357,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
         // Existing characters retain spells already unlocked before the shop release.
         if (Progress.KnownSpellsMask == 0) Progress = Progress with { KnownSpellsMask = Adventure.Rules.Spells.Where(s => s.Value.Level <= Progress.Level).Aggregate(0, (mask, s) => mask | (1 << s.Key)) };
         PersistenceKey = state.PersistenceKey;
+        isGameMaster = state.IsGameMaster;
         snapshotVersion = state.SnapshotVersion;
         maxHp = Math.Clamp(state.MaxHp ?? 1000, 1, 1000000);
         hp = Math.Clamp(state.Hp ?? maxHp, 0, maxHp);
@@ -408,7 +413,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
             characterName,
             hp,
             maxHp,
-            ++snapshotVersion, Progress, PersistenceKey);
+            ++snapshotVersion, Progress, PersistenceKey, isGameMaster);
     }
 
     /// <summary>Sets the display name from authenticate or loaded persistence.</summary>
@@ -418,7 +423,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
 
     /// <summary>Subtracts damage from <see cref="hp"/> (floors at 0).</summary>
     public void ApplyDamage(int damage) {
-        if (damage <= 0 || IsDead) {
+        if (damage <= 0 || IsDead || (isGameMaster && gameMasterInvulnerable)) {
             return;
         }
 
@@ -436,6 +441,12 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
         hp = maxHp;
         Progress = Progress with { Mana = MaxMana, Stamina = MaxStamina };
         lastCombatAt = default;
+    }
+
+    public bool ToggleGameMasterInvulnerability() {
+        if (!isGameMaster) return false;
+        gameMasterInvulnerable = !gameMasterInvulnerable;
+        return gameMasterInvulnerable;
     }
 
     public void SetPosition(int x, int y) {

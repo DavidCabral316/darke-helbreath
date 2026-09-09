@@ -3,7 +3,10 @@ import { useStore } from '@tanstack/react-store';
 import { HeadlessDraggableDialog } from './HeadlessDraggableDialog';
 import { cameraDialogStore } from '../store/CameraDialog.store';
 import { minimapDialogStore } from '../store/MinimapDialog.store';
-import { convertWorldPosToPixelPos } from '../../utils/CoordinateUtils';
+import { convertPixelPosToWorldPos, convertWorldPosToPixelPos } from '../../utils/CoordinateUtils';
+import { activeCharacterIsGameMaster } from '../../portal/api';
+import { EventBus } from '../../game/EventBus';
+import { IN_UI_GM_TELEPORT_TO_CELL, TOAST_REQUESTED } from '../../constants/EventNames';
 
 interface MinimapDialogProps {
     position: { x: number; y: number };
@@ -116,6 +119,7 @@ export function MinimapDialog({
     const [minimapSize, setMinimapSize] = useState(DEFAULT_MINIMAP_SIZE);
     const [minimapPlayerDot, setMinimapPlayerDot] = useState<{ x: number; y: number } | undefined>(undefined);
     const [resizingCorner, setResizingCorner] = useState<ResizeCorner>(undefined);
+    const isGameMaster = activeCharacterIsGameMaster();
     const resizeStartRef = useRef<{ 
         size: number; 
         currentSize: number;
@@ -247,7 +251,7 @@ export function MinimapDialog({
             onBringToFront={onBringToFront}
             onContextMenu={(e) => {
                 e.preventDefault();
-                onClose();
+                if (!isGameMaster) onClose();
             }}
         >
             {minimapImage ? (
@@ -262,6 +266,17 @@ export function MinimapDialog({
                         if (onBringToFront) {
                             onBringToFront();
                         }
+                    }}
+                    onContextMenu={(e) => {
+                        if (!isGameMaster || minimapScale <= 0 || minimapOriginalSize <= 0) return;
+                        e.preventDefault(); e.stopPropagation();
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const minimapPixelX = ((e.clientX - rect.left) / rect.width) * minimapOriginalSize;
+                        const minimapPixelY = ((e.clientY - rect.top) / rect.height) * minimapOriginalSize;
+                        const x = convertPixelPosToWorldPos(minimapPixelX / minimapScale);
+                        const y = convertPixelPosToWorldPos(minimapPixelY / minimapScale);
+                        EventBus.emit(IN_UI_GM_TELEPORT_TO_CELL, { x, y });
+                        EventBus.emit(TOAST_REQUESTED, { message: `GM: teletransporte a ${x}, ${y}`, severity: 'info' });
                     }}
                 >
                     <img 
@@ -339,6 +354,13 @@ export function MinimapDialog({
                             <span style={{ color: '#f5b942' }}>◆</span> servicio&nbsp;
                             <span style={{ color: '#c879ff' }}>▲</span> peligro
                         </div>
+                    )}
+                    {isGameMaster && (
+                        <div style={{
+                            position: 'absolute', right: 6, top: 6, padding: '3px 6px',
+                            color: '#ffd46b', background: 'rgba(18, 10, 6, .82)', border: '1px solid #a77b2d',
+                            borderRadius: 3, fontSize: 10, pointerEvents: 'none', zIndex: 5,
+                        }}>GM · clic derecho para viajar</div>
                     )}
                     {/* Resize handles */}
                     {RESIZE_HANDLES.map(({ corner, cursor, gradient, position }) => (

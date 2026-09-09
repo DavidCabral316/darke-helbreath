@@ -16,7 +16,6 @@ interface PreGeneratedMinimapCache {
     minimapImage: string;
     minimapScale: number;
     minimapOriginalSize: number;
-    portalLocs: TeleportLocSet[];
 }
 
 /** Cache for pre-generated minimaps by map base name (e.g. 'aresden') */
@@ -30,6 +29,7 @@ interface MinimapDialogState {
     minimapImage: string | undefined;
     minimapScale: number;
     minimapOriginalSize: number;
+    portalLocs: TeleportLocSet[];
 }
 
 const initialState: MinimapDialogState = {

@@ -290,6 +290,7 @@ app.Map("/ws", async context => {
                             session.CurrentGameWorldId = resolvedGameWorldId;
                         }
                     }
+                    session.IsGameMaster = account.IsGameMaster || loadedPlayerState?.IsGameMaster == true;
                 }
 
                 currentGameWorldId = session.CurrentGameWorldId;
@@ -330,7 +331,7 @@ app.Map("/ws", async context => {
                 if (currentStamp != securityStamp) { RequestDisconnect("La sesión venció. Iniciá sesión nuevamente."); return; }
                 lastSessionCheck = DateTimeOffset.UtcNow;
             }
-            if (!account.IsGameMaster && !IsPlayerPacket(clientMessage.PayloadCase)) {
+            if (authenticatedSession?.IsGameMaster != true && !IsPlayerPacket(clientMessage.PayloadCase)) {
                 continue;
             }
 
@@ -1109,6 +1110,8 @@ public sealed class PlayerSession {
     public bool CleanupStarted { get; set; }
     /// <summary>True while a transfer is in flight to avoid overlapping world moves.</summary>
     public bool IsWorldTransferPending { get; set; }
+    /// <summary>Server-authoritative permission inherited from the account or selected character.</summary>
+    public bool IsGameMaster { get; set; }
 }
 
 /// <summary>Work item for the world-transfer channel: move <see cref="SessionId"/> to <see cref="TargetWorldId"/> and spawn near the authoritative target cell.</summary>

@@ -629,6 +629,9 @@ public sealed partial class GameWorld : IWorkerWorld {
             case ClientMessage.PayloadOneofCase.EconomyRequest:
                 Economy.Handle(gameWorldRef, playerConnection, message.Message.EconomyRequest);
                 break;
+            case ClientMessage.PayloadOneofCase.ChatMessageSendRequest:
+                HandleGameMasterCommand(playerConnection, message.Message.ChatMessageSendRequest.Message);
+                break;
             case ClientMessage.PayloadOneofCase.AllocateAttributeRequest:
                 Adventure.Allocate(gameWorldRef, playerConnection, message.Message.AllocateAttributeRequest.Attribute);
                 break;

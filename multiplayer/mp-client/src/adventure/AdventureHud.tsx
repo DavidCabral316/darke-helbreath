@@ -7,6 +7,7 @@ import { toggleControlsDialog } from '../ui/store/ControlsDialog.store';
 import { monsterHoverOverlayStore } from '../ui/store/MonsterHoverOverlay.store';
 import './adventure.css';
 import {EconomyPanel} from './EconomyPanel';
+import {GameMasterPanel} from './GameMasterPanel';
 
 function Meter({name,value,max,kind}:{name:string;value:number;max:number;kind:string}) {
     return <div className={`adventure-meter ${kind}`}><div style={{width:`${Math.min(100,100*value/Math.max(1,max))}%`}}/><span>{name} <b>{value} / {max}</b></span></div>;
@@ -44,6 +45,7 @@ export function AdventureHud() {
         {target&&<section className="adventure-target"><b>{target.name}</b><Meter name="Objetivo" value={target.hp} max={target.maxHp} kind="health"/></section>}
         <p className="adventure-notice" role="status">{!connected?'Conexión interrumpida.':notice || 'Tu historia comienza en el refugio.'}</p>
         <EconomyPanel/>
+        <GameMasterPanel/>
         <div className="adventure-actions"><button onClick={()=>setHelp(!help)}>Primeros pasos</button><button onClick={toggleControlsDialog}>Menú del juego</button></div>
         {help&&<section className="adventure-help"><h2>Del refugio al primer combate</h2><ol><li>Movete con clic sobre el suelo. El refugio está alrededor de 150,150.</li><li>Buscá slimes cerca de <b>141,140</b>. Hacé clic sobre un enemigo en modo ataque.</li><li>Después probá hormigas (132,141), serpientes (141,132) y orcos (132,132).</li><li>Cada muerte da XP y oro. Recogé el botín haciendo clic; también pueden caer piezas de armadura.</li><li>Los comercios ahora son lugares físicos: cruzá la puerta de cada edificio y acercate a su NPC.</li><li>La tienda vende pociones, la forja armas y armaduras, el almacén guarda objetos y el santuario enseña magia.</li><li>Las salidas de la ciudad conducen a Middleland; desde allí podés viajar entre Aresden y Elvine.</li><li>Al morir, elegí Volver al refugio. No perdés XP, oro ni equipo.</li></ol><button onClick={()=>{sessionStorage.setItem('darke.adventure.welcome','1');setHelp(false);}}>Entendido, ¡a explorar!</button></section>}
     </aside>;

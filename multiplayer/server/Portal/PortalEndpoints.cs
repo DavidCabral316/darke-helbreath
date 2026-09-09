@@ -217,7 +217,8 @@ public static class PortalEndpoints {
     public static object ToResponse(Character c) {
         var state = JsonSerializer.Deserialize<PlayerPersistenceState>(c.StateJson)!;
         return new { c.Id, c.Name, c.Town, c.Level, c.Experience, c.DeletedAt, c.LastPlayedAt,
-            world = state.GameWorldId, gender = state.GenderValue, skin = state.SkinColorValue, hair = state.HairStyleIndex, clothes = state.UnderwearColorIndex, online = IsOnline(c.Id) };
+            world = state.GameWorldId, gender = state.GenderValue, skin = state.SkinColorValue, hair = state.HairStyleIndex, clothes = state.UnderwearColorIndex,
+            isGameMaster = state.IsGameMaster, online = IsOnline(c.Id) };
     }
     public record RegisterRequest(string Username, string Email, string Password, bool AcceptRules);
     public record LoginRequest(string Username, string Password, bool Remember);

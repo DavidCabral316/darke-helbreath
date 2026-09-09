@@ -62,6 +62,27 @@ public partial class GameWorldPlayer {
     public void MarkCombat() => lastCombatAt = DateTimeOffset.UtcNow;
     public bool CanTrade => !IsDead && !Disconnected && (DateTimeOffset.UtcNow - lastCombatAt).TotalSeconds >= 8;
     public void AddGold(int amount) { if (amount > 0) Progress = Progress with { Gold = (int)Math.Min(1000000000L, (long)Progress.Gold + amount) }; }
+    public bool GameMasterSetMinimumLevel(int targetLevel) {
+        if (!IsGameMaster || targetLevel <= Progress.Level || targetLevel > Adventure.MaxLevel) return false;
+        var gained = targetLevel - Progress.Level;
+        Progress = Progress with {
+            Level = targetLevel,
+            Experience = Math.Max(Progress.Experience, Adventure.Rules.LevelThresholds[targetLevel - 1]),
+            Points = Progress.Points + gained * Adventure.Rules.PointsPerLevel,
+        };
+        RecalculateAdventureStats(); hp = maxHp;
+        Progress = Progress with { Mana = MaxMana, Stamina = MaxStamina };
+        return true;
+    }
+    public void GameMasterRestore() {
+        if (!IsGameMaster) return;
+        hp = maxHp; Progress = Progress with { Mana = MaxMana, Stamina = MaxStamina };
+    }
+    public void GameMasterUnlockSpells() {
+        if (!IsGameMaster) return;
+        var mask = Adventure.Rules.Spells.Keys.Aggregate(0, (value, spellId) => value | (1 << spellId));
+        Progress = Progress with { KnownSpellsMask = mask };
+    }
     public void SetEconomyProgress(ProgressState progress) { Progress = progress; RecalculateAdventureStats(); }
     public bool TrySpendStamina() {
         if (IsDead || Progress.Stamina < 2) return false;

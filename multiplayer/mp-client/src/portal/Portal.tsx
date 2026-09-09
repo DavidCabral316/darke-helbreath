@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { api, setActiveCharacterName, type Account, type Character } from './api';
+import { api, setActiveCharacterGameMaster, setActiveCharacterName, type Account, type Character } from './api';
 import { CharacterPreview } from './Preview';
 import './portal.css';
 
@@ -120,12 +120,14 @@ function CreateCharacter() {
 }
 
 function Play({ account }: { account: Account }) {
-    useEffect(() => {
-        document.body.classList.toggle('portal-player', !account.isGameMaster);
-        return () => document.body.classList.remove('portal-player');
-    }, [account.isGameMaster]);
     const location = useLocation(); const id = location.pathname.split('/')[2]; const [character, setCharacter] = useState<Character | null | undefined>(); const [error, setError] = useState('');
     useEffect(() => { api<Character[]>('/characters').then(cs => setCharacter(cs.find(c => c.id === id && !c.deletedAt) ?? null)).catch(e => setError(e.message)); }, [id]);
+    useEffect(() => {
+        const isGameMaster = account.isGameMaster || character?.isGameMaster === true;
+        setActiveCharacterGameMaster(isGameMaster);
+        document.body.classList.toggle('portal-player', !isGameMaster);
+        return () => document.body.classList.remove('portal-player');
+    }, [account.isGameMaster, character]);
     useEffect(() => {
         const failed = () => setError('No se pudo entrar al mundo. Si el personaje está conectado en otra pestaña, cerrala y esperá unos segundos.');
         window.addEventListener('portal-connection-error', failed);
@@ -134,8 +136,9 @@ function Play({ account }: { account: Account }) {
     if (error) return <div className="portal"><Message>{error}</Message><Link to="/characters">Volver a personajes</Link></div>;
     if (character === undefined) return <Loading />;
     if (!character) return <Navigate to="/characters" replace />;
+    const isGameMaster = account.isGameMaster || character.isGameMaster;
     setActiveCharacterName(character.name);
-    return <div className={account.isGameMaster ? 'game-shell' : 'game-shell player-mode'}><div className="game-topbar"><span>{character.name} · Origen: {character.town}</span><a href="/characters">Volver a personajes</a></div><Suspense fallback={<Loading />}><Game /></Suspense></div>;
+    return <div className={isGameMaster ? 'game-shell' : 'game-shell player-mode'}><div className="game-topbar"><span>{character.name} · Origen: {character.town}{isGameMaster ? ' · GM' : ''}</span><a href="/characters">Volver a personajes</a></div><Suspense fallback={<Loading />}><Game /></Suspense></div>;
 }
 
 export default function Portal() { return <BrowserRouter><Shell /></BrowserRouter>; }
