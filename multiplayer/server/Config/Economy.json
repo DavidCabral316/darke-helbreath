@@ -5,21 +5,30 @@
       "name": "Poción de vida (+50)",
       "service": "shop",
       "price": 8,
-      "itemId": 36
+      "itemId": 36,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "blue",
       "name": "Poción de maná (+40)",
       "service": "shop",
       "price": 10,
-      "itemId": 165
+      "itemId": 165,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "short",
       "name": "Espada corta · daño +5",
       "service": "blacksmith",
       "price": 25,
-      "itemId": 3
+      "itemId": 3,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "long",
@@ -27,7 +36,9 @@
       "service": "blacksmith",
       "price": 90,
       "itemId": 53,
-      "level": 3
+      "level": 3,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "sabre",
@@ -35,7 +46,9 @@
       "service": "blacksmith",
       "price": 180,
       "itemId": 54,
-      "level": 5
+      "level": 5,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "broad",
@@ -43,14 +56,19 @@
       "service": "blacksmith",
       "price": 320,
       "itemId": 59,
-      "level": 7
+      "level": 7,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "shield1",
       "name": "Escudo de cuero · defensa +2",
       "service": "blacksmith",
       "price": 35,
-      "itemId": 7
+      "itemId": 7,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "shield2",
@@ -58,7 +76,9 @@
       "service": "blacksmith",
       "price": 120,
       "itemId": 5,
-      "level": 4
+      "level": 4,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "shield3",
@@ -66,28 +86,39 @@
       "service": "blacksmith",
       "price": 240,
       "itemId": 4,
-      "level": 7
+      "level": 7,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "shirt",
       "name": "Camisa · defensa +1",
       "service": "blacksmith",
       "price": 15,
-      "itemId": 128
+      "itemId": 128,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "shoes",
       "name": "Zapatos · defensa +1",
       "service": "blacksmith",
       "price": 20,
-      "itemId": 127
+      "itemId": 127,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "trousers",
       "name": "Pantalones · defensa +1",
       "service": "blacksmith",
       "price": 25,
-      "itemId": 134
+      "itemId": 134,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
     },
     {
       "id": "leather",
@@ -95,7 +126,9 @@
       "service": "blacksmith",
       "price": 50,
       "itemId": 130,
-      "level": 2
+      "level": 2,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "helmet",
@@ -103,7 +136,9 @@
       "service": "blacksmith",
       "price": 45,
       "itemId": 143,
-      "level": 3
+      "level": 3,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "chain",
@@ -111,7 +146,9 @@
       "service": "blacksmith",
       "price": 140,
       "itemId": 131,
-      "level": 5
+      "level": 5,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "hose",
@@ -119,7 +156,9 @@
       "service": "blacksmith",
       "price": 100,
       "itemId": 136,
-      "level": 5
+      "level": 5,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "hauberk",
@@ -127,7 +166,9 @@
       "service": "blacksmith",
       "price": 110,
       "itemId": 129,
-      "level": 6
+      "level": 6,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "plate",
@@ -135,7 +176,9 @@
       "service": "blacksmith",
       "price": 280,
       "itemId": 133,
-      "level": 8
+      "level": 8,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "legs",
@@ -143,7 +186,9 @@
       "service": "blacksmith",
       "price": 190,
       "itemId": 137,
-      "level": 8
+      "level": 8,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "fullhelm",
@@ -151,7 +196,9 @@
       "service": "blacksmith",
       "price": 130,
       "itemId": 144,
-      "level": 7
+      "level": 7,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "cape",
@@ -159,7 +206,9 @@
       "service": "blacksmith",
       "price": 90,
       "itemId": 125,
-      "level": 4
+      "level": 4,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "robe",
@@ -167,7 +216,9 @@
       "service": "blacksmith",
       "price": 120,
       "itemId": 142,
-      "level": 4
+      "level": 4,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "wizardcap",
@@ -175,7 +226,9 @@
       "service": "blacksmith",
       "price": 80,
       "itemId": 152,
-      "level": 3
+      "level": 3,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-0",
@@ -183,7 +236,9 @@
       "service": "blacksmith",
       "price": 313,
       "itemId": 329,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-1",
@@ -191,7 +246,9 @@
       "service": "blacksmith",
       "price": 200,
       "itemId": 330,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-2",
@@ -199,7 +256,9 @@
       "service": "blacksmith",
       "price": 250,
       "itemId": 331,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-3",
@@ -207,7 +266,9 @@
       "service": "blacksmith",
       "price": 163,
       "itemId": 332,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-4",
@@ -215,7 +276,9 @@
       "service": "blacksmith",
       "price": 200,
       "itemId": 333,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-5",
@@ -223,7 +286,9 @@
       "service": "blacksmith",
       "price": 138,
       "itemId": 334,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-6",
@@ -231,7 +296,9 @@
       "service": "blacksmith",
       "price": 113,
       "itemId": 335,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-1-7",
@@ -239,7 +306,9 @@
       "service": "blacksmith",
       "price": 125,
       "itemId": 336,
-      "level": 10
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-0",
@@ -247,7 +316,9 @@
       "service": "blacksmith",
       "price": 5000,
       "itemId": 337,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-1",
@@ -255,7 +326,9 @@
       "service": "blacksmith",
       "price": 3200,
       "itemId": 338,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-2",
@@ -263,7 +336,9 @@
       "service": "blacksmith",
       "price": 4000,
       "itemId": 339,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-3",
@@ -271,7 +346,9 @@
       "service": "blacksmith",
       "price": 2600,
       "itemId": 340,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-4",
@@ -279,7 +356,9 @@
       "service": "blacksmith",
       "price": 3200,
       "itemId": 341,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-5",
@@ -287,7 +366,9 @@
       "service": "blacksmith",
       "price": 2200,
       "itemId": 342,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-6",
@@ -295,7 +376,9 @@
       "service": "blacksmith",
       "price": 1800,
       "itemId": 343,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-2-7",
@@ -303,7 +386,9 @@
       "service": "blacksmith",
       "price": 2000,
       "itemId": 344,
-      "level": 30
+      "level": 30,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-0",
@@ -311,7 +396,9 @@
       "service": "blacksmith",
       "price": 25313,
       "itemId": 345,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-1",
@@ -319,7 +406,9 @@
       "service": "blacksmith",
       "price": 16200,
       "itemId": 346,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-2",
@@ -327,7 +416,9 @@
       "service": "blacksmith",
       "price": 20250,
       "itemId": 347,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-3",
@@ -335,7 +426,9 @@
       "service": "blacksmith",
       "price": 13163,
       "itemId": 348,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-4",
@@ -343,7 +436,9 @@
       "service": "blacksmith",
       "price": 16200,
       "itemId": 349,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-5",
@@ -351,7 +446,9 @@
       "service": "blacksmith",
       "price": 11138,
       "itemId": 350,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-6",
@@ -359,7 +456,9 @@
       "service": "blacksmith",
       "price": 9113,
       "itemId": 351,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-3-7",
@@ -367,7 +466,9 @@
       "service": "blacksmith",
       "price": 10125,
       "itemId": 352,
-      "level": 50
+      "level": 50,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-0",
@@ -375,7 +476,9 @@
       "service": "blacksmith",
       "price": 80000,
       "itemId": 353,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-1",
@@ -383,7 +486,9 @@
       "service": "blacksmith",
       "price": 51200,
       "itemId": 354,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-2",
@@ -391,7 +496,9 @@
       "service": "blacksmith",
       "price": 64000,
       "itemId": 355,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-3",
@@ -399,7 +506,9 @@
       "service": "blacksmith",
       "price": 41600,
       "itemId": 356,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-4",
@@ -407,7 +516,9 @@
       "service": "blacksmith",
       "price": 51200,
       "itemId": 357,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-5",
@@ -415,7 +526,9 @@
       "service": "blacksmith",
       "price": 35200,
       "itemId": 358,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-6",
@@ -423,7 +536,9 @@
       "service": "blacksmith",
       "price": 28800,
       "itemId": 359,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-4-7",
@@ -431,7 +546,9 @@
       "service": "blacksmith",
       "price": 32000,
       "itemId": 360,
-      "level": 70
+      "level": 70,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-0",
@@ -439,7 +556,9 @@
       "service": "blacksmith",
       "price": 195313,
       "itemId": 361,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-1",
@@ -447,7 +566,9 @@
       "service": "blacksmith",
       "price": 125000,
       "itemId": 362,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-2",
@@ -455,7 +576,9 @@
       "service": "blacksmith",
       "price": 156250,
       "itemId": 363,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-3",
@@ -463,7 +586,9 @@
       "service": "blacksmith",
       "price": 101563,
       "itemId": 364,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-4",
@@ -471,7 +596,9 @@
       "service": "blacksmith",
       "price": 125000,
       "itemId": 365,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-5",
@@ -479,7 +606,9 @@
       "service": "blacksmith",
       "price": 85938,
       "itemId": 366,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-6",
@@ -487,7 +616,9 @@
       "service": "blacksmith",
       "price": 70313,
       "itemId": 367,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-5-7",
@@ -495,7 +626,9 @@
       "service": "blacksmith",
       "price": 78125,
       "itemId": 368,
-      "level": 90
+      "level": 90,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-0",
@@ -503,7 +636,9 @@
       "service": "blacksmith",
       "price": 405000,
       "itemId": 369,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-1",
@@ -511,7 +646,9 @@
       "service": "blacksmith",
       "price": 259200,
       "itemId": 370,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-2",
@@ -519,7 +656,9 @@
       "service": "blacksmith",
       "price": 324000,
       "itemId": 371,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-3",
@@ -527,7 +666,9 @@
       "service": "blacksmith",
       "price": 210600,
       "itemId": 372,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-4",
@@ -535,7 +676,9 @@
       "service": "blacksmith",
       "price": 259200,
       "itemId": 373,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-5",
@@ -543,7 +686,9 @@
       "service": "blacksmith",
       "price": 178200,
       "itemId": 374,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-6",
@@ -551,7 +696,9 @@
       "service": "blacksmith",
       "price": 145800,
       "itemId": 375,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-6-7",
@@ -559,7 +706,9 @@
       "service": "blacksmith",
       "price": 162000,
       "itemId": 376,
-      "level": 110
+      "level": 110,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-0",
@@ -567,7 +716,9 @@
       "service": "blacksmith",
       "price": 750313,
       "itemId": 377,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-1",
@@ -575,7 +726,9 @@
       "service": "blacksmith",
       "price": 480200,
       "itemId": 378,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-2",
@@ -583,7 +736,9 @@
       "service": "blacksmith",
       "price": 600250,
       "itemId": 379,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-3",
@@ -591,7 +746,9 @@
       "service": "blacksmith",
       "price": 390163,
       "itemId": 380,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-4",
@@ -599,7 +756,9 @@
       "service": "blacksmith",
       "price": 480200,
       "itemId": 381,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-5",
@@ -607,7 +766,9 @@
       "service": "blacksmith",
       "price": 330138,
       "itemId": 382,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-6",
@@ -615,7 +776,9 @@
       "service": "blacksmith",
       "price": 270113,
       "itemId": 383,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-7-7",
@@ -623,7 +786,9 @@
       "service": "blacksmith",
       "price": 300125,
       "itemId": 384,
-      "level": 130
+      "level": 130,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-0",
@@ -631,7 +796,9 @@
       "service": "blacksmith",
       "price": 1280000,
       "itemId": 385,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-1",
@@ -639,7 +806,9 @@
       "service": "blacksmith",
       "price": 819200,
       "itemId": 386,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-2",
@@ -647,7 +816,9 @@
       "service": "blacksmith",
       "price": 1024000,
       "itemId": 387,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-3",
@@ -655,7 +826,9 @@
       "service": "blacksmith",
       "price": 665600,
       "itemId": 388,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-4",
@@ -663,7 +836,9 @@
       "service": "blacksmith",
       "price": 819200,
       "itemId": 389,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-5",
@@ -671,7 +846,9 @@
       "service": "blacksmith",
       "price": 563200,
       "itemId": 390,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-6",
@@ -679,7 +856,9 @@
       "service": "blacksmith",
       "price": 460800,
       "itemId": 391,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-8-7",
@@ -687,7 +866,9 @@
       "service": "blacksmith",
       "price": 512000,
       "itemId": 392,
-      "level": 155
+      "level": 155,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-0",
@@ -695,7 +876,9 @@
       "service": "blacksmith",
       "price": 2050313,
       "itemId": 393,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-1",
@@ -703,7 +886,9 @@
       "service": "blacksmith",
       "price": 1312200,
       "itemId": 394,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-2",
@@ -711,7 +896,9 @@
       "service": "blacksmith",
       "price": 1640250,
       "itemId": 395,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-3",
@@ -719,7 +906,9 @@
       "service": "blacksmith",
       "price": 1066163,
       "itemId": 396,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-4",
@@ -727,7 +916,9 @@
       "service": "blacksmith",
       "price": 1312200,
       "itemId": 397,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-5",
@@ -735,7 +926,9 @@
       "service": "blacksmith",
       "price": 902138,
       "itemId": 398,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-6",
@@ -743,7 +936,9 @@
       "service": "blacksmith",
       "price": 738113,
       "itemId": 399,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-9-7",
@@ -751,7 +946,9 @@
       "service": "blacksmith",
       "price": 820125,
       "itemId": 400,
-      "level": 180
+      "level": 180,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-0",
@@ -759,7 +956,9 @@
       "service": "blacksmith",
       "price": 3125000,
       "itemId": 401,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-1",
@@ -767,7 +966,9 @@
       "service": "blacksmith",
       "price": 2000000,
       "itemId": 402,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-2",
@@ -775,7 +976,9 @@
       "service": "blacksmith",
       "price": 2500000,
       "itemId": 403,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-3",
@@ -783,7 +986,9 @@
       "service": "blacksmith",
       "price": 1625000,
       "itemId": 404,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-4",
@@ -791,7 +996,9 @@
       "service": "blacksmith",
       "price": 2000000,
       "itemId": 405,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-5",
@@ -799,7 +1006,9 @@
       "service": "blacksmith",
       "price": 1375000,
       "itemId": 406,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-6",
@@ -807,7 +1016,9 @@
       "service": "blacksmith",
       "price": 1125000,
       "itemId": 407,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "tier-10-7",
@@ -815,7 +1026,9 @@
       "service": "blacksmith",
       "price": 1250000,
       "itemId": 408,
-      "level": 190
+      "level": 190,
+      "spellId": -1,
+      "intelligence": 10
     },
     {
       "id": "spell-1",
@@ -824,7 +1037,8 @@
       "price": 710,
       "spellId": 1,
       "level": 8,
-      "intelligence": 20
+      "intelligence": 20,
+      "itemId": 0
     },
     {
       "id": "spell-2",
@@ -833,7 +1047,8 @@
       "price": 2547,
       "spellId": 2,
       "level": 18,
-      "intelligence": 28
+      "intelligence": 28,
+      "itemId": 0
     },
     {
       "id": "spell-3",
@@ -842,7 +1057,8 @@
       "price": 6303,
       "spellId": 3,
       "level": 25,
-      "intelligence": 35
+      "intelligence": 35,
+      "itemId": 0
     },
     {
       "id": "spell-4",
@@ -851,7 +1067,8 @@
       "price": 12731,
       "spellId": 4,
       "level": 32,
-      "intelligence": 42
+      "intelligence": 42,
+      "itemId": 0
     },
     {
       "id": "spell-5",
@@ -860,7 +1077,8 @@
       "price": 22608,
       "spellId": 5,
       "level": 40,
-      "intelligence": 50
+      "intelligence": 50,
+      "itemId": 0
     },
     {
       "id": "spell-6",
@@ -869,7 +1087,8 @@
       "price": 36741,
       "spellId": 6,
       "level": 48,
-      "intelligence": 60
+      "intelligence": 60,
+      "itemId": 0
     },
     {
       "id": "spell-7",
@@ -878,7 +1097,8 @@
       "price": 55953,
       "spellId": 7,
       "level": 56,
-      "intelligence": 70
+      "intelligence": 70,
+      "itemId": 0
     },
     {
       "id": "spell-8",
@@ -887,7 +1107,8 @@
       "price": 81087,
       "spellId": 8,
       "level": 64,
-      "intelligence": 80
+      "intelligence": 80,
+      "itemId": 0
     },
     {
       "id": "spell-9",
@@ -896,7 +1117,8 @@
       "price": 113003,
       "spellId": 9,
       "level": 72,
-      "intelligence": 90
+      "intelligence": 90,
+      "itemId": 0
     },
     {
       "id": "spell-10",
@@ -905,7 +1127,8 @@
       "price": 152573,
       "spellId": 10,
       "level": 80,
-      "intelligence": 100
+      "intelligence": 100,
+      "itemId": 0
     },
     {
       "id": "spell-11",
@@ -914,7 +1137,8 @@
       "price": 200683,
       "spellId": 11,
       "level": 90,
-      "intelligence": 112
+      "intelligence": 112,
+      "itemId": 0
     },
     {
       "id": "spell-12",
@@ -923,7 +1147,8 @@
       "price": 258233,
       "spellId": 12,
       "level": 100,
-      "intelligence": 125
+      "intelligence": 125,
+      "itemId": 0
     },
     {
       "id": "spell-13",
@@ -932,7 +1157,8 @@
       "price": 326132,
       "spellId": 13,
       "level": 110,
-      "intelligence": 138
+      "intelligence": 138,
+      "itemId": 0
     },
     {
       "id": "spell-14",
@@ -941,7 +1167,8 @@
       "price": 405301,
       "spellId": 14,
       "level": 120,
-      "intelligence": 150
+      "intelligence": 150,
+      "itemId": 0
     },
     {
       "id": "spell-15",
@@ -950,7 +1177,8 @@
       "price": 496670,
       "spellId": 15,
       "level": 130,
-      "intelligence": 160
+      "intelligence": 160,
+      "itemId": 0
     },
     {
       "id": "spell-16",
@@ -959,7 +1187,8 @@
       "price": 601179,
       "spellId": 16,
       "level": 140,
-      "intelligence": 170
+      "intelligence": 170,
+      "itemId": 0
     },
     {
       "id": "spell-17",
@@ -968,7 +1197,8 @@
       "price": 719778,
       "spellId": 17,
       "level": 150,
-      "intelligence": 180
+      "intelligence": 180,
+      "itemId": 0
     },
     {
       "id": "spell-18",
@@ -977,7 +1207,8 @@
       "price": 853422,
       "spellId": 18,
       "level": 160,
-      "intelligence": 190
+      "intelligence": 190,
+      "itemId": 0
     },
     {
       "id": "spell-19",
@@ -986,7 +1217,8 @@
       "price": 1003077,
       "spellId": 19,
       "level": 170,
-      "intelligence": 205
+      "intelligence": 205,
+      "itemId": 0
     },
     {
       "id": "spell-20",
@@ -995,7 +1227,8 @@
       "price": 1169717,
       "spellId": 20,
       "level": 178,
-      "intelligence": 220
+      "intelligence": 220,
+      "itemId": 0
     },
     {
       "id": "spell-21",
@@ -1004,7 +1237,8 @@
       "price": 1354320,
       "spellId": 21,
       "level": 184,
-      "intelligence": 235
+      "intelligence": 235,
+      "itemId": 0
     },
     {
       "id": "spell-22",
@@ -1013,7 +1247,8 @@
       "price": 1557875,
       "spellId": 22,
       "level": 188,
-      "intelligence": 245
+      "intelligence": 245,
+      "itemId": 0
     },
     {
       "id": "spell-23",
@@ -1022,7 +1257,8 @@
       "price": 1781375,
       "spellId": 23,
       "level": 192,
-      "intelligence": 260
+      "intelligence": 260,
+      "itemId": 0
     },
     {
       "id": "spell-24",
@@ -1031,7 +1267,8 @@
       "price": 2025821,
       "spellId": 24,
       "level": 95,
-      "intelligence": 120
+      "intelligence": 120,
+      "itemId": 0
     },
     {
       "id": "spell-25",
@@ -1040,7 +1277,8 @@
       "price": 2292219,
       "spellId": 25,
       "level": 115,
-      "intelligence": 140
+      "intelligence": 140,
+      "itemId": 0
     }
   ]
 }

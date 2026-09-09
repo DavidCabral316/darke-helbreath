@@ -13,7 +13,7 @@ var settings = await Config.LoadSettings();
 var monsters = Config.BuildMonsterCatalog(await Config.LoadMonstersConfig());
 var spells = Config.BuildSpellCatalog(await Config.LoadSpellsConfig());
 var items = Config.BuildItemCatalog(await Config.LoadItemsConfig());
-Check(Adventure.MaxLevel==200 && Adventure.Rules.LevelThresholds[^1]==195242587,"hardcore curve defines exactly 200 levels");
+Check(Adventure.MaxLevel==200 && Adventure.Rules.LevelThresholds[^1]==195235276,"hardcore curve defines exactly 200 levels");
 Check(Adventure.Rules.Spells.Count==26 && Adventure.Rules.Spells[23].Intelligence==260,"all currently executable spells have progression requirements");
 Check(items.Keys.Count(id=>id>=329&&id<=408)==80 && Adventure.Rules.Equipment[408].Level==190,"ten colour tiers provide eighty level-gated equipment pieces");
 var npcs = Config.BuildNpcCatalog(await Config.LoadNpcsConfig());
@@ -38,14 +38,14 @@ var player=Join("CheckOne");
 Check(player.Progress.Level==1 && player.MaxHp==100 && player.Damage==16,"level-one derived stats and starter weapon");
 Check(!player.TryAllocateAttribute("strength") && !player.TryAllocateAttribute("invalid"),"no free or unknown attribute points");
 var slimes=wr.MonstersByMonsterId.Values.Where(m=>m.Name=="Slime de entrenamiento").ToArray();
-Check(slimes.Length==10,"expanded training pit spawned");
+Check(slimes.Length==5,"training pit stays spacious for new players");
 foreach(var slime in slimes.Take(4)) {
     while(!slime.Dead) Combat.ApplyPlayerDamageToMonster(wr,player,slime,AttackType.NoInterrupt);
     var xp=player.Progress.Experience; Adventure.RecordHit(wr,slime,player,99999);
     Check(player.Progress.Experience==xp,"replayed monster death cannot duplicate XP");
 }
 Check(player.Progress.Level==2 && player.Progress.Experience==80 && player.Progress.Points==3,"four slime kills grant level two and three points");
-Check(player.Progress.Gold>=8 && player.Progress.Gold<=16,"slimes award bounded server-side gold");
+Check(player.Progress.Gold>=12 && player.Progress.Gold<=20,"slimes award bounded server-side gold");
 Check(player.TryAllocateAttribute("vitality") && player.MaxHp==117 && player.Progress.Points==2,"vitality modifies maximum HP and consumes one point");
 Check(player.TryAllocateAttribute("strength") && player.TryAllocateAttribute("intelligence") && !player.TryAllocateAttribute("agility"),"cannot overspend attribute budget");
 Check(player.CanUseSpell(0) && !player.CanUseSpell(2),"spell level requirements");

@@ -79,8 +79,8 @@ test('aventura real por red: XP, atributos, botín, muerte y guardado',async({re
         }
         expect(stats.level).toBe(2);expect(stats.points).toBe(3);
         send('allocateAttributeRequest',{attribute:'vitality'});await expect.poll(()=>stats.vitality).toBe(11);expect(stats.maxHp).toBe(117);
-        const drop=[...loot.values()][0];
-        expect(drop).toBeDefined();
+        let drop:any;
+        await expect.poll(()=>{drop=[...loot.values()].find(item=>free(item.x,item.y));return Boolean(drop);},{timeout:10000}).toBe(true);
         await move(drop.x,drop.y);send('playerItemPickupRequested',{});await wait(400);expect(loot.has(drop.itemUid.toString())).toBe(false);
         // Walk into the hostile enclosure and let real server AI deliver lethal damage.
         const orc=[...mobs.values()].find(m=>!m.dead&&m.name==='Orco de entrenamiento');
@@ -99,6 +99,7 @@ test('aventura real por red: XP, atributos, botín, muerte y guardado',async({re
         await loadMap('gshop_1');await move(59,42,4);
         await expect.poll(()=>stats?.service,{timeout:10000}).toBe('shop');
         expect(stats.service).toBe('shop');
+        await wait(8000); // comercio se habilita ocho segundos después del último daño
         send('economyRequest',{action:'buy',offerId:'red',itemUid:0n,requestId:crypto.randomUUID(),revision:revisionBefore});
         await expect.poll(()=>stats?.tradeRevision,{timeout:10000}).toBe(revisionBefore+1n);
         expect(stats.gold).toBe(goldBefore-8);expect(potionCount()).toBe(potionsBefore+1);

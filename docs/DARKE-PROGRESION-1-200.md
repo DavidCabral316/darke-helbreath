@@ -3,21 +3,21 @@
 ## Objetivo de diseño
 
 El nivel 200 es un logro de largo plazo. La curva no usa resets y cada nivel exige
-más experiencia que el anterior. El total acumulado es 195.242.587 XP; el servidor
+más experiencia que el anterior. El total acumulado es 195.235.276 XP; el servidor
 calcula niveles y recompensas de forma autoritativa y conserva el progreso existente.
 
 | Hito | XP acumulada aproximada | Zona sugerida |
 |---:|---:|---|
-| 10 | 13.311 | Patio de iniciación y ciudad |
-| 30 | 473.758 | Aresden o Elvine exterior |
-| 50 | 2.419.434 | Ciudad avanzada y primeras rutas |
-| 70 | 7.046.675 | Middleland exterior |
-| 100 | 21.821.663 | Pits avanzados de Middleland |
-| 130 | 50.049.527 | Dungeon 1 y Tower of Hell |
-| 155 | 87.272.435 | Dungeons 2–3 e Icebound |
-| 180 | 139.977.015 | Dungeons profundos y dragones |
-| 190 | 166.043.971 | Contenido Astral |
-| 200 | 195.242.587 | Meta máxima; equipo de nivel 200 pendiente |
+| 10 | 6.000 | Patio de iniciación y ciudad |
+| 30 | 466.447 | Aresden o Elvine exterior |
+| 50 | 2.412.123 | Ciudad avanzada y primeras rutas |
+| 70 | 7.039.364 | Middleland exterior |
+| 100 | 21.814.352 | Pits avanzados de Middleland |
+| 130 | 50.042.216 | Dungeon 1 y Tower of Hell |
+| 155 | 87.265.124 | Dungeons 2–3 e Icebound |
+| 180 | 139.969.704 | Dungeons profundos y dragones |
+| 190 | 166.036.660 | Contenido Astral |
+| 200 | 195.235.276 | Meta máxima; equipo de nivel 200 pendiente |
 
 La vida, el maná, la energía y el daño obtienen crecimiento adicional al cruzar
 los niveles 50, 100 y 150. Cada nivel otorga tres puntos de atributo.
@@ -58,7 +58,7 @@ ampliación del motor mágico.
 
 | Mundo | Pits | Población configurada | Función |
 |---|---:|---:|---|
-| Patio de iniciación | 4 | 34 | tutorial seguro |
+| Patio de iniciación | 4 | 17 | tutorial seguro y despejado |
 | Aresden | 9 | 118 | nivel bajo |
 | Elvine | 9 | 118 | nivel bajo |
 | Middleland | 22 | 311 | mapa compartido de riesgo creciente |

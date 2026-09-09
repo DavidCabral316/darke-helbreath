@@ -35,7 +35,7 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     await expect(page.getByText('¡Hola! Mi primera aventura en Darke.',{exact:true})).toBeVisible();
     await expect.poll(()=>page.evaluate(()=>(window as any).__qaScene?.children.list.filter((x:any)=>x.text==='¡Hola! Mi primera aventura en Darke.').length)).toBe(1);
     await page.screenshot({path:'test-results/workspace-chat.png',fullPage:true});
-    await page.getByRole('button',{name:'Configurar',exact:true}).click();await page.getByRole('button',{name:'Cambiar tecla 1'}).click();await page.keyboard.press('q');await expect(page.getByRole('button',{name:'Cambiar tecla 1'})).toHaveText('Q');
+    await page.getByRole('button',{name:'Configurar',exact:true}).click();await page.getByRole('button',{name:'Cambiar tecla 1',exact:true}).click();await page.keyboard.press('q');await expect(page.getByRole('button',{name:'Cambiar tecla 1',exact:true})).toHaveText('Q');
     await page.getByRole('button',{name:'Cambiar tecla 2'}).click();await page.keyboard.press('q');await expect(page.getByText('Esa tecla ya está asignada. Elegí otra.')).toBeVisible();await page.keyboard.press('Escape');
     await page.getByRole('button',{name:'Listo',exact:true}).click();
     const beforeTyping=sent.filter(x=>x==='consumeItemRequest').length;
@@ -43,7 +43,7 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     expect(sent.filter(x=>x==='consumeItemRequest').length).toBe(beforeTyping);
     await page.getByLabel('Mensaje de chat').blur();await page.keyboard.press('q');
     await expect.poll(()=>sent.filter(x=>x==='consumeItemRequest').length).toBe(beforeTyping+1);
-    const bindings=await page.evaluate(()=>JSON.parse(localStorage.getItem('darke.hotkeys.v1')!));expect(bindings[0].code).toBe('KeyQ');
+    const bindings=await page.evaluate(()=>JSON.parse(localStorage.getItem('darke.hotkeys.v2')!));expect(bindings[0].code).toBe('KeyQ');
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.addItemToBag({itemId:53,itemUid:'qa-bounds',bagX:10000,bagY:10000});});
     const bagBox=await page.locator('.inventory-bag-area').boundingBox(),itemBox=await page.locator('.inventory-bag-item').last().boundingBox();expect(itemBox!.x+itemBox!.width).toBeLessThanOrEqual(bagBox!.x+bagBox!.width);expect(itemBox!.y+itemBox!.height).toBeLessThanOrEqual(bagBox!.y+bagBox!.height);
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.removeItemFromBag('qa-bounds');});
@@ -61,10 +61,10 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.setEquippedItem('weapon',(window as any).__qaWeapon);});
     const audio=await page.evaluate(async()=>{
         const path='/src/game/objects/Player.ts';const {Player}=await import(path);const played:string[]=[];
-        const fake={dead:false,isLocalPlayer:true,acceptDamage:()=>{},soundTracker:{playOnce:(key:string)=>played.push(key)}};
+        const fake=Object.assign(Object.create(Player.prototype),{dead:false,isLocalPlayer:true,acceptDamage:()=>{},appearanceManager:{getGender:()=> 'female'},soundTracker:{playOnce:(key:string)=>played.push(key)}});
         Player.prototype.applyMonsterDamage.call(fake,5,0,0);Player.prototype.applyMonsterDamage.call(fake,0,0,0);return played;
     });
-    expect(audio).toEqual(['C5.mp3']);expect((await page.request.get('/assets/sounds/C5.mp3')).ok()).toBe(true);
+    expect(audio).toEqual(['C13.mp3']);expect((await page.request.get('/assets/sounds/C13.mp3')).ok()).toBe(true);
     await page.mouse.move(600,400);
     // Real browser fullscreen, entered with a user gesture; no mocked fullscreenElement.
     await page.getByRole('button',{name:'Menú del juego'}).click();

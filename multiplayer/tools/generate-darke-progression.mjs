@@ -29,9 +29,9 @@ for (const [tierIndex, [tierName, , colour]] of tiers.entries()) {
 }
 write('Items.json', items);
 
-const thresholds = [0];
-let total = 0;
-for (let level = 1; level < 200; level++) {
+const thresholds = [0, 80, 200, 400, 700, 1150, 1800, 2750, 4100, 6000];
+let total = thresholds.at(-1);
+for (let level = 10; level < 200; level++) {
   total += Math.round(35 * level ** 2.15);
   thresholds.push(total);
 }
@@ -62,7 +62,7 @@ adventure.spells = Object.fromEntries(spellProgression.map(([level, intelligence
 
 const loot = (itemId, chance) => ({ itemId, chance, min: 1, max: 1 });
 const rewards = {
-  'Slime de entrenamiento':[20,2,4,[loot(36,.35)]], 'Hormiga de entrenamiento':[40,4,7,[loot(36,.3),loot(165,.12)]],
+  'Slime de entrenamiento':[20,3,5,[loot(36,1)]], 'Hormiga de entrenamiento':[40,4,7,[loot(36,.3),loot(165,.12)]],
   'Serpiente de entrenamiento':[70,7,11,[loot(36,.28),loot(165,.18)]], 'Orco de entrenamiento':[110,11,17,[loot(36,.3),loot(165,.2),loot(128,.02)]],
   Slime:[18,1,3,[loot(36,.08),loot(208,.2)]], Ant:[28,2,5,[loot(36,.1),loot(181,.16)]], Snake:[42,3,7,[loot(165,.08),loot(177,.15)]],
   Scorpion:[70,5,11,[loot(36,.12),loot(203,.15)]], Orc:[105,8,16,[loot(36,.14),loot(194,.14),loot(tierId(0,6),.004)]],
@@ -85,8 +85,31 @@ const rewards = {
 adventure.monsters = Object.fromEntries(Object.entries(rewards).map(([name,[experience,goldMin,goldMax,drops]]) => [name,{experience,goldMin,goldMax,drops}]));
 write('Adventure.json', adventure);
 
-const economy = read('Economy.json');
-economy.offers = economy.offers.filter((offer) => !offer.id.startsWith('tier-') && offer.spellId === undefined);
+const economy = { offers: [
+  {id:'red',name:'Poción de vida (+50)',service:'shop',price:8,itemId:36},
+  {id:'blue',name:'Poción de maná (+40)',service:'shop',price:10,itemId:165},
+  {id:'short',name:'Espada corta · daño +5',service:'blacksmith',price:25,itemId:3},
+  {id:'long',name:'Espada larga · daño +9',service:'blacksmith',price:90,itemId:53,level:3},
+  {id:'sabre',name:'Sable · daño +13',service:'blacksmith',price:180,itemId:54,level:5},
+  {id:'broad',name:'Espada ancha · daño +18',service:'blacksmith',price:320,itemId:59,level:7},
+  {id:'shield1',name:'Escudo de cuero · defensa +2',service:'blacksmith',price:35,itemId:7},
+  {id:'shield2',name:'Escudo de caballero · defensa +4',service:'blacksmith',price:120,itemId:5,level:4},
+  {id:'shield3',name:'Escudo torre · defensa +6',service:'blacksmith',price:240,itemId:4,level:7},
+  {id:'shirt',name:'Camisa · defensa +1',service:'blacksmith',price:15,itemId:128},
+  {id:'shoes',name:'Zapatos · defensa +1',service:'blacksmith',price:20,itemId:127},
+  {id:'trousers',name:'Pantalones · defensa +1',service:'blacksmith',price:25,itemId:134},
+  {id:'leather',name:'Armadura de cuero · defensa +2',service:'blacksmith',price:50,itemId:130,level:2},
+  {id:'helmet',name:'Casco · defensa +1',service:'blacksmith',price:45,itemId:143,level:3},
+  {id:'chain',name:'Cota de malla · defensa +3',service:'blacksmith',price:140,itemId:131,level:5},
+  {id:'hose',name:'Calzas de malla · defensa +2',service:'blacksmith',price:100,itemId:136,level:5},
+  {id:'hauberk',name:'Camisote · defensa +2',service:'blacksmith',price:110,itemId:129,level:6},
+  {id:'plate',name:'Armadura de placas · defensa +4',service:'blacksmith',price:280,itemId:133,level:8},
+  {id:'legs',name:'Grebas · defensa +3',service:'blacksmith',price:190,itemId:137,level:8},
+  {id:'fullhelm',name:'Casco completo · defensa +2',service:'blacksmith',price:130,itemId:144,level:7},
+  {id:'cape',name:'Capa · defensa +1',service:'blacksmith',price:90,itemId:125,level:4},
+  {id:'robe',name:'Túnica · defensa +1, magia +3, maná +15',service:'blacksmith',price:120,itemId:142,level:4},
+  {id:'wizardcap',name:'Gorro de mago · magia +2, maná +10',service:'blacksmith',price:80,itemId:152,level:3},
+] };
 for (const [tierIndex, [tierName, level]] of tiers.entries()) {
   for (const [slotIndex, [slotName]] of slots.entries()) {
     const multiplier = [1.25,.8,1,.65,.8,.55,.45,.5][slotIndex];
@@ -100,6 +123,13 @@ for (const [id, [level, intelligence]] of spellProgression.entries()) {
   const price = Math.min(7500000, Math.round(80 * (id + 1) ** 3.15));
   economy.offers.push({ id:`spell-${id}`, name:`Aprender ${spellNames[id]} · ${mana[id]} maná`, service:'magic', price, spellId:id, level, intelligence });
 }
+economy.offers = economy.offers.map((offer) => ({
+  ...offer,
+  itemId: offer.itemId ?? 0,
+  spellId: offer.spellId ?? -1,
+  level: offer.level ?? 1,
+  intelligence: offer.intelligence ?? 10,
+}));
 write('Economy.json', economy);
 
 const monsters = read('Monsters.json');
@@ -125,7 +155,8 @@ write('Monsters.json', monsters);
 const worlds = read('GameWorlds.json');
 const area = (monsterId,count,x1,y1,x2,y2) => ({monsterId,count,area:{x1,y1,x2,y2}});
 const setPits = (id,pits) => { const world=worlds.find((entry)=>entry.id===id); if(world) world.dwellAreas=pits; };
-setPits('training',[area(63,10,138,138,146,145),area(64,10,126,138,136,148),area(65,8,138,126,147,136),area(66,6,126,126,136,136)]);
+// The tutorial deliberately stays spacious; high-density populations begin in the two cities.
+setPits('training',[area(63,5,138,138,144,142),area(64,5,128,138,136,145),area(65,4,138,128,144,136),area(66,3,128,128,136,136)]);
 setPits('aresden',[area(1,16,240,200,270,220),area(1,16,120,230,155,255),area(2,14,95,150,145,200),area(3,14,95,28,132,48),area(3,14,148,30,180,52),area(50,14,185,225,235,250),area(40,12,215,100,270,205),area(51,10,32,32,85,90),area(61,8,200,40,260,85)]);
 setPits('elvine',[area(1,16,145,25,172,52),area(1,16,248,170,272,202),area(2,14,188,100,240,160),area(3,14,125,222,152,250),area(3,14,130,255,168,275),area(50,14,225,200,264,228),area(40,12,78,138,132,202),area(51,10,32,32,88,92),area(61,8,185,225,245,265)]);
 setPits('middleland',[
