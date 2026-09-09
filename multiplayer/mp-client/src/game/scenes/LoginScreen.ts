@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { selectedCharacterId, activeCharacterName } from '../../portal/api';
 import {
     appendPendingPlayerItemAppearancePrefetch,
     clearPendingPlayerItemAppearancePrefetch,
@@ -25,6 +26,7 @@ import { NetworkManager } from '../../utils/NetworkManager';
 import type { InitialGameWorldStateEventData } from '../../Types';
 import { setConnectingDialogOpen } from '../../ui/store/ConnectingDialog.store';
 import { openConnectDialogForLogin, setConnectDialogOpen } from '../../ui/store/ConnectDialog.store';
+let portalWorldWasEntered = false;
 
 /**
  * Login screen scene. Displays title and opens the Connect dialog to join the server.
@@ -67,8 +69,9 @@ export class LoginScreen extends Scene {
     }
 
     public create() {
+        if (selectedCharacterId() && portalWorldWasEntered) { window.location.assign('/characters'); return; }
         const gsm = getGameStateManager(this.game);
-        openConnectDialogForLogin(gsm.getCharacterName() ?? '');
+        if (!selectedCharacterId()) openConnectDialogForLogin(gsm.getCharacterName() ?? '');
 
             const handleConnectToServer = async (payload: ConnectToServerPayload) => {
             if (this.isConnecting) {
@@ -90,12 +93,14 @@ export class LoginScreen extends Scene {
                 this.clearLoginPendingDisconnectListener();
                 this.isConnecting = false;
                 setConnectingDialogOpen(false);
-                setConnectDialogOpen(true);
+                if (!selectedCharacterId()) setConnectDialogOpen(true);
                 setNetworkManager(this.game, undefined);
                 console.warn('[LoginScreen] Connection closed before initial game world state (e.g. auth rejected).');
+                if (selectedCharacterId()) window.dispatchEvent(new Event('portal-connection-error'));
             };
 
             const handleInitialGameWorldStateReceived = (data: InitialGameWorldStateEventData) => {
+                if (selectedCharacterId()) portalWorldWasEntered = true;
                 this.clearLoginPendingDisconnectListener();
                 this.pendingInitialGameWorldStateListener = undefined;
                 this.isConnecting = false;
@@ -152,14 +157,19 @@ export class LoginScreen extends Scene {
                 this.clearLoginPendingDisconnectListener();
                 this.isConnecting = false;
                 setConnectingDialogOpen(false);
-                setConnectDialogOpen(true);
+                if (!selectedCharacterId()) setConnectDialogOpen(true);
                 console.error('[LoginScreen] Failed to connect to the server.', error);
+                if (selectedCharacterId()) window.dispatchEvent(new Event('portal-connection-error'));
                 setNetworkManager(this.game, undefined);
             }
         };
 
         this.connectToServerHandler = handleConnectToServer;
         EventBus.on(IN_UI_CONNECT_TO_SERVER, handleConnectToServer);
+        if (selectedCharacterId()) {
+            setConnectDialogOpen(false);
+            void handleConnectToServer({ host: location.hostname, port: Number(location.port || 80), characterName: activeCharacterName() });
+        }
 
         const queuePrefetch = (prefetch: PlayerItemAppearancePrefetchEventData) => {
             appendPendingPlayerItemAppearancePrefetch(this.game, prefetch.spriteNames);

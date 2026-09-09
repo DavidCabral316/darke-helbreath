@@ -20,7 +20,8 @@
         "typescript"
     ],
     "scripts": {
-        "proto:generate": "mkdir -p src/proto/generated && grpc_tools_node_protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto/generated --ts_proto_opt=esModuleInterop=true,env=browser,forceLong=bigint,oneof=unions-value,outputServices=none,outputJsonMethods=false ../proto/network.proto --proto_path=../proto",
+        "proto:generate": "node -e \"const fs=require('fs');fs.mkdirSync('src/proto/generated',{recursive:true});if(!fs.existsSync('src/proto/generated/network.ts'))throw new Error('Falta src/proto/generated/network.ts')\"",
+        "proto:generate:force": "grpc_tools_node_protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto/generated --ts_proto_opt=esModuleInterop=true,env=browser,forceLong=bigint,oneof=unions-value,outputServices=none,outputJsonMethods=false ../proto/network.proto --proto_path=../proto",
         "predev": "pnpm run proto:generate",
         "dev": "sh -c 'for p in 8080; do lsof -iTCP:$p -sTCP:LISTEN -t 2>/dev/null | xargs kill -9 2>/dev/null; done; exec vite --config vite/config.dev.mjs'",
         "prebuild": "pnpm run proto:generate",
@@ -53,12 +54,14 @@
         "promise-throttle-all": "^1.1.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "react-router-dom": "^7.18.3",
         "react-toastify": "^11.0.5"
     },
     "devDependencies": {
         "@eslint/js": "^9.22.0",
         "@npmcli/config": "^10.7.1",
         "@npmcli/redact": "^4.0.0",
+        "@playwright/test": "^1.63.0",
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^4.3.4",

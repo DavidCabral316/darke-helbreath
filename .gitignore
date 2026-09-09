@@ -1,3 +1,10 @@
 node_modules
 .DS_Store
 .pnpm-store
+.run/
+**/bin/
+**/obj/
+**/dist/
+**/test-results/
+**/playwright-report/
+multiplayer/server/Chars/

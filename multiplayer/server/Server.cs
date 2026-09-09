@@ -12,6 +12,10 @@ using Server.World;
 using Server.World.Game;
 using Server.World.Global;
 using Server.Utils;
+using Server.Portal;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>Hard cap for a single assembled inbound WebSocket binary message (anti-OOM).</summary>
 const int MaxIncomingWebSocketMessageBytes = 4096;
@@ -27,13 +31,23 @@ try {
 }
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddPortal();
 var app = builder.Build();
+await app.UsePortal();
 var appLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
 var settings = await Config.LoadSettings();
 var gcMonitor = settings.Debug.EnableGcLogs ? new GarbageCollectorMonitor() : null;
 var worldRegistry = new WorldRegistry(settings, workerCount: settings.Threads.GameWorldWorkers, tickInterval: TimeSpan.FromMilliseconds(settings.GameWorld.TickInterval));
 var sessionsByNetworkId = new ConcurrentDictionary<string, PlayerSession>(StringComparer.Ordinal);
 var sessionsByServerId = new ConcurrentDictionary<Guid, PlayerSession>();
+PortalEndpoints.IsOnline = id => sessionsByNetworkId.ContainsKey(id.ToString());
+PortalEndpoints.Status = () => new { online = true, players = sessionsByServerId.Count, name = "Darke Helbreath", stage = "Alfa local" };
+PortalEndpoints.DisconnectAccount = accountId => {
+    using var db = CharacterPersistence.Factory.CreateDbContext();
+    foreach (var id in db.Characters.Where(c => c.AccountId == accountId).Select(c => c.Id).ToArray())
+        if (sessionsByNetworkId.TryGetValue(id.ToString(), out var session)) session.RequestDisconnect?.Invoke("La sesión de la cuenta se cerró. Volvé a iniciar sesión.");
+};
+PortalEndpoints.RequestShutdown = () => appLifetime.StopApplication();
 
 var gameWorlds = await Config.LoadGameWorldsConfig();
 var gameWorldsById = gameWorlds.ToDictionary(gameWorld => gameWorld.Id, StringComparer.Ordinal);
@@ -131,6 +145,15 @@ app.UseWebSockets();
 
 // Per-connection state machine: authenticate → route binary ClientMessage to GameWorld; teardown notifies world and drains send queue.
 app.Map("/ws", async context => {
+    var expectedOrigin = app.Configuration["Portal:Origin"] ?? "http://localhost:8080";
+    if (context.User.Identity?.IsAuthenticated != true) { context.Response.StatusCode = 401; return; }
+    if (context.Request.Headers.Origin != expectedOrigin) { context.Response.StatusCode = 403; return; }
+    var accountId = context.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+    var userManager = context.RequestServices.GetRequiredService<UserManager<Account>>();
+    var account = await userManager.FindByIdAsync(accountId);
+    if (account is null) { context.Response.StatusCode = 401; return; }
+    var securityStamp = account.SecurityStamp;
+    var lastSessionCheck = DateTimeOffset.UtcNow;
     if (!context.WebSockets.IsWebSocketRequest) {
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
         await context.Response.WriteAsync("Expected a WebSocket request.");
@@ -164,6 +187,7 @@ app.Map("/ws", async context => {
         receiveCts,
         sendCts.Token);
     var isConnectedToGameWorld = false;
+    IDisposable? lifecycleLease = null;
 
     void EnqueueOutgoingMessage(ServerMessage responseMessage) {
         outgoingMessages.Writer.TryWrite(responseMessage);
@@ -226,12 +250,20 @@ app.Map("/ws", async context => {
                     return;
                 }
 
-                var initialGameWorldId = settings.SpawnToRandomMap && gameWorlds.Length > 0
-                    ? gameWorlds[Random.Shared.Next(gameWorlds.Length)].Id
-                    : settings.InitialMap;
+                if (!Guid.TryParse(clientMessage.AuthenticateRequest.Id, out var characterId)) {
+                    RequestDisconnect("Seleccioná un personaje desde el portal."); return;
+                }
+                lifecycleLease = await PortalEndpoints.LockCharacters();
+                await using var portalDb = await CharacterPersistence.Factory.CreateDbContextAsync();
+                if (!await portalDb.Users.AnyAsync(u => u.Id == accountId && u.SecurityStamp == securityStamp)) {
+                    RequestDisconnect("La sesión de la cuenta venció."); return;
+                }
+                var character = await portalDb.Characters.AsNoTracking().SingleOrDefaultAsync(c => c.Id == characterId && c.AccountId == accountId && c.DeletedAt == null);
+                if (character is null) { RequestDisconnect("El personaje no está disponible para esta cuenta."); return; }
+                var initialGameWorldId = character.Town;
                 if (!TryAuthenticatePlayer(
-                    clientMessage.AuthenticateRequest.Id,
-                    clientMessage.AuthenticateRequest.CharacterName,
+                    character.Id.ToString(),
+                    character.Name,
                     webSocket,
                     initialGameWorldId,
                     sessionsByNetworkId,
@@ -282,12 +314,24 @@ app.Map("/ws", async context => {
                 await worldRegistry.RouteGameWorldMessageAsync(currentGameWorldId, gameWorldMessage, receiveCts.Token);
                 await worldRegistry.RouteGlobalMessageAsync(globalWorldMessage, receiveCts.Token);
                 isConnectedToGameWorld = true;
+                lifecycleLease.Dispose();
+                lifecycleLease = null;
                 continue;
             }
 
             if (clientMessage.PayloadCase == ClientMessage.PayloadOneofCase.AuthenticateRequest) {
                 RequestDisconnect("Authenticate may only be sent once per connection.");
                 return;
+            }
+
+            if (DateTimeOffset.UtcNow - lastSessionCheck > TimeSpan.FromSeconds(10)) {
+                await using var securityDb = await CharacterPersistence.Factory.CreateDbContextAsync();
+                var currentStamp = await securityDb.Users.Where(u => u.Id == accountId).Select(u => u.SecurityStamp).SingleOrDefaultAsync();
+                if (currentStamp != securityStamp) { RequestDisconnect("La sesión venció. Iniciá sesión nuevamente."); return; }
+                lastSessionCheck = DateTimeOffset.UtcNow;
+            }
+            if (!account.IsGameMaster && !IsPlayerPacket(clientMessage.PayloadCase)) {
+                continue;
             }
 
             if (clientMessage.PayloadCase == ClientMessage.PayloadOneofCase.LogoutRequest) {
@@ -329,6 +373,7 @@ app.Map("/ws", async context => {
     } catch (Exception ex) {
         Console.Error.WriteLine($"[Server] Unexpected error: {ex}");
     } finally {
+        lifecycleLease?.Dispose();
         if (authenticatedSession is not null) {
             var shouldNotifyWorld = false;
             var sessionRemainsActive = false;
@@ -398,7 +443,16 @@ app.Map("/ws", async context => {
     }
 });
 
-await app.RunAsync($"http://0.0.0.0:{settings.Port}");
+using var autosaveCts = CancellationTokenSource.CreateLinkedTokenSource(appLifetime.ApplicationStopping);
+var autosaveTask = Task.Run(async () => {
+    using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+    try {
+        while (await timer.WaitForNextTickAsync(autosaveCts.Token))
+            await PersistAllPlayerStatesOnShutdownAsync(worldRegistry, sessionsByServerId, charsDirectory);
+    } catch (OperationCanceledException) { }
+}, autosaveCts.Token);
+await app.RunAsync($"http://127.0.0.1:{settings.Port}");
+await autosaveTask;
 disconnectedPlayerCleanupCts.Cancel();
 worldTransferCts.Cancel();
 try {
@@ -519,49 +573,40 @@ static string GetCurrentGameWorldId(PlayerSession session) {
 }
 
 static PlayerPersistenceState? LoadPlayerPersistenceState(string charsDirectory, string networkId) {
-    var savePath = GetPlayerSavePath(charsDirectory, networkId);
-    if (savePath is null || !File.Exists(savePath)) {
-        return null;
-    }
-
-    try {
-        using var stream = File.OpenRead(savePath);
-        return JsonSerializer.Deserialize<PlayerPersistenceState>(stream);
-    } catch (Exception ex) {
-        Console.Error.WriteLine($"[Server] Failed to load player save '{savePath}': {ex.Message}");
-        return null;
-    }
+    // Portal characters are keyed by server-validated UUID and never fall back to legacy files.
+    return CharacterPersistence.Load(networkId);
 }
 
 static void SavePlayerPersistenceState(string charsDirectory, string networkId, PlayerPersistenceState state) {
-    ArgumentNullException.ThrowIfNull(state);
-    var savePath = GetPlayerSavePath(charsDirectory, networkId);
-    if (savePath is null) {
-        Console.Error.WriteLine($"[Server] Skipping player save for invalid network id '{networkId}'.");
-        return;
-    }
-
-    try {
-        Directory.CreateDirectory(charsDirectory);
-        var tempPath = $"{savePath}.{Guid.NewGuid():N}.tmp";
-        var json = JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(tempPath, json);
-        File.Move(tempPath, savePath, overwrite: true);
-    } catch (Exception ex) {
-        Console.Error.WriteLine($"[Server] Failed to save player '{networkId}' to '{savePath}': {ex}");
-    }
+    CharacterPersistence.Save(networkId, state);
 }
 
-static string? GetPlayerSavePath(string charsDirectory, string networkId) {
-    if (string.IsNullOrWhiteSpace(networkId) ||
-        networkId.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
-        networkId.Contains(Path.DirectorySeparatorChar) ||
-        networkId.Contains(Path.AltDirectorySeparatorChar)) {
-        return null;
-    }
-
-    return Path.Combine(charsDirectory, $"{networkId}.json");
-}
+static bool IsPlayerPacket(ClientMessage.PayloadOneofCase packet) => packet is
+    ClientMessage.PayloadOneofCase.EconomyRequest or
+    ClientMessage.PayloadOneofCase.AllocateAttributeRequest or
+    ClientMessage.PayloadOneofCase.PingRequest or
+    ClientMessage.PayloadOneofCase.RequestMovement or
+    ClientMessage.PayloadOneofCase.WorldChangeRequest or
+    ClientMessage.PayloadOneofCase.PlayerMovementStateChangeRequest or
+    ClientMessage.PayloadOneofCase.PlayerAttackModeChangeRequest or
+    ClientMessage.PayloadOneofCase.ChangePlayerIdleDirectionRequest or
+    ClientMessage.PayloadOneofCase.PlayerAttackedMonsterRequest or
+    ClientMessage.PayloadOneofCase.PlayerAttackedPlayerRequest or
+    ClientMessage.PayloadOneofCase.PlayerResurrectedRequest or
+    ClientMessage.PayloadOneofCase.PlayerPickupRequested or
+    ClientMessage.PayloadOneofCase.PlayerBowStanceRequested or
+    ClientMessage.PayloadOneofCase.SpellCastStartRequest or
+    ClientMessage.PayloadOneofCase.SpellCastCancelRequest or
+    ClientMessage.PayloadOneofCase.SpellCastRequest or
+    ClientMessage.PayloadOneofCase.MoveItemInBagRequest or
+    ClientMessage.PayloadOneofCase.EquipItemRequest or
+    ClientMessage.PayloadOneofCase.UnequipItemRequest or
+    ClientMessage.PayloadOneofCase.ConsumeItemRequest or
+    ClientMessage.PayloadOneofCase.PlayerItemDropRequested or
+    ClientMessage.PayloadOneofCase.PlayerItemPickupRequested or
+    ClientMessage.PayloadOneofCase.ChatMessageSendRequest or
+    ClientMessage.PayloadOneofCase.LogoutRequest or
+    ClientMessage.PayloadOneofCase.LogoutCancelledRequest;
 
 static (string WorldId, PlayerPersistenceState State) ResolveLoadedPlayerJoin(
     PlayerPersistenceState loadedState,
@@ -569,6 +614,7 @@ static (string WorldId, PlayerPersistenceState State) ResolveLoadedPlayerJoin(
     IReadOnlyDictionary<string, GameWorldConfig> gameWorldsById,
     string defaultWorldId) {
     ArgumentNullException.ThrowIfNull(loadedState);
+    if (loadedState.Progress is null) loadedState = loadedState with { GameWorldId = Server.Helpers.Adventure.TrainingWorld, X = 150, Y = 150, Progress = new Server.Helpers.ProgressState(), Hp = 100, MaxHp = 100 };
     const string requestedFallbackWorldId = "aresden";
 
     if (gameWorldsById.ContainsKey(loadedState.GameWorldId) &&
@@ -684,6 +730,8 @@ static async Task RunDisconnectedPlayerCleanupLoopAsync(
                 }
 
                 try {
+                    var finalState = await CapturePlayerPersistenceStateAsync(worldRegistry, worldIdForCleanup, session.SessionId, cancellationToken);
+                    if (finalState is not null) CharacterPersistence.Save(session.NetworkId, finalState);
                     await worldRegistry.RouteGameWorldMessageAsync(
                         worldIdForCleanup,
                         new RemoveDisconnectedPlayerMessage(session.SessionId),
@@ -694,6 +742,8 @@ static async Task RunDisconnectedPlayerCleanupLoopAsync(
                 } catch (Exception exception) when (exception is ObjectDisposedException or KeyNotFoundException) {
                 } catch (Exception ex) {
                     Console.Error.WriteLine($"[Server] Error routing remove-disconnected for session '{session.SessionId}': {ex}");
+                    lock (session.SyncRoot) session.CleanupStarted = false;
+                    continue;
                 }
 
                 sessionsByServerId.TryRemove(session.SessionId, out _);

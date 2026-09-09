@@ -93,6 +93,8 @@ message ClientMessage {
     WeatherChangeRequest weather_change_request = 39;
     SummonNpcRequest summon_npc_request = 40;
     KillAllNpcsRequest kill_all_npcs_request = 41;
+    AllocateAttributeRequest allocate_attribute_request = 42;
+    EconomyRequest economy_request = 43;
   }
 }
 
@@ -442,7 +444,23 @@ message ServerMessage {
     NpcsEnteredRange npcs_entered_range = 61;
     NpcsLeftRange npcs_left_range = 62;
     LogoutCancelled logout_cancelled = 63;
+    ProgressionUpdated progression_updated = 64;
   }
+}
+
+message AllocateAttributeRequest { string attribute = 1; }
+message EconomyRequest { string action = 1; string offer_id = 2; int64 item_uid = 3; string request_id = 4; int64 revision = 5; }
+
+message ProgressionUpdated {
+  int32 level = 1; int64 experience = 2; int64 level_start = 3; int64 next_level = 4;
+  int32 max_level = 5; int32 strength = 6; int32 vitality = 7; int32 intelligence = 8;
+  int32 agility = 9; int32 points = 10; int32 hp = 11; int32 max_hp = 12;
+  int32 mana = 13; int32 max_mana = 14; int32 stamina = 15; int32 max_stamina = 16;
+  int32 damage = 17; int32 defense = 18; int32 magic_damage = 19; int32 kills = 20;
+  string notice = 21; bool sanctuary = 22; int32 x = 23; int32 y = 24;
+  int32 gold = 25; repeated int32 known_spells = 26; string service = 27;
+  repeated InventoryItemEntry warehouse = 28; string world_id = 29;
+  int64 trade_revision = 30;
 }
 
 message TemporaryEffectApplied {

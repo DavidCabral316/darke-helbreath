@@ -4,6 +4,9 @@ import { DndContext } from '@dnd-kit/core';
 import { toast } from 'react-toastify';
 import { IRefPhaserGame, PhaserGame } from './PhaserGame';
 import { ControlsDialog } from './ui/dialogs/ControlsDialog';
+import { AdventureHud } from './adventure/AdventureHud';
+import { AdventureWorkspace } from './adventure/AdventureWorkspace';
+import { selectedCharacterId } from './portal/api';
 import { MapDialog } from './ui/dialogs/MapDialog';
 import { CameraDialog } from './ui/dialogs/CameraDialog';
 import { MinimapDialog } from './ui/dialogs/MinimapDialog';
@@ -166,6 +169,16 @@ function App()
     const cursorSpriteKey = useStore(appStore, (state) => state.cursorSpriteKey);
     const cursorImage = spriteFrameMap.get(cursorSpriteKey);
     const [isMapLoaded, setIsMapLoaded] = useState(false);
+    const previousAux = useRef<boolean[]>([]);
+    useEffect(() => {
+        if (!selectedCharacterId()) return;
+        // Settings share one central slot; opening one replaces the previous panel.
+        const open = [showControlsDialog,showCameraDialog,showSoundDialog,showPerformanceDialog,showMapDialog,showPlayerDialog,showServerDialog];
+        const setters = [setControlsDialogOpen,setCameraDialogOpen,setSoundDialogOpen,setPerformanceDialogOpen,setMapDialogOpen,setPlayerDialogOpen,setServerDialogOpen];
+        const newest = open.findIndex((value,index)=>value&&!previousAux.current[index]);
+        previousAux.current=open;
+        if(newest>=0) setters.forEach((set,index)=>{if(index!==newest&&open[index])set(false);});
+    },[showControlsDialog,showCameraDialog,showSoundDialog,showPerformanceDialog,showMapDialog,showPlayerDialog,showServerDialog]);
 
     const hasInitialMapLoadRef = useRef(false);
 
@@ -173,10 +186,15 @@ function App()
     useEffect(() => {
         const handleMapLoaded = () => {
             setIsMapLoaded(true);
-            setControlsDialogOpen(true);
+            setControlsDialogOpen(!selectedCharacterId());
             if (!hasInitialMapLoadRef.current) {
                 hasInitialMapLoadRef.current = true;
                 setMinimapDialogOpen(true);
+                if (selectedCharacterId()) {
+                    setInventoryDialogOpen(true);
+                    setChatDialogOpen(true);
+                    castDialogStore.setState(s => ({...s, isOpen:true}));
+                }
             }
             // Position minimap in top right corner
             const minimapWidth = 300; // Approximate minimap dialog width
@@ -769,6 +787,7 @@ function App()
         <DndContext onDragEnd={handleDragEnd}>
             <div id="app">
                 <PhaserGame ref={phaserRef} />
+                {isMapLoaded && selectedCharacterId() && <AdventureWorkspace phaserRef={phaserRef}><AdventureHud /></AdventureWorkspace>}
                 
                 {showControlsDialog && (
                     <ControlsDialog
