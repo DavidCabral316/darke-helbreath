@@ -80,6 +80,10 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     await page.screenshot({path:'test-results/workspace-wide.png',fullPage:true});
     await page.setViewportSize({width:2536,height:1290});await noOverlap();
     const ratio=await page.locator('#game-container canvas').evaluate(e=>{const r=e.getBoundingClientRect();return (r.width-6)/(r.height-6);});expect(ratio).toBeCloseTo(16/9,1);
+    for(const asset of ['merchant','blacksmith','warehouse','archmage'])expect((await page.request.get(`/assets/darke/ui/npc-${asset}-v2.png`)).ok()).toBe(true);
+    await page.evaluate(async()=>{const store=await import('/src/adventure/store.ts'),proto=await import('/src/proto/generated/network.ts');const sample=proto.ProgressionUpdated.create({level:2,maxLevel:200,maxHp:100,hp:100,maxMana:60,mana:60,maxStamina:100,stamina:100,nextLevel:120n,service:'shop'});store.publishAdventure(sample,{},()=>{});(window as any).__qaNpcTimer=setInterval(()=>store.publishAdventure(sample,{},()=>{}),10);});
+    await expect(page.getByRole('dialog',{name:'Diálogo con Liora'})).toBeVisible();await expect(page.getByAltText('Liora, Mercader de Aresden')).toBeVisible();
+    await page.screenshot({path:'test-results/workspace-npc-dialogue.png',fullPage:true});await page.evaluate(()=>clearInterval((window as any).__qaNpcTimer));
     await page.setViewportSize({width:1366,height:768});await noOverlap();await page.screenshot({path:'test-results/workspace-laptop.png',fullPage:true});
     const slots=await page.locator('.inventory-slot').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height};}));
     for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){const a=slots[i],b=slots[j];expect(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>1&&Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>1).toBe(false);}
