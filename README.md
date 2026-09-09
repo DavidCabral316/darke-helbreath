@@ -1,5 +1,28 @@
 # Helbreath Base Game
 
+> **Darke Helbreath** es una evolución multijugador en navegador inspirada en
+> Helbreath clásico. Esta rama agrega portal de cuentas y personajes, persistencia
+> PostgreSQL, progresión PvE hasta nivel 200, economía, edificios y comerciantes,
+> Aresden, Elvine, Middleland y dungeons conectados, equipo por tiers, chat y una
+> interfaz adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md).
+
+## Inicio rápido de Darke (Windows)
+
+Desde la carpeta superior `darke-helbreath`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Start-WebMultiplayer.ps1
+```
+
+Abre <http://localhost:8080/>. Para detener cliente, servidor y PostgreSQL local:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Stop-WebMultiplayer.ps1
+```
+
+El contenido clásico de terceros y las partidas locales no forman parte de este
+repositorio. El estado actual es una alfa jugable y todavía no representa un MMORPG terminado.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Built with Phaser 3](https://img.shields.io/badge/Engine-Phaser%203-8A2BE2)](https://phaser.io/)
 [![UI: React](https://img.shields.io/badge/UI-React-61DAFB)](https://react.dev/)
