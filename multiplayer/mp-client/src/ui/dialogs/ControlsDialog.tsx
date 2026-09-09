@@ -68,12 +68,12 @@ export function ControlsDialog({
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={togglePlayerDialog}>
+                <RpgButton data-admin="true" onClick={togglePlayerDialog}>
                     Player
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleItemDialog}>
+                <RpgButton data-admin="true" onClick={toggleItemDialog}>
                     Items
                 </RpgButton>
             </div>
@@ -83,17 +83,17 @@ export function ControlsDialog({
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleMonsterDialog}>
+                <RpgButton data-admin="true" onClick={toggleMonsterDialog}>
                     Monsters
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleNPCDialog}>
+                <RpgButton data-admin="true" onClick={toggleNPCDialog}>
                     NPCs
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleEffectDialog}>
+                <RpgButton data-admin="true" onClick={toggleEffectDialog}>
                     Effects
                 </RpgButton>
             </div>
@@ -103,7 +103,7 @@ export function ControlsDialog({
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleMapDialog}>
+                <RpgButton data-admin="true" onClick={toggleMapDialog}>
                     Maps
                 </RpgButton>
             </div>
@@ -123,7 +123,7 @@ export function ControlsDialog({
                 </RpgButton>
             </div>
             <div>
-                <RpgButton onClick={toggleServerDialog}>
+                <RpgButton data-admin="true" onClick={toggleServerDialog}>
                     Server
                 </RpgButton>
             </div>

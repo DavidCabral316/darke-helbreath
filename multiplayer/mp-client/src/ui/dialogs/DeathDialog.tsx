@@ -37,13 +37,14 @@ export function DeathDialog({
                 padding: '16px',
             }}>
                 <p style={{ margin: '0 0 16px 0' }}>
-                    Oh blimey, you died!
+                    Tu aventura no termina aquí.
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <RpgButton onClick={handleResurrect}>
-                        Resurrect
+                        Volver al refugio
                     </RpgButton>
                 </div>
+                <p style={{fontSize:12}}>Conservás tu experiencia, tu equipo y tus objetos.</p>
             </div>
         </HeadlessDraggableDialog>
     );

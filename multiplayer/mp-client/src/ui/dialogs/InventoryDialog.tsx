@@ -98,6 +98,15 @@ export function InventoryDialog({
     const [activeSlotDropTarget, setActiveSlotDropTarget] = useState<EquipmentSlot | null>(null);
     const [dragGhostPortalTarget, setDragGhostPortalTarget] = useState<HTMLElement>(document.body);
     const bagAreaRef = useRef<HTMLDivElement>(null);
+    const [bagBounds,setBagBounds] = useState<DOMRect|null>(null);
+    const bagObserver = useRef<ResizeObserver|null>(null);
+    const setBagAreaRef = useCallback((bag:HTMLDivElement|null)=>{
+        bagAreaRef.current=bag;
+        bagObserver.current?.disconnect();
+        if(!bag)return;
+        const update=()=>{const next=bag.getBoundingClientRect();setBagBounds(old=>old?.width===next.width&&old?.height===next.height?old:next);};
+        bagObserver.current=new ResizeObserver(update);bagObserver.current.observe(bag);update();
+    },[]);
     const isBagDropTargetRef = useRef(false);
     const activeSlotDropTargetRef = useRef<EquipmentSlot | null>(null);
     const ringLeftSlotRef = useRef<HTMLDivElement | null>(null);
@@ -315,8 +324,9 @@ export function InventoryDialog({
                 const item = baggedItems[itemIndex];
                 const itemDef = getItemById(item.itemId);
                 const displaySize = getBagItemDisplaySize(item.itemId, item.effectOverrides);
-                const centerX = item.bagX !== undefined ? item.bagX : bagRect.width / 2;
-                const centerY = item.bagY !== undefined ? item.bagY : bagRect.height / 2;
+                const visiblePosition=clampBagPosition(item.bagX??bagRect.width/2,item.bagY??bagRect.height/2,bagRect,displaySize.width,displaySize.height);
+                const centerX = visiblePosition.bagX;
+                const centerY = visiblePosition.bagY;
                 const itemLeft = centerX - (displaySize.width / 2);
                 const itemTop = centerY - (displaySize.height / 2);
 
@@ -809,7 +819,7 @@ export function InventoryDialog({
                     })()}
                 </div>
                 <div
-                    ref={bagAreaRef}
+                    ref={setBagAreaRef}
                     className={`inventory-bag-area${isBagDropTarget ? ' inventory-bag-area-drop-target' : ''}`}
                     onMouseDown={(e) => {
                         const hit = getBagItemHitAtPoint(e.clientX, e.clientY);
@@ -852,16 +862,17 @@ export function InventoryDialog({
                         const isThisItemDragged =
                             draggedItem?.source === 'bag' &&
                             draggedItem.item.itemUid === item.itemUid;
-                        const hasPosition = item.bagX !== undefined && item.bagY !== undefined;
                         const bagItemDisplaySize = getBagItemDisplaySize(item.itemId, item.effectOverrides);
+                        // Reflow visually without changing persisted bag coordinates or ownership.
+                        const visiblePosition=bagBounds?clampBagPosition(item.bagX??bagBounds.width/2,item.bagY??bagBounds.height/2,bagBounds,bagItemDisplaySize.width,bagItemDisplaySize.height):undefined;
                         return (
                             <div
                                 key={item.itemUid}
                                 className={`inventory-bag-item${displaySpritesInfo ? ' inventory-bag-item-debug' : ''}`}
                                 style={{
                                     cursor: 'inherit',
-                                    left: hasPosition ? item.bagX : '50%',
-                                    top: hasPosition ? item.bagY : '50%',
+                                    left: visiblePosition?.bagX ?? '50%',
+                                    top: visiblePosition?.bagY ?? '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: bagItemDisplaySize.width,
                                     height: bagItemDisplaySize.height,

@@ -1,144 +1,38 @@
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useStore } from '@tanstack/react-store';
-import { inventoryItemHoverOverlayStore } from '../store/InventoryItemHoverOverlay.store';
+import {useEffect,useState} from 'react';
+import {createPortal} from 'react-dom';
+import {useStore} from '@tanstack/react-store';
+import {inventoryItemHoverOverlayStore} from '../store/InventoryItemHoverOverlay.store';
+import {inventoryDialogStore} from '../store/InventoryDialog.store';
+import {useFullscreenPortalTarget} from '../hooks/utils';
+import {useAdventure} from '../../adventure/store';
+import type {EquipmentSlot} from '../../constants/Items';
 
-export function InventoryItemHoverOverlay() {
-    const hoverInfo = useStore(inventoryItemHoverOverlayStore, (state) => state.hoverInfo);
-    const suppressOverlay = useStore(inventoryItemHoverOverlayStore, (state) => state.suppressOverlay);
-    const [portalTarget, setPortalTarget] = useState<HTMLElement | undefined>(undefined);
-
-    useEffect(() => {
-        const updatePortalTarget = () => {
-            const fullscreenElement = document.fullscreenElement;
-            if (fullscreenElement instanceof HTMLElement) {
-                setPortalTarget(fullscreenElement);
-            } else {
-                setPortalTarget(document.body);
-            }
-        };
-
-        updatePortalTarget();
-
-        document.addEventListener('fullscreenchange', updatePortalTarget);
-        return () => {
-            document.removeEventListener('fullscreenchange', updatePortalTarget);
-        };
-    }, []);
-
-    if (!hoverInfo || !portalTarget || suppressOverlay) {
-        return null;
-    }
-
-    const opacity = hoverInfo.source === 'ground' ? 0.9 : 1;
-    const overlay = (
-        <div
-            style={{
-                position: 'fixed',
-                left: `${hoverInfo.mouseX + 15}px`,
-                top: `${hoverInfo.mouseY + 20}px`,
-                pointerEvents: 'none',
-                zIndex: 20002,
-                opacity,
-                background: 'linear-gradient(135deg, rgba(74, 44, 26, 0.98) 0%, rgba(45, 24, 16, 0.98) 100%)',
-                border: '2px solid var(--rpg-leather)',
-                borderRadius: '6px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(212, 175, 55, 0.2)',
-                padding: '0',
-                userSelect: 'none',
-            }}
-        >
-            <div
-                style={{
-                    padding: '4px 8px',
-                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.1) 100%)',
-                    borderBottom: '1px solid var(--rpg-leather)',
-                    borderRadius: '4px 4px 0 0',
-                    textAlign: 'center',
-                }}
-            >
-                <span
-                    style={{
-                        color: 'var(--rpg-gold)',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        fontFamily: 'Georgia, serif',
-                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                    }}
-                >
-                    Item Info
-                </span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 12px' }}>
-                <div className="rpg-stat-item">
-                    <span className="rpg-stat-label">Item name:</span>
-                    <span className="rpg-stat-value">{hoverInfo.itemName}</span>
-                </div>
-                <div className="rpg-stat-item">
-                    <span className="rpg-stat-label">Item type:</span>
-                    <span className="rpg-stat-value">{hoverInfo.itemType}</span>
-                </div>
-                {hoverInfo.appearanceGlowColor !== undefined && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Appearance glow:</span>
-                        <span className="rpg-stat-value" style={{ color: `#${hoverInfo.appearanceGlowColor.toString(16).padStart(6, '0')}` }}>
-                            #{hoverInfo.appearanceGlowColor.toString(16).padStart(6, '0').toUpperCase()}
-                        </span>
-                    </div>
-                )}
-                {hoverInfo.appearanceGlareColor !== undefined && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Appearance glare:</span>
-                        <span className="rpg-stat-value" style={{ color: `#${hoverInfo.appearanceGlareColor.toString(16).padStart(6, '0')}` }}>
-                            #{hoverInfo.appearanceGlareColor.toString(16).padStart(6, '0').toUpperCase()}
-                        </span>
-                    </div>
-                )}
-                {hoverInfo.appearanceTintColor !== undefined && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Appearance tint:</span>
-                        <span className="rpg-stat-value" style={{ color: `#${hoverInfo.appearanceTintColor.toString(16).padStart(6, '0')}` }}>
-                            #{hoverInfo.appearanceTintColor.toString(16).padStart(6, '0').toUpperCase()}
-                        </span>
-                    </div>
-                )}
-                {hoverInfo.inventoryTintColor !== undefined && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Inventory tint:</span>
-                        <span className="rpg-stat-value" style={{ color: `#${hoverInfo.inventoryTintColor.toString(16).padStart(6, '0')}` }}>
-                            #{hoverInfo.inventoryTintColor.toString(16).padStart(6, '0').toUpperCase()}
-                        </span>
-                    </div>
-                )}
-                {hoverInfo.consumable && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Consumable:</span>
-                        <span className="rpg-stat-value">true</span>
-                    </div>
-                )}
-                {hoverInfo.stackable && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Quantity:</span>
-                        <span className="rpg-stat-value">{hoverInfo.quantity ?? 1}</span>
-                    </div>
-                )}
-                {hoverInfo.gender !== undefined && (
-                    <div className="rpg-stat-item">
-                        <span className="rpg-stat-label">Gender:</span>
-                        <span className="rpg-stat-value">{hoverInfo.gender.charAt(0).toUpperCase() + hoverInfo.gender.slice(1)}</span>
-                    </div>
-                )}
-                <div className="rpg-stat-item">
-                    <span className="rpg-stat-label">Item ID:</span>
-                    <span className="rpg-stat-value">{hoverInfo.itemId}</span>
-                </div>
-                <div className="rpg-stat-item">
-                    <span className="rpg-stat-label">Item UID:</span>
-                    <span className="rpg-stat-value">{hoverInfo.itemUid}</span>
-                </div>
-            </div>
+type Bonus={damage:number;defense:number;level:number;magic:number;mana:number};
+export function InventoryItemHoverOverlay(){
+    const info=useStore(inventoryItemHoverOverlayStore,s=>s.hoverInfo),suppress=useStore(inventoryItemHoverOverlayStore,s=>s.suppressOverlay);
+    const equipment=useStore(inventoryDialogStore,s=>s.equippedItems);
+    const {stats}=useAdventure();const target=useFullscreenPortalTarget();
+    const [rules,setRules]=useState<Record<string,Bonus>>();
+    useEffect(()=>{const controller=new AbortController();fetch('/api/game/equipment-rules',{signal:controller.signal}).then(r=>r.ok?r.json():Promise.reject()).then(r=>setRules(r.equipment)).catch(()=>{});return()=>controller.abort();},[]);
+    if(!info||suppress||!target)return null;
+    const bonus=rules?.[info.itemId],equipped=equipment[info.itemType as EquipmentSlot];
+    const previous=rules?.[equipped?.itemId??-1],alreadyEquipped=equipped?.itemUid===info.itemUid;
+    const delta=(name:string,key:'damage'|'defense',current:number)=>{
+        const difference=(bonus?.[key]??0)-(previous?.[key]??0);
+        return <p className={difference>0?'item-gain':difference<0?'item-loss':''}>{name}: {current} → {current+difference} ({difference>0?'+':''}{difference})</p>;
+    };
+    return createPortal(<div role="tooltip" style={{position:'fixed',left:Math.max(8,Math.min(info.mouseX+15,window.innerWidth-278)),top:Math.max(8,Math.min(info.mouseY+20,window.innerHeight-260)),zIndex:30000,pointerEvents:'none',background:'#21170ffa',border:'1px solid #927341',borderRadius:6,boxShadow:'0 4px 16px #0009'}}>
+        <div className="item-comparison"><h3>{info.itemName}</h3>
+        {info.stackable&&<p>Cantidad: {info.quantity??1}</p>}
+        {info.itemId===36?<p>Recupera hasta 50 de vida. Espera: 2 segundos.</p>:info.itemId===165?<p>Recupera hasta 40 de maná. Espera: 2 segundos.</p>:<>
+            {!rules?<p>No se pudieron cargar las estadísticas todavía.</p>:<>
+                <p>{[['Daño',bonus?.damage],['Defensa',bonus?.defense],['Magia',bonus?.magic],['Maná',bonus?.mana]].filter(x=>x[1]).map(x=>`${x[0]} +${x[1]}`).join(' · ')||'Sin bonificación de combate en esta alfa.'}</p>
+                <p className={(stats?.level??1)<(bonus?.level??1)?'item-loss':''}>Nivel requerido: {bonus?.level??1}</p>
+                {alreadyEquipped?<p>✓ Equipado actualmente</p>:stats&&info.itemType!=='misc'&&<><p>Al reemplazar tu equipo actual:</p>{delta('Daño','damage',stats.damage)}{delta('Defensa','defense',stats.defense)}</>}
+            </>}
+        </>}
+        {info.gender&&<p>Para personaje {info.gender==='female'?'femenino':'masculino'}.</p>}
+        <p>{info.consumable?'Doble clic para usar.':info.source==='ground'?'Recogelo para equiparlo.':'Doble clic para equipar o arrastrar a su ranura.'}</p>
         </div>
-    );
-
-    return createPortal(overlay, portalTarget);
+    </div>,target);
 }

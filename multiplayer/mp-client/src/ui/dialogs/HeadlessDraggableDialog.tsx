@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useFullscreenPortalTarget } from '../hooks/utils';
+import { selectedCharacterId } from '../../portal/api';
 
 export interface BaseDraggableDialogProps {
     children: ReactNode;
@@ -32,9 +33,11 @@ export function BaseDraggableDialog({
     const portalTarget = useFullscreenPortalTarget();
     const dialogRef = useRef<HTMLDivElement | null>(null);
     const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+    const docked = !!selectedCharacterId() && ['inventory-dialog','chat-dialog','cast-dialog','minimap-dialog'].includes(id);
     
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id,
+        disabled: docked,
     });
     
     // Combine refs
@@ -88,6 +91,7 @@ export function BaseDraggableDialog({
             style={style}
             className={className}
             data-dialog-id={id}
+            data-docked={docked || undefined}
             data-dialog-width={dialogRef.current?.offsetWidth}
             data-dialog-height={dialogRef.current?.offsetHeight}
             onContextMenu={onContextMenu}
@@ -95,7 +99,7 @@ export function BaseDraggableDialog({
             {...dragListeners}
             {...dragAttributes}
         >
-            {renderHeader && renderHeader(listeners, attributes, isDragging)}
+            {renderHeader && renderHeader(docked ? {} : listeners, docked ? {} : attributes, isDragging)}
             <div className="draggable-dialog-content">
                 {children}
             </div>

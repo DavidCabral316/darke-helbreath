@@ -268,8 +268,8 @@ export function MinimapDialog({
                         <div
                             style={{
                                 position: 'absolute',
-                                left: `${(minimapPlayerDot.x / minimapOriginalSize) * minimapSize}px`,
-                                top: `${(minimapPlayerDot.y / minimapOriginalSize) * minimapSize}px`,
+                                left: `${(minimapPlayerDot.x / minimapOriginalSize) * 100}%`,
+                                top: `${(minimapPlayerDot.y / minimapOriginalSize) * 100}%`,
                                 width: `${PLAYER_DOT_SIZE}px`,
                                 height: `${PLAYER_DOT_SIZE}px`,
                                 backgroundColor: '#4287f5',

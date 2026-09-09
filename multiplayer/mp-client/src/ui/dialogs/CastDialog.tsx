@@ -23,7 +23,7 @@ export function CastDialog({
 
     return (
         <DraggableDialog
-            title="Cast Spell"
+            title="Hechizos"
             position={position}
             id="cast-dialog"
             zIndex={zIndex}
@@ -63,7 +63,7 @@ export function CastDialog({
                             minWidth: '100px',
                         }}
                     >
-                        Cast
+                        Preparar
                     </RpgButton>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import { EventBus } from '../game/EventBus';
 import { setIsFullscreen } from '../ui/store/ControlsDialog.store';
 
 let fullscreenResizeHandler: (() => void) | undefined;
-let fullscreenHandlersBound = false;
+const fullscreenBoundGames = new WeakSet<Game>();
 let fullscreenRefreshFrame: number | undefined;
 let gameWindowScaleGame: Game | undefined;
 
@@ -117,7 +117,7 @@ export function togglePhaserFullscreen(game: Game | null | undefined): void {
         scheduleScaleRefresh(game);
     };
 
-    if (!fullscreenHandlersBound) {
+    if (!fullscreenBoundGames.has(game)) {
         game.scale.on('enterfullscreen', () => {
             wrapper?.classList.add('fullscreen');
             container?.classList.add('fullscreen');
@@ -133,7 +133,7 @@ export function togglePhaserFullscreen(game: Game | null | undefined): void {
             setIsFullscreen(false);
         });
 
-        fullscreenHandlersBound = true;
+        fullscreenBoundGames.add(game);
     }
 
     if (game.scale.isFullscreen) {

@@ -1,0 +1,37 @@
+import {test,expect} from '@playwright/test';
+import {readFile} from 'node:fs/promises';
+import {ServerMessage} from '../src/proto/generated/network';
+test('aventura persistente tras reinicio: UI, atributos y recursos',async({page,context})=>{
+    test.skip(process.env.TEST_AFTER_RESTART!=='1','Ejecutar después de adventure.spec.ts y de reiniciar servidor y PostgreSQL.');
+    test.setTimeout(180000);
+    const saved=JSON.parse(await readFile('../../.run/qa-adventure-restart.json','utf8'));
+    await page.goto('/login');await page.getByLabel('Usuario o correo').fill(saved.username);await page.getByLabel('Contraseña',{exact:true}).fill(saved.password);
+    await page.getByRole('button',{name:'Entrar a mi cuenta'}).click();await expect(page).toHaveURL(/\/characters$/);
+    const chars=await (await context.request.get('/api/characters')).json();expect(chars[0].level).toBe(2);expect(chars[0].experience.toString()).toBe(saved.experience);
+    let stats:any;page.on('websocket',socket=>socket.on('framereceived',frame=>{if(typeof frame.payload==='string')return;const p=ServerMessage.decode(frame.payload).payload;if(p?.$case==='progressionUpdated')stats=p.value;}));
+    await page.getByRole('link',{name:'Entrar al mundo'}).click();
+    await expect(page.getByRole('complementary',{name:'Estado del aventurero'})).toBeVisible({timeout:100000});
+    expect(stats.level).toBe(2);expect(stats.vitality).toBe(saved.vitality);expect(stats.hp).toBe(stats.maxHp);expect(stats.experience.toString()).toBe(saved.experience);
+    expect(stats.gold).toBeGreaterThanOrEqual(0);
+    await expect(page.getByRole('button',{name:/Servicios del Umbral/})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Tienda y armaduras'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Almacén'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Comprar hechizos'})).toBeVisible();
+    await page.screenshot({path:'test-results/adventure-economy.png',fullPage:true});
+    await page.getByRole('button',{name:'Tienda y armaduras'}).click();
+    await expect(page.getByRole('button',{name:/Mercado del Umbral/})).toBeVisible({timeout:15000});
+    await expect(page.getByText(/Armadura de cuero/)).toBeVisible();
+    await expect(page.getByRole('button',{name:'Volver al refugio'})).toBeVisible();
+    await page.waitForTimeout(8000);
+    await page.screenshot({path:'test-results/adventure-shop.png',fullPage:true});
+    await page.getByRole('button',{name:'Volver al refugio'}).click();
+    await expect(page.getByRole('button',{name:/Servicios del Umbral/})).toBeVisible({timeout:15000});
+    await page.getByRole('button',{name:/Entendido/}).click();
+    await page.getByRole('button',{name:/^Atributos/}).click();
+    await page.screenshot({path:'test-results/adventure-hud.png',fullPage:true});
+    if(stats.points>0){const before=stats.strength;await page.getByRole('button',{name:'Mejorar Fuerza'}).click();await expect.poll(()=>stats.strength).toBe(before+1);}
+    else await expect(page.getByRole('button',{name:'Mejorar Fuerza'})).toBeDisabled();
+    await page.getByRole('button',{name:'Inventario',exact:true}).click();
+    await page.screenshot({path:'test-results/adventure-inventory.png',fullPage:true});
+    await page.getByRole('link',{name:'Volver a personajes'}).click();
+});

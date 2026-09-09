@@ -1,0 +1,139 @@
+import { test, expect, type APIRequestContext } from '@playwright/test';
+import { ServerMessage } from '../src/proto/generated/network';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+
+const suffix = Date.now().toString(36);
+const username = `qa${suffix}`;
+const password = `Testing-local-${suffix}-42`;
+const email = `${username}@example.test`;
+async function post(request: APIRequestContext, path: string, data: unknown) {
+    const csrf = await request.get('/api/csrf');
+    return request.post(`/api${path}`, { data, headers: { 'X-CSRF-TOKEN': (await csrf.json()).token } });
+}
+
+test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }) => {
+    test.setTimeout(240000);
+    const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+    await page.goto('/');
+    await expect(page.getByRole('heading', {name:/Volvé a un mundo/})).toBeVisible();
+    expect(await page.locator('#game-container').count()).toBe(0);
+    await page.screenshot({path:'test-results/portal-desktop.png',fullPage:true});
+    await page.getByRole('link',{name:'Crear cuenta',exact:true}).click();
+    await page.getByLabel('Nombre de usuario').fill(username);
+    await page.getByLabel('Correo electrónico').fill(email);
+    await page.getByLabel('Contraseña',{exact:true}).fill(password);
+    await page.getByLabel('Repetir contraseña').fill(password);
+    await page.getByRole('checkbox').check();
+    await page.getByRole('button',{name:'Crear mi cuenta'}).click();
+    await expect(page).toHaveURL(/login\?created=1/);
+    await page.getByLabel('Usuario o correo').fill(username);
+    await page.getByLabel('Contraseña',{exact:true}).fill(password);
+    await page.getByRole('button',{name:'Entrar a mi cuenta'}).click();
+    await expect(page).toHaveURL(/\/characters$/);
+    await expect(page.getByText('Crear nuevo personaje')).toHaveCount(3);
+    const cookies = await context.cookies();
+    expect(cookies.find(c=>c.name==='darke.session')?.httpOnly).toBe(true);
+    await page.getByText('Crear nuevo personaje').first().click();
+    await page.getByLabel('Nombre del personaje').fill(`Hero${suffix}`);
+    await page.getByRole('combobox',{name:'Cuerpo',exact:true}).selectOption('1');
+    await page.getByRole('combobox',{name:'Piel',exact:true}).selectOption('1');
+    await page.getByRole('combobox',{name:'Cabello',exact:true}).selectOption('3');
+    await expect(page.getByText('No se pudo cargar la vista previa.')).toHaveCount(0);
+    await page.screenshot({path:'test-results/character-creation.png',fullPage:true});
+    await page.getByRole('button',{name:/^Crear personaje/}).click();
+    await expect(page).toHaveURL(/\/characters$/);
+    await expect(page.getByRole('heading',{name:`Hero${suffix}`})).toBeVisible();
+    const chars = await (await context.request.get('/api/characters')).json();
+    const id = chars[0].id;
+    expect(chars[0].gender).toBe(1); expect(chars[0].hair).toBe(3); expect(chars[0].level).toBe(1);
+    let initial: any; let world: any;
+    const frames: any[] = [];
+    page.on('websocket', socket => socket.on('framereceived', frame => {
+        if (typeof frame.payload === 'string') return;
+        const decoded = ServerMessage.decode(frame.payload);
+        frames.push(decoded);
+        if (decoded.payload?.$case === 'initialState') initial = decoded.payload.value;
+        if (decoded.payload?.$case === 'initialGameWorldState') world = decoded.payload.value;
+    }));
+    await page.getByRole('link',{name:'Entrar al mundo'}).click();
+    await expect.poll(()=>Boolean(initial && world),{timeout:90000}).toBe(true);
+    expect(initial.gender).toBe(1); expect(initial.maxHp).toBe(100);
+    expect(initial.bagItems.some((x:any)=>x.itemId===36 && x.quantity===5)).toBe(true);
+    expect(initial.equippedItems.some((x:any)=>x.item.itemId===3)).toBe(true);
+    const itemUid = initial.equippedItems[0].item.itemUid.toString();
+    await expect(page.locator('#game-container canvas')).toBeVisible({timeout:90000});
+    await expect(page.getByRole('complementary',{name:'Estado del aventurero'})).toBeVisible({timeout:90000});
+    await expect(page.getByRole('button',{name:'Items',exact:true})).toBeHidden();
+    await page.screenshot({path:'test-results/game-entered.png',fullPage:true});
+    await page.getByRole('link',{name:'Volver a personajes'}).click();
+    await expect(page).toHaveURL(/\/characters$/);
+    await expect.poll(async()=> (await (await context.request.get('/api/characters')).json())[0].lastPlayedAt,{timeout:15000}).not.toBeNull();
+    await page.getByRole('button',{name:'Salir',exact:true}).click();
+    await expect(page).toHaveURL('/');
+    expect((await context.request.get('/api/characters')).status()).toBe(401);
+    await page.goto('/login');
+    await page.getByLabel('Usuario o correo').fill(email);
+    await page.getByLabel('Contraseña',{exact:true}).fill(password);
+    await page.getByRole('button',{name:'Entrar a mi cuenta'}).click();
+    await expect(page).toHaveURL(/\/characters$/);
+    await expect.poll(async()=> (await (await context.request.get('/api/characters')).json())[0].online,{timeout:35000}).toBe(false);
+    initial=undefined;world=undefined;
+    await page.getByRole('link',{name:'Entrar al mundo'}).click();
+    await expect.poll(()=>Boolean(initial && world),{timeout:90000}).toBe(true);
+    expect(initial.equippedItems[0].item.itemUid.toString()).toBe(itemUid);
+    expect(initial.gender).toBe(1);
+    await page.getByRole('link',{name:'Volver a personajes'}).click();
+    expect(errors).toEqual([]);
+    await writeFile('../../.run/qa-restart.json', JSON.stringify({username,password,id,itemUid}), 'utf8');
+});
+
+test('aislamiento, CSRF, nombres concurrentes y límite de ranuras', async ({ request, playwright }) => {
+    const user = `sec${suffix}`;
+    expect((await request.post('/api/account/register',{data:{}})).status()).toBe(400);
+    expect((await post(request,'/account/register',{username:user,email:`${user}@example.test`,password,acceptRules:true})).ok()).toBe(true);
+    expect((await post(request,'/account/login',{username:user,password,remember:false})).ok()).toBe(true);
+    const csrf = (await (await request.get('/api/csrf')).json()).token;
+    const draft = {name:`Twin${suffix}`,town:'elvine',gender:0,skin:0,hair:0,clothes:0};
+    const same = await Promise.all([0,1].map(()=>request.post('/api/characters',{data:draft,headers:{'X-CSRF-TOKEN':csrf}})));
+    expect(same.map(r=>r.status()).sort()).toEqual([200,409]);
+    const created = await (same.find(r=>r.status()===200)!).json();
+    const other = await playwright.request.newContext({baseURL:'http://localhost:8080'});
+    const otherUser=`oth${suffix}`;
+    await post(other,'/account/register',{username:otherUser,email:`${otherUser}@example.test`,password,acceptRules:true});
+    await post(other,'/account/login',{username:otherUser,password,remember:false});
+    expect((await post(other,`/characters/${created.id}/delete`,{name:draft.name})).status()).toBe(404);
+    for(let i=0;i<2;i++) expect((await post(request,'/characters',{...draft,name:`Fill${i}${suffix}`})).ok()).toBe(true);
+    expect((await post(request,'/characters',{...draft,name:`Last${suffix}`})).status()).toBe(409);
+    expect((await post(request,`/characters/${created.id}/delete`,{name:draft.name})).ok()).toBe(true);
+    expect((await post(request,`/characters/${created.id}/restore`,{})).ok()).toBe(true);
+    const oldCookies = await request.storageState();
+    await post(request,'/account/logout',{});
+    const replay = await playwright.request.newContext({baseURL:'http://localhost:8080',storageState:oldCookies});
+    expect((await replay.get('/api/account/me')).status()).toBe(401);
+    await replay.dispose(); await other.dispose();
+});
+
+test('portal móvil sin desbordamiento', async ({page}) => {
+    await page.setViewportSize({width:390,height:844}); await page.goto('/');
+    await expect(page.getByRole('link',{name:'Comenzar aventura'})).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.screenshot({path:'test-results/portal-mobile.png',fullPage:true});
+});
+
+test('recuperación local: contraseña nueva y enlace de un solo uso', async ({request}) => {
+    const user = `reset${suffix}`; const mail = `${user}@example.test`;
+    expect((await post(request,'/account/register',{username:user,email:mail,password,acceptRules:true})).ok()).toBe(true);
+    expect((await post(request,'/account/forgot',{email:mail})).ok()).toBe(true);
+    const directory = '../../.run/mail';
+    let link = '';
+    for (const file of await readdir(directory)) {
+        const text = await readFile(`${directory}/${file}`,'utf8');
+        if (text.startsWith(`Para: ${mail}\n`)) link = text.split('\n').find(line=>line.startsWith('http'))!;
+    }
+    expect(link).not.toBe(''); const token = new URL(link).searchParams.get('token');
+    const next = `${password}-new`;
+    expect((await post(request,'/account/reset',{email:mail,token,password:next})).ok()).toBe(true);
+    expect((await post(request,'/account/reset',{email:mail,token,password:next})).status()).toBe(400);
+    expect((await post(request,'/account/login',{username:user,password,remember:false})).status()).toBe(401);
+    expect((await post(request,'/account/login',{username:user,password:next,remember:false})).ok()).toBe(true);
+});

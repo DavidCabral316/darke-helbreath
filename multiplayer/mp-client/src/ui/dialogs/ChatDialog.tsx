@@ -85,6 +85,7 @@ export function ChatDialog({
             }}
         >
             <div
+                className="chat-panel"
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -113,7 +114,7 @@ export function ChatDialog({
                     }}
                 >
                     {formattedMessages.length === 0 ? (
-                        <div style={{ opacity: 0.7 }}>No messages yet.</div>
+                        <div style={{ opacity: 0.7 }}>Todavía no hay mensajes.</div>
                     ) : (
                         formattedMessages.map((entry) => (
                             <div key={entry.key} style={{ marginBottom: 6, wordBreak: 'break-word' }}>
@@ -130,7 +131,8 @@ export function ChatDialog({
                         type="text"
                         value={draft}
                         maxLength={256}
-                        placeholder="Type a message..."
+                        aria-label="Mensaje de chat"
+                        placeholder="Escribí un mensaje…"
                         onChange={(e) => setDraft(e.target.value)}
                         onFocus={suppressPointerLeak}
                         onPointerDown={(e) => {
@@ -163,7 +165,7 @@ export function ChatDialog({
                         disabled={!draft.trim()}
                         style={{ width: 90 }}
                     >
-                        Send
+                        Enviar
                     </RpgButton>
                 </div>
             </div>

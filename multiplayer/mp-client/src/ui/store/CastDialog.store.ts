@@ -45,7 +45,7 @@ export const castSpell = () => {
     EventBus.emit(IN_UI_CAST_SPELL, {
         spellId: state.selectedSpellId,
     } satisfies CastSpellEvent);
-    setCastDialogOpen(false);
+    // Keep the spell panel available while choosing a target.
 };
 
 EventBus.on(OUT_UI_SET_SPELLS, (spells: SpellEntry[]) => {
