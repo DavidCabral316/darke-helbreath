@@ -1,0 +1,69 @@
+/* Dedicated rails leave the playfield unobstructed, in both browser modes. */
+.adventure-workspace {--rail-left:248px;--rail-right:324px;--dock-bottom:206px;--game-top:46px;overflow:hidden;}
+html:has(body.adventure-workspace),.adventure-workspace #root {height:100dvh;overflow:hidden;}
+.adventure-workspace:has(:fullscreen) {--game-top:8px;}
+.adventure-workspace #game-wrapper {height:calc(100dvh - 38px);}
+.adventure-workspace #game-wrapper:fullscreen {height:100dvh;}
+.adventure-workspace #game-container,.adventure-workspace #game-container.fullscreen {position:fixed!important;left:calc(var(--rail-left) + 8px)!important;top:var(--game-top)!important;width:calc(100vw - var(--rail-left) - var(--rail-right) - 24px)!important;height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 8px)!important;transform:none!important;display:flex!important;align-items:center;justify-content:center;}
+.adventure-workspace #game-container canvas,.adventure-workspace #game-container canvas.fullscreen {position:static!important;margin:0!important;transform:none!important;width:min(100%,calc((100dvh - var(--game-top) - var(--dock-bottom) - 8px) * 1.77777778))!important;height:auto!important;max-width:100%;max-height:none;aspect-ratio:16/9;}
+.adventure-workspace .adventure-hud {left:8px;top:var(--game-top);width:var(--rail-left);box-sizing:border-box;max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 8px);z-index:10000;}
+.adventure-workspace .draggable-dialog {box-sizing:border-box;min-width:0!important;max-width:calc(100vw - 16px);}
+.adventure-workspace [data-dialog-id="minimap-dialog"] .draggable-dialog-content {padding:0!important;overflow:hidden;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] .draggable-dialog-content>div {width:152px!important;height:152px!important;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] [data-resize-handle] {display:none;}
+.adventure-workspace[data-world-id^="darke-"] [data-dialog-id="minimap-dialog"] {display:none!important;}
+.adventure-workspace .draggable-dialog-content {min-height:0;overflow:auto;}
+.adventure-workspace [data-dialog-id="inventory-dialog"] {left:auto!important;right:8px;top:calc(var(--game-top) + 164px)!important;width:var(--rail-right);height:calc(100dvh - var(--game-top) - 172px);max-height:none!important;transform:none!important;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] {left:auto!important;right:8px;top:var(--game-top)!important;width:156px!important;height:156px!important;transform:none!important;overflow:hidden;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] canvas {max-width:152px!important;max-height:152px!important;}
+.adventure-workspace [data-dialog-id="chat-dialog"] {left:8px!important;top:auto!important;bottom:8px;width:320px;height:calc(var(--dock-bottom) - 8px);max-height:none!important;transform:none!important;}
+.adventure-workspace [data-dialog-id="chat-dialog"] .draggable-dialog-content {flex:1;padding:8px;}
+.adventure-workspace .chat-panel {width:100%!important;height:100%!important;gap:6px!important;}
+.adventure-workspace [data-dialog-id="cast-dialog"] {left:336px!important;top:auto!important;bottom:8px;width:160px;height:calc(var(--dock-bottom) - 8px);max-height:none!important;transform:none!important;}
+.adventure-workspace [data-dialog-id="cast-dialog"] .draggable-dialog-content {padding:10px;}
+.adventure-workspace .inventory-dialog-content {min-width:0;width:100%;}
+.adventure-workspace .inventory-equipped-area {grid-template-columns:repeat(4,minmax(0,1fr));padding:8px;}
+.adventure-workspace .inventory-slot {min-width:0;}
+@media(max-height:850px) and (min-width:901px) {
+ .adventure-workspace .inventory-slot {box-sizing:border-box;min-height:0;max-height:100%;}
+ .adventure-workspace .inventory-equipped-area {grid-template-rows:45px 35px 70px 60px 45px;gap:4px;padding:6px;}
+ .adventure-workspace [data-dialog-id="inventory-dialog"] .draggable-dialog-content {padding:8px;}
+}
+.adventure-workspace [data-dialog-id="main-dialog"] {left:calc(var(--rail-left) + 16px)!important;top:var(--game-top)!important;max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 16px)!important;z-index:20000!important;}
+.adventure-workspace .hotbar {position:fixed;left:504px;right:calc(var(--rail-right) + 16px);bottom:8px;height:calc(var(--dock-bottom) - 8px);box-sizing:border-box;overflow:auto;z-index:10000;background:#21170fef;border:1px solid #927341;border-radius:6px;padding:10px;color:#eee0c3;font:12px 'Trebuchet MS',sans-serif;}
+.hotbar header {display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px;color:#dfbd6b;}
+.hotbar button,.hotbar select {color:#eee0c3;background:#46351f;border:1px solid #927341;border-radius:3px;padding:5px;cursor:pointer;}
+.hotbar-slots {display:flex;gap:6px;flex-wrap:wrap;}
+.hotbar-slots button {flex:1;min-width:64px;display:flex;flex-direction:column;gap:4px;align-items:center;}
+.hotbar kbd {color:#fff;font-weight:bold;}
+.hotbar button:disabled {opacity:.45;cursor:default;}
+.hotbar p {margin:8px 0;font-size:11px;color:#cdbf9e;}
+.hotbar-config {display:grid;gap:5px;}
+.hotbar-config label {display:flex;gap:6px;align-items:center;justify-content:space-between;}
+.hotbar-config select {max-width:65%;}
+.item-comparison {width:250px;padding:12px;color:#eee0c3;font:12px 'Trebuchet MS',sans-serif;}
+.item-comparison h3 {margin:0 0 8px;color:#dfbd6b;}
+.item-comparison p {margin:6px 0;}
+.item-gain {color:#90e0a0;}.item-loss {color:#ff9990;}
+.mobile-game-tabs {display:none;}
+.adventure-workspace [data-docked] .draggable-dialog-header {cursor:default!important;}
+.adventure-workspace :is([data-dialog-id="camera-dialog"],[data-dialog-id="sound-dialog"],[data-dialog-id="performance-dialog"],[data-dialog-id="map-dialog"],[data-dialog-id="player-dialog"],[data-dialog-id="server-dialog"]) {left:calc(var(--rail-left) + 16px)!important;top:var(--game-top)!important;max-width:calc(100vw - var(--rail-left) - var(--rail-right) - 32px);max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 16px)!important;transform:none!important;}
+@media(max-width:1200px) {
+ .adventure-workspace {--rail-left:220px;--rail-right:290px;--dock-bottom:226px;}
+ .adventure-workspace [data-dialog-id="chat-dialog"] {width:252px;}
+ .adventure-workspace [data-dialog-id="cast-dialog"] {left:268px!important;width:140px;}
+ .adventure-workspace .hotbar {left:416px;}
+}
+/* Small screens use a scrollable dock rather than placing every panel over the map. */
+@media(max-width:900px) {
+ .adventure-workspace {--rail-left:0px;--rail-right:0px;--game-top:46px;--dock-bottom:45dvh;overflow:auto;}
+ .adventure-workspace #game-container {left:8px!important;width:calc(100vw - 16px)!important;}
+ .adventure-workspace .adventure-hud,.adventure-workspace [data-dialog-id="inventory-dialog"],.adventure-workspace [data-dialog-id="chat-dialog"],.adventure-workspace [data-dialog-id="cast-dialog"],.adventure-workspace .hotbar {display:none!important;top:calc(55dvh + 40px)!important;left:8px!important;right:8px;width:calc(100vw - 16px);height:calc(45dvh - 48px);max-height:calc(45dvh - 48px)!important;bottom:auto;}
+ .adventure-workspace:not([data-game-panel]) .adventure-hud,.adventure-workspace[data-game-panel="stats"] .adventure-hud {display:block!important;}
+ .adventure-workspace[data-game-panel="inventory"] [data-dialog-id="inventory-dialog"],.adventure-workspace[data-game-panel="chat"] [data-dialog-id="chat-dialog"],.adventure-workspace[data-game-panel="cast"] [data-dialog-id="cast-dialog"] {display:flex!important;}
+ .adventure-workspace[data-game-panel="hotbar"] .hotbar {display:block!important;}
+ .mobile-game-tabs {display:flex;position:fixed;left:8px;right:8px;top:55dvh;gap:4px;z-index:20001;}
+ .mobile-game-tabs button {flex:1;padding:8px 2px;background:#46351f;color:#eee0c3;border:1px solid #927341;}
+ .adventure-workspace [data-dialog-id="main-dialog"] {left:8px!important;}
+ .adventure-workspace [data-dialog-id="minimap-dialog"] {display:none!important;}
+}

@@ -271,7 +271,6 @@ export class GameWorld extends Scene {
     private inputManager: InputManager | undefined = undefined;
     /** Set of map objects that are currently colliding with the player */
     private collidingMapObjects: Set<GameAsset> = new Set();
-    private logoutCountdownSeconds: number | undefined = undefined;
 
     private readonly logoutCountdownChangedHandler = (payload: { secondsLeft?: number }): void => {
         runSafeSync('GameWorld:logoutCountdownChanged', () => {
@@ -353,6 +352,15 @@ export class GameWorld extends Scene {
         }
     };
 
+    /** Restarts the scene when a server-authoritative transfer was initiated outside the map UI (for example a shop service). */
+    private readonly serverWorldTransferHandler = (data: InitialGameWorldStateEventData) => {
+        if (!data.gameWorldId || data.gameWorldId === this.gameWorldId || this.pendingRequestedWorldChangeListener) return;
+        const initialGameWorldState = toRegistryInitialGameWorldState(data);
+        getGameStateManager(this.game).saveGameState();
+        setInitialGameWorldState(this.game, initialGameWorldState);
+        this.scene.restart({initialGameWorldState});
+    };
+
     constructor() {
         super('GameWorld');
         this.soundManager = new SoundManager(this);
@@ -403,6 +411,7 @@ export class GameWorld extends Scene {
             this.setupCameraStatsUpdateInterval();
             EventBus.on(OUT_UI_LOGOUT_COUNTDOWN_CHANGED, this.logoutCountdownChangedHandler);
             EventBus.on(PLAYER_ITEM_APPEARANCE_PREFETCH_REQUESTED, this.playerItemAppearancePrefetchHandler);
+            EventBus.on(INITIAL_GAME_WORLD_STATE_RECEIVED, this.serverWorldTransferHandler);
 
             this.events.once('shutdown', () => {
                 runSafeSync('GameWorld:shutdownEvent', () => this.shutdown());
@@ -1836,12 +1845,10 @@ export class GameWorld extends Scene {
     }
 
     private hideLogoutCountdownOverlay(): void {
-        this.logoutCountdownSeconds = undefined;
         EventBus.emit(NATIVE_OVERLAY_LOGOUT_COUNTDOWN_HIDDEN);
     }
 
     private showOrUpdateLogoutCountdownOverlay(secondsLeft: number): void {
-        this.logoutCountdownSeconds = secondsLeft;
         EventBus.emit(NATIVE_OVERLAY_LOGOUT_COUNTDOWN_UPDATED, {
             text: `Logging out in ${secondsLeft} seconds.`,
         });
@@ -3255,6 +3262,7 @@ export class GameWorld extends Scene {
     public shutdown() {
         runSafeSync('GameWorld:shutdown', () => {
             EventBus.off(OUT_UI_LOGOUT_COUNTDOWN_CHANGED, this.logoutCountdownChangedHandler);
+            EventBus.off(INITIAL_GAME_WORLD_STATE_RECEIVED, this.serverWorldTransferHandler);
             this.hideLogoutCountdownOverlay();
             EventBus.emit(OUT_UI_HOVER_GROUND_ITEM, false);
             EventBus.emit(OUT_UI_HOVER_GROUND_ITEM_INFO, undefined);

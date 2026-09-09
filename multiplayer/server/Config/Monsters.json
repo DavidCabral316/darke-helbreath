@@ -1,5 +1,59 @@
 [
   {
+    "id": 63,
+    "name": "Slime de entrenamiento",
+    "sprite": "slm",
+    "movementSpeed": 900,
+    "allegiance": 1,
+    "hp": 40,
+    "attackDamageMin": 2,
+    "attackDamageMax": 4,
+    "attackSpeed": 1600,
+    "respawnTime": 8000,
+    "chaseMaxDistance": 5
+  },
+  {
+    "id": 64,
+    "name": "Hormiga de entrenamiento",
+    "sprite": "ant",
+    "movementSpeed": 750,
+    "allegiance": 1,
+    "hp": 80,
+    "attackDamageMin": 4,
+    "attackDamageMax": 7,
+    "attackSpeed": 1400,
+    "respawnTime": 10000,
+    "chaseMaxDistance": 6
+  },
+  {
+    "id": 65,
+    "name": "Serpiente de entrenamiento",
+    "sprite": "amp",
+    "movementSpeed": 650,
+    "allegiance": 0,
+    "chaseDistance": 4,
+    "hp": 130,
+    "attackDamageMin": 7,
+    "attackDamageMax": 11,
+    "attackSpeed": 1200,
+    "respawnTime": 12000,
+    "chaseMaxDistance": 7
+  },
+  {
+    "id": 66,
+    "name": "Orco de entrenamiento",
+    "sprite": "orc",
+    "movementSpeed": 650,
+    "allegiance": 0,
+    "chaseDistance": 4,
+    "hp": 200,
+    "attackDamageMin": 11,
+    "attackDamageMax": 16,
+    "attackSpeed": 1200,
+    "respawnTime": 15000,
+    "chaseMaxDistance": 7
+  },
+  {
     "id": 0,
     "name": "Ettin",
     "sprite": "ettin",
@@ -10,19 +64,46 @@
     "id": 1,
     "name": "Slime",
     "sprite": "slm",
-    "movementSpeed": 800
+    "movementSpeed": 800,
+    "hp": 35,
+    "attackDamageMin": 2,
+    "attackDamageMax": 4,
+    "respawnTime": 7000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 2,
     "name": "Ant",
     "sprite": "ant",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 50,
+    "attackDamageMin": 3,
+    "attackDamageMax": 6,
+    "respawnTime": 8000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 3,
     "name": "Snake",
     "sprite": "amp",
-    "movementSpeed": 700
+    "movementSpeed": 700,
+    "hp": 70,
+    "attackDamageMin": 4,
+    "attackDamageMax": 8,
+    "respawnTime": 9000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 4,
@@ -34,7 +115,16 @@
     "id": 5,
     "name": "Dragon",
     "sprite": "barlog",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 35000,
+    "attackDamageMin": 320,
+    "attackDamageMax": 450,
+    "respawnTime": 120000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 6,
@@ -46,7 +136,16 @@
     "id": 7,
     "name": "Beholder",
     "sprite": "beholder",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 6500,
+    "attackDamageMin": 150,
+    "attackDamageMax": 210,
+    "respawnTime": 50000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 8,
@@ -77,7 +176,16 @@
     "name": "Clay Golem",
     "sprite": "cla",
     "movementSpeed": 700,
-    "attackType": 3
+    "attackType": 3,
+    "hp": 1200,
+    "attackDamageMin": 40,
+    "attackDamageMax": 65,
+    "respawnTime": 22000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 13,
@@ -89,7 +197,16 @@
     "id": 14,
     "name": "Cyclops",
     "sprite": "cyc",
-    "movementSpeed": 600
+    "movementSpeed": 600,
+    "hp": 1300,
+    "attackDamageMin": 50,
+    "attackDamageMax": 75,
+    "respawnTime": 24000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 15,
@@ -100,14 +217,17 @@
     "chaseMaxDistance": 8,
     "attackRange": 10,
     "attackSpeed": 700,
-    "attackDamageMin": 5,
-    "attackDamageMax": 15,
+    "attackDamageMin": 150,
+    "attackDamageMax": 220,
     "attackRecoveryTime": 700,
     "minIdleTime": 3000,
     "maxIdleTime": 5000,
     "attackType": 2,
     "attackStunDuration": 500,
-    "rangedAttack": true
+    "rangedAttack": true,
+    "hp": 8000,
+    "respawnTime": 55000,
+    "allegiance": 0
   },
   {
     "id": 16,
@@ -126,7 +246,16 @@
     "id": 18,
     "name": "Demon",
     "sprite": "demon",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 15000,
+    "attackDamageMin": 230,
+    "attackDamageMax": 320,
+    "respawnTime": 75000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 19,
@@ -138,7 +267,16 @@
     "id": 20,
     "name": "Frost",
     "sprite": "frost",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 7000,
+    "attackDamageMin": 145,
+    "attackDamageMax": 205,
+    "respawnTime": 50000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 21,
@@ -203,14 +341,16 @@
     "chaseMaxDistance": 8,
     "attackRange": 1,
     "attackSpeed": 700,
-    "attackDamageMin": 100,
-    "attackDamageMax": 200,
+    "attackDamageMin": 110,
+    "attackDamageMax": 155,
     "attackRecoveryTime": 700,
     "minIdleTime": 3000,
     "maxIdleTime": 5000,
     "attackType": 3,
     "attackStunDuration": 200,
-    "hp": 30
+    "hp": 4200,
+    "respawnTime": 40000,
+    "allegiance": 0
   },
   {
     "id": 29,
@@ -252,19 +392,46 @@
     "id": 32,
     "name": "Hellhound",
     "sprite": "helb",
-    "movementSpeed": 500
+    "movementSpeed": 520,
+    "hp": 5000,
+    "attackDamageMin": 130,
+    "attackDamageMax": 180,
+    "respawnTime": 45000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 33,
     "name": "Hellclaw",
     "sprite": "hellclaw",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 3500,
+    "attackDamageMin": 90,
+    "attackDamageMax": 125,
+    "respawnTime": 35000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 34,
     "name": "Ice Golem",
     "sprite": "icegolem",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 11000,
+    "attackDamageMin": 190,
+    "attackDamageMax": 270,
+    "respawnTime": 65000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 35,
@@ -276,7 +443,16 @@
     "id": 36,
     "name": "Master Mage Orc",
     "sprite": "mastermageorc",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 450,
+    "attackDamageMin": 24,
+    "attackDamageMax": 38,
+    "respawnTime": 18000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 37,
@@ -306,7 +482,16 @@
         "spellId": 1,
         "castProbability": 0.2
       }
-    ]
+    ],
+    "hp": 160,
+    "attackDamageMin": 10,
+    "attackDamageMax": 17,
+    "respawnTime": 11000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 41,
@@ -342,13 +527,31 @@
     "id": 46,
     "name": "Lich",
     "sprite": "liche",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 9500,
+    "attackDamageMin": 180,
+    "attackDamageMax": 250,
+    "respawnTime": 60000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 47,
     "name": "Ogre",
     "sprite": "orge",
-    "movementSpeed": 700
+    "movementSpeed": 700,
+    "hp": 550,
+    "attackDamageMin": 28,
+    "attackDamageMax": 40,
+    "respawnTime": 16000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 48,
@@ -366,13 +569,31 @@
     "id": 50,
     "name": "Scorpion",
     "sprite": "scp",
-    "movementSpeed": 600
+    "movementSpeed": 600,
+    "hp": 110,
+    "attackDamageMin": 7,
+    "attackDamageMax": 12,
+    "respawnTime": 10000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 51,
     "name": "Skeleton",
     "sprite": "ske",
-    "movementSpeed": 600
+    "movementSpeed": 600,
+    "hp": 220,
+    "attackDamageMin": 13,
+    "attackDamageMax": 22,
+    "respawnTime": 12000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 52,
@@ -395,19 +616,24 @@
       {
         "spellId": 14,
         "castProbability": 1
-      },{
+      },
+      {
         "spellId": 16,
         "castProbability": 1
-      }, {
+      },
+      {
         "spellId": 19,
         "castProbability": 1
-      }, {
+      },
+      {
         "spellId": 20,
         "castProbability": 1
-      }, {
+      },
+      {
         "spellId": 21,
         "castProbability": 1
-      }, {
+      },
+      {
         "spellId": 22,
         "castProbability": 1
       }
@@ -417,7 +643,16 @@
     "id": 53,
     "name": "Stalker",
     "sprite": "stalker",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 1900,
+    "attackDamageMin": 65,
+    "attackDamageMax": 90,
+    "respawnTime": 26000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 54,
@@ -447,7 +682,16 @@
     "id": 58,
     "name": "Troll",
     "sprite": "troll",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 2500,
+    "attackDamageMin": 80,
+    "attackDamageMax": 115,
+    "respawnTime": 30000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 59,
@@ -459,18 +703,45 @@
     "id": 60,
     "name": "Werewolf",
     "sprite": "werewolf",
-    "movementSpeed": 700
+    "movementSpeed": 700,
+    "hp": 850,
+    "attackDamageMin": 38,
+    "attackDamageMax": 55,
+    "respawnTime": 20000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 61,
     "name": "Zombie",
     "sprite": "zom",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 260,
+    "attackDamageMin": 16,
+    "attackDamageMax": 27,
+    "respawnTime": 12000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   },
   {
     "id": 62,
     "name": "Abaddon (incomplete)",
     "sprite": "yspro",
-    "movementSpeed": 220
+    "movementSpeed": 520,
+    "hp": 100000,
+    "attackDamageMin": 600,
+    "attackDamageMax": 850,
+    "respawnTime": 300000,
+    "attackSpeed": 1100,
+    "chaseDistance": 6,
+    "chaseMaxDistance": 10,
+    "attackRange": 1,
+    "allegiance": 0
   }
 ]

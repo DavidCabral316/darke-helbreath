@@ -3228,3 +3228,31 @@ export const ITEMS: Item[] = [
         itemSpriteIndexFemale: 0,
     }
 ];
+
+// Darke progression equipment reuses the original Helbreath silhouettes while
+// assigning each level band a distinct material colour. Keeping this generated
+// from a compact table makes all 80 variants share the proven classic sprite data.
+const DARKE_EQUIPMENT_TIERS = [
+    ['Hierro', 0x9aa0a6], ['Azur', 0x4d8dff], ['Esmeralda', 0x35b85a], ['Carmesí', 0xd84a4a],
+    ['Amatista', 0x9b59e6], ['Obsidiana', 0x55596b], ['Marfil', 0xefe6cf], ['Solar', 0xf4c542],
+    ['Astral', 0x52e5ff], ['Eclipse', 0xff7ae5],
+] as const;
+const DARKE_EQUIPMENT_BASES = [
+    [62, 'Espadón'], [4, 'Escudo'], [133, 'Coraza'], [129, 'Camisote'],
+    [137, 'Grebas'], [144, 'Yelmo'], [127, 'Botas'], [126, 'Capa'],
+] as const;
+for (const [tierIndex, [tierName, colour]] of DARKE_EQUIPMENT_TIERS.entries()) {
+    for (const [slotIndex, [baseId, slotName]] of DARKE_EQUIPMENT_BASES.entries()) {
+        const base = ITEMS.find((item) => item.id === baseId);
+        if (!base) continue;
+        ITEMS.push({
+            ...base,
+            id: 329 + tierIndex * DARKE_EQUIPMENT_BASES.length + slotIndex,
+            name: `${slotName} ${tierName}`,
+            effects: [
+                { effect: ItemEffect.TINT_INVENTORY, effectColor: colour },
+                { effect: ItemEffect.TINT_APPEARANCE, effectColor: colour },
+            ],
+        });
+    }
+}

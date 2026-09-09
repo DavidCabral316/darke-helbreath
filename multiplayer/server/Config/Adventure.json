@@ -1,0 +1,1380 @@
+{
+  "levelThresholds": [
+    0,
+    35,
+    190,
+    561,
+    1250,
+    2364,
+    4013,
+    6309,
+    9369,
+    13311,
+    18255,
+    24323,
+    31640,
+    40331,
+    50523,
+    62344,
+    75925,
+    91397,
+    108892,
+    128543,
+    150485,
+    174854,
+    201787,
+    231420,
+    263893,
+    299345,
+    337916,
+    379747,
+    424980,
+    473758,
+    526224,
+    582522,
+    642797,
+    707195,
+    775862,
+    848945,
+    926591,
+    1008948,
+    1096165,
+    1188392,
+    1285778,
+    1388474,
+    1496631,
+    1610400,
+    1729934,
+    1855385,
+    1986907,
+    2124653,
+    2268777,
+    2419434,
+    2576779,
+    2740968,
+    2912157,
+    3090502,
+    3276160,
+    3469289,
+    3670047,
+    3878592,
+    4095082,
+    4319677,
+    4552536,
+    4793819,
+    5043687,
+    5302300,
+    5569819,
+    5846406,
+    6132223,
+    6427432,
+    6732195,
+    7046675,
+    7371036,
+    7705442,
+    8050056,
+    8405043,
+    8770567,
+    9146794,
+    9533889,
+    9932017,
+    10341345,
+    10762039,
+    11194266,
+    11638192,
+    12093985,
+    12561813,
+    13041843,
+    13534244,
+    14039184,
+    14556832,
+    15087357,
+    15630928,
+    16187715,
+    16757889,
+    17341619,
+    17939076,
+    18550430,
+    19175853,
+    19815516,
+    20469591,
+    21138249,
+    21821663,
+    22520005,
+    23233448,
+    23962164,
+    24706327,
+    25466110,
+    26241687,
+    27033232,
+    27840919,
+    28664923,
+    29505418,
+    30362579,
+    31236581,
+    32127600,
+    33035811,
+    33961390,
+    34904513,
+    35865357,
+    36844098,
+    37840913,
+    38855978,
+    39889471,
+    40941570,
+    42012452,
+    43102295,
+    44211277,
+    45339577,
+    46487373,
+    47654844,
+    48842169,
+    50049527,
+    51277097,
+    52525059,
+    53793593,
+    55082878,
+    56393095,
+    57724425,
+    59077048,
+    60451145,
+    61846896,
+    63264483,
+    64704088,
+    66165892,
+    67650077,
+    69156825,
+    70686318,
+    72238738,
+    73814268,
+    75413091,
+    77035389,
+    78681346,
+    80351145,
+    82044970,
+    83763004,
+    85505431,
+    87272435,
+    89064201,
+    90880912,
+    92722754,
+    94589911,
+    96482568,
+    98400910,
+    100345122,
+    102315390,
+    104311900,
+    106334837,
+    108384387,
+    110460736,
+    112564071,
+    114694578,
+    116852444,
+    119037856,
+    121251000,
+    123492064,
+    125761235,
+    128058700,
+    130384647,
+    132739264,
+    135122739,
+    137535260,
+    139977015,
+    142448192,
+    144948981,
+    147479569,
+    150040146,
+    152630901,
+    155252023,
+    157903702,
+    160586126,
+    163299486,
+    166043971,
+    168819772,
+    171627078,
+    174466080,
+    177336968,
+    180239933,
+    183175165,
+    186142855,
+    189143195,
+    192176375,
+    195242587
+  ],
+  "pointsPerLevel": 3,
+  "monsters": {
+    "Slime de entrenamiento": {
+      "experience": 20,
+      "goldMin": 2,
+      "goldMax": 4,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.35,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Hormiga de entrenamiento": {
+      "experience": 40,
+      "goldMin": 4,
+      "goldMax": 7,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.3,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 165,
+          "chance": 0.12,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Serpiente de entrenamiento": {
+      "experience": 70,
+      "goldMin": 7,
+      "goldMax": 11,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.28,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 165,
+          "chance": 0.18,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Orco de entrenamiento": {
+      "experience": 110,
+      "goldMin": 11,
+      "goldMax": 17,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.3,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 165,
+          "chance": 0.2,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 128,
+          "chance": 0.02,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Slime": {
+      "experience": 18,
+      "goldMin": 1,
+      "goldMax": 3,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.08,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 208,
+          "chance": 0.2,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Ant": {
+      "experience": 28,
+      "goldMin": 2,
+      "goldMax": 5,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.1,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 181,
+          "chance": 0.16,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Snake": {
+      "experience": 42,
+      "goldMin": 3,
+      "goldMax": 7,
+      "drops": [
+        {
+          "itemId": 165,
+          "chance": 0.08,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 177,
+          "chance": 0.15,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Scorpion": {
+      "experience": 70,
+      "goldMin": 5,
+      "goldMax": 11,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.12,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 203,
+          "chance": 0.15,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Orc": {
+      "experience": 105,
+      "goldMin": 8,
+      "goldMax": 16,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.14,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 194,
+          "chance": 0.14,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 335,
+          "chance": 0.004,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Skeleton": {
+      "experience": 145,
+      "goldMin": 12,
+      "goldMax": 22,
+      "drops": [
+        {
+          "itemId": 165,
+          "chance": 0.13,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 207,
+          "chance": 0.18,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 334,
+          "chance": 0.004,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Zombie": {
+      "experience": 175,
+      "goldMin": 15,
+      "goldMax": 27,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.16,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 332,
+          "chance": 0.003,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Ogre": {
+      "experience": 360,
+      "goldMin": 28,
+      "goldMax": 48,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.18,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 197,
+          "chance": 0.16,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 331,
+          "chance": 0.006,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 329,
+          "chance": 0.004,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Master Mage Orc": {
+      "experience": 480,
+      "goldMin": 38,
+      "goldMax": 62,
+      "drops": [
+        {
+          "itemId": 165,
+          "chance": 0.22,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 340,
+          "chance": 0.004,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 344,
+          "chance": 0.003,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Werewolf": {
+      "experience": 720,
+      "goldMin": 58,
+      "goldMax": 92,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.2,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 257,
+          "chance": 0.18,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 339,
+          "chance": 0.004,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 341,
+          "chance": 0.003,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Cyclops": {
+      "experience": 1150,
+      "goldMin": 90,
+      "goldMax": 145,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.24,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 183,
+          "chance": 0.18,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 346,
+          "chance": 0.0035,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 350,
+          "chance": 0.003,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Stalker": {
+      "experience": 1800,
+      "goldMin": 145,
+      "goldMax": 230,
+      "drops": [
+        {
+          "itemId": 165,
+          "chance": 0.25,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 359,
+          "chance": 0.0025,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 360,
+          "chance": 0.002,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Hellclaw": {
+      "experience": 3200,
+      "goldMin": 260,
+      "goldMax": 410,
+      "drops": [
+        {
+          "itemId": 36,
+          "chance": 0.3,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 165,
+          "chance": 0.3,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 187,
+          "chance": 0.2,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 363,
+          "chance": 0.0018,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 361,
+          "chance": 0.0012,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Clay Golem": {
+      "experience": 2400,
+      "goldMin": 190,
+      "goldMax": 310,
+      "drops": [
+        {
+          "itemId": 193,
+          "chance": 0.25,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 347,
+          "chance": 0.0025,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Troll": {
+      "experience": 4200,
+      "goldMin": 340,
+      "goldMax": 540,
+      "drops": [
+        {
+          "itemId": 210,
+          "chance": 0.2,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 356,
+          "chance": 0.002,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Stone Golem": {
+      "experience": 6500,
+      "goldMin": 520,
+      "goldMax": 820,
+      "drops": [
+        {
+          "itemId": 209,
+          "chance": 0.25,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 362,
+          "chance": 0.0018,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Hellhound": {
+      "experience": 8500,
+      "goldMin": 680,
+      "goldMax": 1050,
+      "drops": [
+        {
+          "itemId": 367,
+          "chance": 0.0016,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Beholder": {
+      "experience": 12000,
+      "goldMin": 950,
+      "goldMax": 1450,
+      "drops": [
+        {
+          "itemId": 374,
+          "chance": 0.0014,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Lich": {
+      "experience": 18000,
+      "goldMin": 1450,
+      "goldMax": 2200,
+      "drops": [
+        {
+          "itemId": 380,
+          "chance": 0.0012,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 384,
+          "chance": 0.001,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Frost": {
+      "experience": 9000,
+      "goldMin": 720,
+      "goldMax": 1150,
+      "drops": [
+        {
+          "itemId": 375,
+          "chance": 0.0015,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Ice Golem": {
+      "experience": 14000,
+      "goldMin": 1100,
+      "goldMax": 1750,
+      "drops": [
+        {
+          "itemId": 378,
+          "chance": 0.0012,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Demon": {
+      "experience": 30000,
+      "goldMin": 2400,
+      "goldMax": 3600,
+      "drops": [
+        {
+          "itemId": 249,
+          "chance": 0.22,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 387,
+          "chance": 0.0009,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 385,
+          "chance": 0.0007,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Dark Elf": {
+      "experience": 22000,
+      "goldMin": 1750,
+      "goldMax": 2700,
+      "drops": [
+        {
+          "itemId": 377,
+          "chance": 0.001,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 381,
+          "chance": 0.001,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Dragon": {
+      "experience": 65000,
+      "goldMin": 5200,
+      "goldMax": 7800,
+      "drops": [
+        {
+          "itemId": 395,
+          "chance": 0.0007,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 393,
+          "chance": 0.0005,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    "Abaddon (incomplete)": {
+      "experience": 180000,
+      "goldMin": 14000,
+      "goldMax": 22000,
+      "drops": [
+        {
+          "itemId": 403,
+          "chance": 0.00035,
+          "min": 1,
+          "max": 1
+        },
+        {
+          "itemId": 401,
+          "chance": 0.00025,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    }
+  },
+  "equipment": {
+    "3": {
+      "damage": 5
+    },
+    "4": {
+      "defense": 6,
+      "level": 7
+    },
+    "5": {
+      "defense": 4,
+      "level": 4
+    },
+    "7": {
+      "defense": 2
+    },
+    "53": {
+      "damage": 9,
+      "level": 3
+    },
+    "54": {
+      "damage": 13,
+      "level": 5
+    },
+    "59": {
+      "damage": 18,
+      "level": 7
+    },
+    "125": {
+      "defense": 1,
+      "level": 4
+    },
+    "127": {
+      "defense": 1
+    },
+    "128": {
+      "defense": 1
+    },
+    "129": {
+      "defense": 2,
+      "level": 6
+    },
+    "130": {
+      "defense": 2,
+      "level": 2
+    },
+    "131": {
+      "defense": 3,
+      "level": 5
+    },
+    "133": {
+      "defense": 4,
+      "level": 8
+    },
+    "134": {
+      "defense": 1
+    },
+    "136": {
+      "defense": 2,
+      "level": 5
+    },
+    "137": {
+      "defense": 3,
+      "level": 8
+    },
+    "142": {
+      "defense": 1,
+      "magic": 3,
+      "mana": 15,
+      "level": 4
+    },
+    "143": {
+      "defense": 1,
+      "level": 3
+    },
+    "144": {
+      "defense": 2,
+      "level": 7
+    },
+    "152": {
+      "magic": 2,
+      "mana": 10,
+      "level": 3
+    },
+    "329": {
+      "damage": 14,
+      "level": 10
+    },
+    "330": {
+      "defense": 4,
+      "level": 10
+    },
+    "331": {
+      "defense": 5,
+      "level": 10
+    },
+    "332": {
+      "defense": 3,
+      "level": 10
+    },
+    "333": {
+      "defense": 4,
+      "level": 10
+    },
+    "334": {
+      "defense": 2,
+      "level": 10
+    },
+    "335": {
+      "defense": 1,
+      "level": 10
+    },
+    "336": {
+      "defense": 1,
+      "level": 10
+    },
+    "337": {
+      "damage": 27,
+      "level": 30
+    },
+    "338": {
+      "defense": 8,
+      "level": 30
+    },
+    "339": {
+      "defense": 9,
+      "level": 30
+    },
+    "340": {
+      "defense": 5,
+      "level": 30
+    },
+    "341": {
+      "defense": 7,
+      "level": 30
+    },
+    "342": {
+      "defense": 4,
+      "level": 30
+    },
+    "343": {
+      "defense": 2,
+      "level": 30
+    },
+    "344": {
+      "defense": 2,
+      "level": 30
+    },
+    "345": {
+      "damage": 40,
+      "level": 50
+    },
+    "346": {
+      "defense": 12,
+      "level": 50
+    },
+    "347": {
+      "defense": 13,
+      "level": 50
+    },
+    "348": {
+      "defense": 7,
+      "level": 50
+    },
+    "349": {
+      "defense": 10,
+      "level": 50
+    },
+    "350": {
+      "defense": 6,
+      "level": 50
+    },
+    "351": {
+      "defense": 3,
+      "level": 50
+    },
+    "352": {
+      "defense": 3,
+      "level": 50
+    },
+    "353": {
+      "damage": 53,
+      "level": 70
+    },
+    "354": {
+      "defense": 16,
+      "level": 70
+    },
+    "355": {
+      "defense": 17,
+      "level": 70
+    },
+    "356": {
+      "defense": 9,
+      "level": 70
+    },
+    "357": {
+      "defense": 13,
+      "level": 70
+    },
+    "358": {
+      "defense": 8,
+      "level": 70
+    },
+    "359": {
+      "defense": 4,
+      "level": 70
+    },
+    "360": {
+      "defense": 4,
+      "level": 70
+    },
+    "361": {
+      "damage": 66,
+      "level": 90
+    },
+    "362": {
+      "defense": 20,
+      "level": 90
+    },
+    "363": {
+      "defense": 21,
+      "level": 90
+    },
+    "364": {
+      "defense": 11,
+      "level": 90
+    },
+    "365": {
+      "defense": 16,
+      "level": 90
+    },
+    "366": {
+      "defense": 10,
+      "level": 90
+    },
+    "367": {
+      "defense": 5,
+      "level": 90
+    },
+    "368": {
+      "defense": 5,
+      "level": 90
+    },
+    "369": {
+      "damage": 79,
+      "level": 110
+    },
+    "370": {
+      "defense": 24,
+      "level": 110
+    },
+    "371": {
+      "defense": 25,
+      "level": 110
+    },
+    "372": {
+      "defense": 13,
+      "level": 110
+    },
+    "373": {
+      "defense": 19,
+      "level": 110
+    },
+    "374": {
+      "defense": 12,
+      "level": 110
+    },
+    "375": {
+      "defense": 6,
+      "level": 110
+    },
+    "376": {
+      "defense": 6,
+      "level": 110
+    },
+    "377": {
+      "damage": 92,
+      "level": 130
+    },
+    "378": {
+      "defense": 28,
+      "level": 130
+    },
+    "379": {
+      "defense": 29,
+      "level": 130
+    },
+    "380": {
+      "defense": 15,
+      "level": 130
+    },
+    "381": {
+      "defense": 22,
+      "level": 130
+    },
+    "382": {
+      "defense": 14,
+      "level": 130
+    },
+    "383": {
+      "defense": 7,
+      "level": 130
+    },
+    "384": {
+      "defense": 7,
+      "level": 130
+    },
+    "385": {
+      "damage": 105,
+      "level": 155
+    },
+    "386": {
+      "defense": 32,
+      "level": 155
+    },
+    "387": {
+      "defense": 33,
+      "level": 155
+    },
+    "388": {
+      "defense": 17,
+      "level": 155
+    },
+    "389": {
+      "defense": 25,
+      "level": 155
+    },
+    "390": {
+      "defense": 16,
+      "level": 155
+    },
+    "391": {
+      "defense": 8,
+      "level": 155
+    },
+    "392": {
+      "defense": 8,
+      "level": 155
+    },
+    "393": {
+      "damage": 118,
+      "level": 180
+    },
+    "394": {
+      "defense": 36,
+      "level": 180
+    },
+    "395": {
+      "defense": 37,
+      "level": 180
+    },
+    "396": {
+      "defense": 19,
+      "level": 180
+    },
+    "397": {
+      "defense": 28,
+      "level": 180
+    },
+    "398": {
+      "defense": 18,
+      "level": 180
+    },
+    "399": {
+      "defense": 9,
+      "level": 180
+    },
+    "400": {
+      "defense": 9,
+      "level": 180
+    },
+    "401": {
+      "damage": 131,
+      "level": 190
+    },
+    "402": {
+      "defense": 40,
+      "level": 190
+    },
+    "403": {
+      "defense": 41,
+      "level": 190
+    },
+    "404": {
+      "defense": 21,
+      "level": 190
+    },
+    "405": {
+      "defense": 31,
+      "level": 190
+    },
+    "406": {
+      "defense": 20,
+      "level": 190
+    },
+    "407": {
+      "defense": 10,
+      "level": 190
+    },
+    "408": {
+      "defense": 10,
+      "level": 190
+    }
+  },
+  "spells": {
+    "0": {
+      "level": 1,
+      "mana": 10,
+      "intelligence": 10,
+      "powerPercent": 100
+    },
+    "1": {
+      "level": 8,
+      "mana": 18,
+      "intelligence": 20,
+      "powerPercent": 108
+    },
+    "2": {
+      "level": 18,
+      "mana": 25,
+      "intelligence": 28,
+      "powerPercent": 118
+    },
+    "3": {
+      "level": 25,
+      "mana": 30,
+      "intelligence": 35,
+      "powerPercent": 110
+    },
+    "4": {
+      "level": 32,
+      "mana": 38,
+      "intelligence": 42,
+      "powerPercent": 105
+    },
+    "5": {
+      "level": 40,
+      "mana": 42,
+      "intelligence": 50,
+      "powerPercent": 125
+    },
+    "6": {
+      "level": 48,
+      "mana": 48,
+      "intelligence": 60,
+      "powerPercent": 132
+    },
+    "7": {
+      "level": 56,
+      "mana": 58,
+      "intelligence": 70,
+      "powerPercent": 110
+    },
+    "8": {
+      "level": 64,
+      "mana": 65,
+      "intelligence": 80,
+      "powerPercent": 112
+    },
+    "9": {
+      "level": 72,
+      "mana": 72,
+      "intelligence": 90,
+      "powerPercent": 120
+    },
+    "10": {
+      "level": 80,
+      "mana": 80,
+      "intelligence": 100,
+      "powerPercent": 140
+    },
+    "11": {
+      "level": 90,
+      "mana": 88,
+      "intelligence": 112,
+      "powerPercent": 150
+    },
+    "12": {
+      "level": 100,
+      "mana": 98,
+      "intelligence": 125,
+      "powerPercent": 145
+    },
+    "13": {
+      "level": 110,
+      "mana": 110,
+      "intelligence": 138,
+      "powerPercent": 135
+    },
+    "14": {
+      "level": 120,
+      "mana": 122,
+      "intelligence": 150,
+      "powerPercent": 155
+    },
+    "15": {
+      "level": 130,
+      "mana": 130,
+      "intelligence": 160,
+      "powerPercent": 100
+    },
+    "16": {
+      "level": 140,
+      "mana": 145,
+      "intelligence": 170,
+      "powerPercent": 165
+    },
+    "17": {
+      "level": 150,
+      "mana": 160,
+      "intelligence": 180,
+      "powerPercent": 160
+    },
+    "18": {
+      "level": 160,
+      "mana": 175,
+      "intelligence": 190,
+      "powerPercent": 178
+    },
+    "19": {
+      "level": 170,
+      "mana": 190,
+      "intelligence": 205,
+      "powerPercent": 195
+    },
+    "20": {
+      "level": 178,
+      "mana": 210,
+      "intelligence": 220,
+      "powerPercent": 185
+    },
+    "21": {
+      "level": 184,
+      "mana": 230,
+      "intelligence": 235,
+      "powerPercent": 205
+    },
+    "22": {
+      "level": 188,
+      "mana": 250,
+      "intelligence": 245,
+      "powerPercent": 215
+    },
+    "23": {
+      "level": 192,
+      "mana": 290,
+      "intelligence": 260,
+      "powerPercent": 225
+    },
+    "24": {
+      "level": 95,
+      "mana": 90,
+      "intelligence": 120,
+      "powerPercent": 100
+    },
+    "25": {
+      "level": 115,
+      "mana": 110,
+      "intelligence": 140,
+      "powerPercent": 100
+    }
+  }
+}

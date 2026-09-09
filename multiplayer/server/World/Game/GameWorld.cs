@@ -108,7 +108,7 @@ public struct GameWorldRef {
 /// <summary>
 /// Single map instance: owns players, occupancy, spatial index, and inbound message mailbox. Mutated only on its assigned <see cref="WorldWorker"/> thread.
 /// </summary>
-public sealed class GameWorld : IWorkerWorld {
+public sealed partial class GameWorld : IWorkerWorld {
     private const int TeleportValidationRadius = 3;
     private readonly Channel<GameWorldMessage> incomingMessages;
     private readonly Dictionary<Guid, GameWorldPlayer> playersBySessionId = new();
@@ -626,6 +626,12 @@ public sealed class GameWorld : IWorkerWorld {
         }
 
         switch (message.Message.PayloadCase) {
+            case ClientMessage.PayloadOneofCase.EconomyRequest:
+                Economy.Handle(gameWorldRef, playerConnection, message.Message.EconomyRequest);
+                break;
+            case ClientMessage.PayloadOneofCase.AllocateAttributeRequest:
+                Adventure.Allocate(gameWorldRef, playerConnection, message.Message.AllocateAttributeRequest.Attribute);
+                break;
             case ClientMessage.PayloadOneofCase.PingRequest:
                 HandlePingRequest(playerConnection, message.Message.PingRequest);
                 break;
@@ -820,7 +826,9 @@ public sealed class GameWorld : IWorkerWorld {
         }
 
         var maxRadius = Math.Max(occupancyTracker.SizeX, occupancyTracker.SizeY);
-        var loc = Location.FindNearestFreeLocation(occupancyTracker.IsFreeAndNotTeleportCell, player.PosX, player.PosY, maxRadius);
+        var loc = Location.FindNearestFreeLocation(occupancyTracker.IsFreeAndNotTeleportCell,
+            id == Adventure.TrainingWorld ? Adventure.SpawnX : occupancyTracker.SizeX / 2,
+            id == Adventure.TrainingWorld ? Adventure.SpawnY : occupancyTracker.SizeY / 2, maxRadius);
         if (!loc.HasValue) {
             Console.WriteLine($"[GameWorld:{id}] Resurrect failed: no free cell near ({player.PosX},{player.PosY}) for player {player.PlayerId}.");
             return;
@@ -833,6 +841,9 @@ public sealed class GameWorld : IWorkerWorld {
         occupancyTracker.SetOccupied(rx, ry);
         Movement.SetPlayerPosition(gameWorldRef, player, rx, ry);
         player.ApplyResurrection();
+        player.SetSpawnProtection(true);
+        var resurrectedSession = player.SessionId;
+        scheduler.SetTimeout(10000, () => { if (TryGetPlayerBySessionId(resurrectedSession, out var current)) Spawn.DisableSpawnProtectionAndNotify(gameWorldRef, current); });
         Movement.SyncPlayerVisibilityAfterMovement(
             gameWorldRef,
             player,
@@ -844,7 +855,10 @@ public sealed class GameWorld : IWorkerWorld {
         var resMsg = NetworkManager.CreatePlayerResurrected(player.PlayerId, rx, ry, player.Hp, player.MaxHp);
         foreach (var recipient in gameWorldRef.PlayerSpatialGrid.GetNearbyPlayers(rx, ry, excludeDisconnected: true)) {
             NetworkManager.SendToPlayer(recipient, resMsg);
+            NetworkManager.SendToPlayer(recipient, NetworkManager.CreateSpawnProtectionEnabled(player.PlayerId));
         }
+        Adventure.Send(gameWorldRef, player, "Volviste al refugio. Conservás tu experiencia y tus objetos.");
+        Adventure.Checkpoint(gameWorldRef, player);
     }
 
     private void HandleChangePlayerAttackStunDuration(GameWorldPlayer player, ChangePlayerAttackStunDurationRequest request) {
@@ -897,14 +911,25 @@ public sealed class GameWorld : IWorkerWorld {
             return;
         }
 
+        if (!groundStateTracker.CanDropAt(player.PosX, player.PosY)) { Adventure.Send(gameWorldRef, player, "No hay lugar para más objetos en esta casilla."); return; }
         if (!Inventory.TryRemoveBagItemForGroundDrop(gameWorldRef, player, request.ItemUid, out var droppedItem) || droppedItem is null) {
             return;
         }
+        // Commit removal before another player can pick it up. On database failure,
+        // restore the bag in memory and never expose a potentially duplicated ground item.
+        if (!Adventure.Checkpoint(gameWorldRef, player)) {
+            Inventory.TryAddGroundItemToBag(gameWorldRef, player, GroundItemState.FromInventoryItem(droppedItem, player.PosX, player.PosY));
+            Adventure.Checkpoint(gameWorldRef, player);
+            Adventure.Send(gameWorldRef, player, "No se soltó el objeto: el guardado no pudo confirmarse."); return;
+        }
         if (!groundStateTracker.TryAddDroppedItem(droppedItem, player.PosX, player.PosY, out var previousTopItem, out var addedItem) || addedItem is null) {
+            Inventory.TryAddGroundItemToBag(gameWorldRef, player, GroundItemState.FromInventoryItem(droppedItem, player.PosX, player.PosY));
+            Adventure.Checkpoint(gameWorldRef, player);
             return;
         }
 
         GroundStateVisibility.BroadcastGroundItemTopStateChanged(gameWorldRef, previousTopItem, addedItem);
+        Adventure.Checkpoint(gameWorldRef, player);
     }
 
     /// <summary>Authoritative pickup: locks out other actions for animation ms minus ping variance; fans out <see cref="Mmorpg.Network.PlayerPickupPerformed"/> to nearby observers (excluding the actor).</summary>
@@ -932,20 +957,26 @@ public sealed class GameWorld : IWorkerWorld {
     }
 
     /// <summary>Moves the current-cell top-most ground item into the player's bag and reveals the next stack entry if present.</summary>
-    /// <remarks>Ground removal and bag add are separate steps: they are not atomic and are not transactional. If a later step fails after an earlier one succeeded, the stack can be lost. Keep this in mind for any future changes here.</remarks>
+    /// <remarks>Bag validation/add occurs before ground removal, on the same world worker without yielding.</remarks>
     private void HandlePlayerItemPickupRequested(GameWorldPlayer player) {
         if (player.IsDead) {
             return;
         }
 
-        if (!groundStateTracker.TryRemoveTopDroppedItem(player.PosX, player.PosY, out var removedItem, out var revealedTopItem) || removedItem is null) {
+        if (!groundStateTracker.TryGetTopGroundItemAtCell(player.PosX, player.PosY, out var removedItem)) {
             return;
+        }
+        if (removedItem.OwnerKey is not null && removedItem.OwnerKey != player.PersistenceKey && removedItem.ReservedUntil > DateTimeOffset.UtcNow) {
+            Adventure.Send(gameWorldRef, player, "Ese botín está reservado temporalmente para otro aventurero."); return;
         }
         if (!Inventory.TryAddGroundItemToBag(gameWorldRef, player, removedItem)) {
+            Adventure.Send(gameWorldRef, player, "No se pudo recoger el objeto. Sigue en el suelo.");
             return;
         }
-
+        groundStateTracker.TryRemoveTopDroppedItem(player.PosX, player.PosY, out _, out var revealedTopItem);
         GroundStateVisibility.BroadcastGroundItemTopStateChanged(gameWorldRef, removedItem, revealedTopItem);
+        Adventure.Send(gameWorldRef, player, "Objeto recogido. Abrí el inventario para usarlo o equiparlo.");
+        Adventure.Checkpoint(gameWorldRef, player);
     }
 
     /// <summary>Authoritative bow stance (peace mode, ceremonial): valid grid direction; locks out other actions; fans out <see cref="Mmorpg.Network.PlayerBowStancePerformed"/> to nearby observers (excluding the actor).</summary>
@@ -1107,13 +1138,17 @@ public sealed class GameWorld : IWorkerWorld {
     }
 
     private void HandleWorldChangeRequest(GameWorldPlayer player, WorldChangeRequest request) {
+        Console.WriteLine($"[GameWorld:{id}] World change requested by '{player.PlayerId}': current='{request.GameWorldId}', target='{request.WorldId}', validate={request.ValidateTeleport}, pos=({player.PosX},{player.PosY}).");
         if (player.IsDead) {
+            Console.WriteLine($"[GameWorld:{id}] Ignored world change for dead player '{player.PlayerId}'.");
             return;
         }
         if (player.IsPickupOrBowStanceLockoutActive(DateTimeOffset.UtcNow)) {
+            Console.WriteLine($"[GameWorld:{id}] Ignored world change during action lockout for player '{player.PlayerId}'.");
             return;
         }
         if (!IsRequestForCurrentWorld(request.GameWorldId)) {
+            Console.WriteLine($"[GameWorld:{id}] Ignored stale world change from '{request.GameWorldId}' for player '{player.PlayerId}'.");
             return;
         }
         if (string.IsNullOrWhiteSpace(request.WorldId) ||
@@ -1222,6 +1257,15 @@ public sealed class GameWorld : IWorkerWorld {
     private void OnWorldTick() {
         scheduler.TriggerDueItems();
         var now = DateTimeOffset.UtcNow;
+        if (now >= nextAdventureTick) {
+            nextAdventureTick = now.AddSeconds(1);
+            foreach (var player in playersBySessionId.Values) {
+                if (player.Disconnected) continue;
+                player.RecoverResources(Adventure.IsSanctuary(gameWorldRef, player));
+                Adventure.Send(gameWorldRef, player);
+                NetworkManager.SendToPlayer(player, NetworkManager.CreateHpUpdated(player.Hp, player.MaxHp));
+            }
+        }
         var profileMonsterAi = settings.Debug.ProfileMonstersAILoop;
         if (monstersByMonsterId.Count > 0) {
             if (profileMonsterAi) {

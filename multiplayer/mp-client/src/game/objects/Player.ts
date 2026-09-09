@@ -4,7 +4,7 @@ import { Direction, getDistance, getDirectionOffset, getNextDirection, convertPi
 import type { HBMap } from '../assets/HBMap';
 import type { Monster } from './Monster';
 import { ShadowManager } from '../../utils/ShadowManager';
-import { DEFAULT_PLAYER_ATTACK_RANGE, HIGH_DEPTH, PLAYER_HEALTH_BAR_HEIGHT, PLAYER_HEALTH_BAR_WIDTH } from '../../Config';
+import { DEFAULT_PLAYER_ATTACK_RANGE, PLAYER_HEALTH_BAR_HEIGHT, PLAYER_HEALTH_BAR_WIDTH } from '../../Config';
 import { TILE_SIZE } from '../assets/HBMap';
 import { CriticalStrikeProjectile } from '../effects/CriticalStrikeProjectile';
 import { ArrowProjectile } from '../effects/ArrowProjectile';
@@ -16,8 +16,9 @@ import { getEffectByKey } from '../../constants/Effects';
 import { SoundManager } from '../../utils/SoundManager';
 import { mapDialogStore } from '../../ui/store/MapDialog.store';
 import { playerDialogStore } from '../../ui/store/PlayerDialog.store';
-import { PLAYER_RUNNING, PLAYER_WALKING, PLAYER_MELEE_ATTACK, PLAYER_TAKE_UNARMED_DAMAGE, PLAYER_CAST, SPELL_CAST_FAILED, MALE_CRITICAL_ATTACK, FEMALE_CRITICAL_ATTACK, MALE_DEATH, FEMALE_DEATH, MALE_RESET_POSITION, FEMALE_RESET_POSITION } from '../../constants/SoundFileNames';
+import { PLAYER_RUNNING, PLAYER_WALKING, PLAYER_MELEE_ATTACK, PLAYER_CAST, SPELL_CAST_FAILED, MALE_CRITICAL_ATTACK, FEMALE_CRITICAL_ATTACK, MALE_DEATH, FEMALE_DEATH, MALE_RESET_POSITION, FEMALE_RESET_POSITION, MALE_TAKE_DAMAGE, FEMALE_TAKE_DAMAGE } from '../../constants/SoundFileNames';
 import { EventBus } from '../EventBus';
+import { CHAT_MESSAGE_RECEIVED } from '../../constants/EventNames';
 import { PLAYER_POSITION_CHANGED, TILE_OCCUPANCY_REAPPLY_REQUESTED, OUT_UI_PLAYER_DIED, OUT_UI_CAST_STARTED, OUT_UI_CAST_READY, OUT_UI_CAST_REMOVED, PLAYER_CAST_ANIMATION_STARTED, PLAYER_CONFIRM_SPELL_TARGET, EQUIP_ITEM, IN_UI_CHANGE_GENDER, IN_UI_CHANGE_SKIN_COLOR, IN_UI_CHANGE_UNDERWEAR_COLOR, IN_UI_CHANGE_HAIR_STYLE, NATIVE_OVERLAY_HEALTH_BAR_HIDDEN, NATIVE_OVERLAY_HEALTH_BAR_UPDATED } from '../../constants/EventNames';
 import { AttackType, Gender, MonsterAttackType, SkinColor, TemporaryEffectType } from '../../Types';
 import { calculateAnimationDuration, calculateFrameRateFromDuration } from '../../utils/AnimationUtils';
@@ -57,6 +58,17 @@ function attackTypeFromNetworkValue(value: number): AttackType {
  */
 
 export class Player extends GameObject {
+    private speech?: Phaser.GameObjects.Text;
+    private speechUntil = 0;
+    private readonly onSpeech = (entry: {senderCharacterName:string;message:string}) => {
+        if (entry.senderCharacterName !== this.getCharacterName()) return;
+        this.speech?.destroy();
+        this.speech = this.scene.add.text(this.getAnimatedPixelX(), this.getAnimatedPixelY()-88, entry.message.slice(0,256), {
+            fontFamily:'Trebuchet MS, sans-serif',fontSize:'14px',color:'#fff4d6',backgroundColor:'#17120d',
+            stroke:'#17120d',strokeThickness:2,align:'center',wordWrap:{width:220,useAdvancedWrap:true},padding:{x:8,y:5},
+        }).setResolution(2).setOrigin(.5,1).setDepth(1000000);
+        this.speechUntil = performance.now()+Math.min(8000,4000+entry.message.length*20);
+    };
     private readonly appearanceManager: PlayerAppearanceManager;
     private readonly isLocalPlayer: boolean;
     private readonly movement = new PlayerMovementManager();
@@ -260,6 +272,7 @@ export class Player extends GameObject {
         });
 
         this.isLocalPlayer = isLocalPlayer;
+        EventBus.on(CHAT_MESSAGE_RECEIVED,this.onSpeech);
         if (!isLocalPlayer) {
             this.autoSwitchToIdle = false;
         }
@@ -1510,6 +1523,12 @@ export class Player extends GameObject {
             return;
         }
 
+        // Ordinary hits also use Helbreath's existing C5 impact sound.
+        if (attackType === MonsterAttackType.NoInterrupt && damage > 0) {
+            const spatial = this.isLocalPlayer ? undefined : computeOtherPlayerSpatialConfig(this.scene.game,this.worldX,this.worldY,this.offsetX,this.offsetY,TILE_SIZE);
+            this.soundTracker.playOnce(this.getTakeDamageSound(),undefined,spatial);
+        }
+
         const hasKnockback =
             attackType === MonsterAttackType.Knockback &&
             knockbackDurationMs !== undefined &&
@@ -1522,7 +1541,7 @@ export class Player extends GameObject {
 
         if (hasKnockback) {
             if (this.isLocalPlayer) {
-                this.soundTracker.playOnce(PLAYER_TAKE_UNARMED_DAMAGE);
+                this.soundTracker.playOnce(this.getTakeDamageSound());
             } else {
                 const spatialConfig = computeOtherPlayerSpatialConfig(
                     this.scene.game,
@@ -1532,7 +1551,7 @@ export class Player extends GameObject {
                     this.offsetY,
                     TILE_SIZE,
                 );
-                this.soundTracker.playOnce(PLAYER_TAKE_UNARMED_DAMAGE, undefined, spatialConfig);
+                this.soundTracker.playOnce(this.getTakeDamageSound(), undefined, spatialConfig);
             }
             this.applyMonsterKnockback(stunDurationMs, knockbackDurationMs, destX, destY, knockbackFromX, knockbackFromY);
             return;
@@ -1540,7 +1559,7 @@ export class Player extends GameObject {
 
         if (playsInterruptAnimation) {
             if (this.isLocalPlayer) {
-                this.soundTracker.playOnce(PLAYER_TAKE_UNARMED_DAMAGE);
+                this.soundTracker.playOnce(this.getTakeDamageSound());
             } else {
                 const spatialConfig = computeOtherPlayerSpatialConfig(
                     this.scene.game,
@@ -1550,7 +1569,7 @@ export class Player extends GameObject {
                     this.offsetY,
                     TILE_SIZE,
                 );
-                this.soundTracker.playOnce(PLAYER_TAKE_UNARMED_DAMAGE, undefined, spatialConfig);
+                this.soundTracker.playOnce(this.getTakeDamageSound(), undefined, spatialConfig);
             }
             if (attackType === MonsterAttackType.Interrupt) {
                 this.applyInterruptDamage(0);
@@ -1661,6 +1680,10 @@ export class Player extends GameObject {
 
     public getGender(): Gender {
         return this.appearanceManager.getGender();
+    }
+
+    private getTakeDamageSound(): string {
+        return this.getGender() === Gender.FEMALE ? FEMALE_TAKE_DAMAGE : MALE_TAKE_DAMAGE;
     }
 
     /**
@@ -2453,6 +2476,11 @@ export class Player extends GameObject {
      * Overrides update to handle attack and take damage animation completion.
      */
     public override update(delta: number): void {
+        if(this.speech){
+            const remaining=this.speechUntil-performance.now();
+            if(remaining<=0){this.speech.destroy();this.speech=undefined;}
+            else this.speech.setPosition(this.getAnimatedPixelX(),this.getAnimatedPixelY()-88).setAlpha(Math.min(1,remaining/700));
+        }
         if (this.dead) {
             this.hideHealthBar();
             const accessoryAssetIndex = this.appearanceManager.getAccessoryAssetIndex();
@@ -2940,6 +2968,8 @@ export class Player extends GameObject {
      * Destroys the player and all associated resources including the shadow sprite.
      */
     public destroy(): void {
+        EventBus.off(CHAT_MESSAGE_RECEIVED,this.onSpeech);
+        this.speech?.destroy();this.speech=undefined;
         if (this.equipItemHandler) {
             EventBus.off(EQUIP_ITEM, this.equipItemHandler);
         }

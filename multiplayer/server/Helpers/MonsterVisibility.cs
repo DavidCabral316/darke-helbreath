@@ -202,6 +202,8 @@ public static class MonsterVisibility {
         int destY = -1,
         int? knockbackFromX = null,
         int? knockbackFromY = null) {
+        if (!wr.World.TryGetConnectedPlayerById(targetPlayerId, out var victim) || Adventure.IsSanctuary(wr, victim)) return;
+        damage = Math.Max(1, damage - victim.Defense);
         var combatMessage = NetworkManager.CreatePlayerReceiveDamage(
             targetPlayerId,
             damage,
@@ -240,6 +242,9 @@ public static class MonsterVisibility {
         int destY = -1,
         int? knockbackFromX = null,
         int? knockbackFromY = null) {
+        if (wr.WorldId == Adventure.TrainingWorld) return; // PvE-only first adventure, including spell damage.
+        if (!wr.World.TryGetConnectedPlayerById(targetPlayerId, out var victim)) return;
+        damage = Math.Max(1, damage - victim.Defense);
         var combatMessage = NetworkManager.CreatePlayerTakeDamage(
             targetPlayerId,
             damage,
@@ -302,6 +307,7 @@ public static class MonsterVisibility {
         }
 
         NetworkManager.SendToPlayer(target, NetworkManager.CreateHpUpdated(target.Hp, target.MaxHp));
+        Adventure.Send(wr, target);
         if (target.IsDead) {
             wr.World.HandlePlayerDeath(wr, target);
         }

@@ -34,6 +34,10 @@ public static class Casting {
         if (!spellsById.TryGetValue(request.SpellId, out var spell)) {
             return;
         }
+        if (!player.CanUseSpell(request.SpellId) || Adventure.IsSanctuary(wr, player)) {
+            NetworkManager.SendToPlayer(player, NetworkManager.CreateSpellCastFailed());
+            Adventure.Send(wr, player, "Hechizo no disponible, maná insuficiente o zona segura."); return;
+        }
 
         if (player.SpawnProtection) {
             Spawn.DisableSpawnProtectionAndNotify(wr, player);
@@ -115,6 +119,10 @@ public static class Casting {
             return;
         }
 
+        if (Adventure.IsSanctuary(wr, player) || !player.SpendSpellMana(spell.Id)) {
+            player.ClearRequestedSpell(); NetworkManager.SendToPlayer(player, NetworkManager.CreateSpellCastFailed()); return;
+        }
+        Adventure.Send(wr, player);
         player.ClearRequestedSpell();
         TemporaryEffects.BreakInvisibilityIfPresent(wr, player);
 
@@ -325,7 +333,7 @@ public static class Casting {
                 continue;
             }
 
-            Combat.ApplyPlayerDamageToPlayer(wr, caster, targetPlayer, attackType);
+            Combat.ApplyPlayerDamageToPlayer(wr, caster, targetPlayer, attackType, spellId);
             TemporaryEffects.ApplySpellTemporaryEffectsOnHit(wr, spell, targetPlayer);
         }
 
@@ -334,7 +342,7 @@ public static class Casting {
                 continue;
             }
 
-            Combat.ApplyPlayerDamageToMonster(wr, caster, targetMonster, attackType);
+            Combat.ApplyPlayerDamageToMonster(wr, caster, targetMonster, attackType, spellId);
             TemporaryEffects.ApplySpellTemporaryEffectsOnHit(wr, spell, targetMonster);
         }
     }
@@ -356,7 +364,7 @@ public static class Casting {
                 continue;
             }
 
-            Combat.ApplyPlayerDamageToPlayer(wr, caster, targetPlayer, attackType);
+            Combat.ApplyPlayerDamageToPlayer(wr, caster, targetPlayer, attackType, spell.Id);
             TemporaryEffects.ApplySpellTemporaryEffectsOnHit(wr, spell, targetPlayer);
         }
 
@@ -365,7 +373,7 @@ public static class Casting {
                 continue;
             }
 
-            Combat.ApplyPlayerDamageToMonster(wr, caster, targetMonster, attackType);
+            Combat.ApplyPlayerDamageToMonster(wr, caster, targetMonster, attackType, spell.Id);
             TemporaryEffects.ApplySpellTemporaryEffectsOnHit(wr, spell, targetMonster);
         }
     }
@@ -453,7 +461,7 @@ public static class Casting {
                         group,
                         tickRateMs,
                         durationMs,
-                        caster.Damage,
+                        caster.MagicDamageForSpell(spell.Id),
                         resolvedAttackType,
                         out var createdEffect) ||
                     createdEffect is null) {

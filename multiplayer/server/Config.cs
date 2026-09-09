@@ -160,7 +160,7 @@ public static class Config {
         var byId = monsters.ToDictionary(m => m.Id);
         var bySprite = monsters
             .GroupBy(m => m.Sprite.Trim(), StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+            .ToDictionary(g => g.Key, g => g.OrderBy(m => m.Id).First(), StringComparer.OrdinalIgnoreCase);
         return (bySprite, byId);
     }
 

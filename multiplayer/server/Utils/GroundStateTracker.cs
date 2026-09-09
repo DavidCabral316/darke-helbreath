@@ -92,6 +92,8 @@ public sealed class GroundEffectState {
 
 /// <summary>One dropped inventory item stack entry on the map; only the newest entry on a cell is visible to clients.</summary>
 public sealed class GroundItemState {
+    public string? OwnerKey { get; init; }
+    public DateTimeOffset ReservedUntil { get; init; }
     public int ItemId { get; }
     public long ItemUid { get; }
     public int Quantity { get; }
@@ -344,9 +346,16 @@ public sealed class GroundStateTracker {
 
     public bool TryAddDroppedItem(InventoryItemState item, int posX, int posY, out GroundItemState? previousTopItem, out GroundItemState? addedItem) {
         ArgumentNullException.ThrowIfNull(item);
+        return TryAddGroundItem(GroundItemState.FromInventoryItem(item, posX, posY), out previousTopItem, out addedItem);
+    }
+
+    public bool CanDropAt(int x, int y) => IsWithinBounds(x, y) && droppedItemsByCell[GetIndex(x, y)]?.IsFull != true;
+
+    public bool TryAddGroundItem(GroundItemState item, out GroundItemState? previousTopItem, out GroundItemState? addedItem) {
+        var posX = item.PosX; var posY = item.PosY;
         previousTopItem = null;
         addedItem = null;
-        if (!IsWithinBounds(posX, posY)) {
+        if (!CanDropAt(posX, posY)) {
             return false;
         }
 
@@ -362,11 +371,25 @@ public sealed class GroundStateTracker {
             activeTopGroundItemsById.Remove(currentTopItem.ItemUid);
         }
 
-        addedItem = GroundItemState.FromInventoryItem(item, posX, posY);
+        addedItem = item;
         stack.Add(addedItem, out _);
         activeTopGroundItemsById[addedItem.ItemUid] = addedItem;
         EnsureCellTracked(index, posX, posY);
         return true;
+    }
+
+    public bool RemoveDroppedItem(long uid, int x, int y, out GroundItemState? previousTop, out GroundItemState? nextTop) {
+        previousTop = null; nextTop = null;
+        if (!IsWithinBounds(x, y)) return false;
+        var stack = droppedItemsByCell[GetIndex(x, y)];
+        if (stack is null || !stack.TryPeekNewest(out previousTop)) return false;
+        var retained = new List<GroundItemState>(); var found = false;
+        while (stack.TryRemoveNewest(out var item)) { if (item.ItemUid == uid) found = true; else retained.Add(item); }
+        for (var i = retained.Count - 1; i >= 0; i--) stack.Add(retained[i], out _);
+        activeTopGroundItemsById.Remove(previousTop.ItemUid);
+        if (stack.TryPeekNewest(out nextTop)) activeTopGroundItemsById[nextTop.ItemUid] = nextTop;
+        else { droppedItemsByCell[GetIndex(x, y)] = null; CleanupCellIfEmpty(GetIndex(x, y)); }
+        return found;
     }
 
     public bool TryRemoveTopDroppedItem(int posX, int posY, out GroundItemState? removedItem, out GroundItemState? revealedTopItem) {

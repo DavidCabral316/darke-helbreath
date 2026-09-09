@@ -67,6 +67,8 @@ public class GameWorldMonster : GameWorldActionableEntity {
 
     public Guid MonsterGuid { get; }
     public long MonsterId { get; }
+    public Dictionary<long, long> Contributions { get; } = new();
+    public bool RewardClaimed { get; set; }
 
     protected override TemporaryEffectEntityKind EntityKind => TemporaryEffectEntityKind.Monster;
     protected override long EntityId => MonsterId;

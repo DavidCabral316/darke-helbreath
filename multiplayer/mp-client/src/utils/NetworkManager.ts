@@ -1,3 +1,4 @@
+import { publishAdventure, disconnectAdventure } from '../adventure/store';
 import {
     CastAoeSpell,
     CastDirectionalAoeSpell,
@@ -60,6 +61,7 @@ import {
     WeatherMode as WeatherModeProto,
 } from '../proto/generated/network';
 import { EventBus, type ToastRequestedEvent } from '../game/EventBus';
+import { selectedCharacterId } from '../portal/api';
 import { LOAD_PLAYER_ITEM_APPEARANCE_ASSETS_ON_DEMAND } from '../Config';
 import { runSafeSync } from './SafeEntry';
 import {
@@ -458,7 +460,9 @@ export class NetworkManager {
         return new Promise((resolve, reject) => {
             try {
                 this.authenticateCharacterName = characterName.trim();
-                const websocketUrl = `ws://${ip}:${port}/ws`;
+                const websocketUrl = selectedCharacterId()
+                    ? `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`
+                    : `ws://${ip}:${port}/ws`;
                 const socket = new WebSocket(websocketUrl);
                 socket.binaryType = 'arraybuffer';
 
@@ -511,6 +515,7 @@ export class NetworkManager {
                         this.lastSelfHp = undefined;
                         this.lastSelfMaxHp = undefined;
                         this.initialStateMergeBase = undefined;
+                        disconnectAdventure(this);
                         this.clearOtherPlayersState();
                         this.clearMonstersInViewState();
                         this.clearNpcsInViewState();
@@ -904,6 +909,7 @@ export class NetworkManager {
     }
 
     public disconnect(): void {
+        disconnectAdventure(this);
         runSafeSync('NetworkManager:disconnect', () => {
             if (!this.socket) {
                 return;
@@ -1117,7 +1123,7 @@ export class NetworkManager {
             payload: {
                 $case: 'authenticateRequest',
                 value: {
-                    id: this.networkId,
+                    id: selectedCharacterId() ?? this.networkId,
                     characterName: this.authenticateCharacterName,
                 },
             },
@@ -1238,6 +1244,16 @@ export class NetworkManager {
                     break;
                 case 'initialState':
                     this.handleInitialState(message.payload.value);
+                    break;
+                case 'progressionUpdated':
+                    publishAdventure(message.payload.value, this, action => {
+                        if ('potion' in action) this.sendConsumeItemRequest(action.potion);
+                        else if ('economy' in action) this.sendPacket(ClientMessage.encode({payload:{$case:'economyRequest',value:{
+                            action:action.economy.action,offerId:action.economy.offerId??'',itemUid:BigInt(action.economy.itemUid??0),
+                            requestId:crypto.randomUUID(),revision:action.economy.revision
+                        }}}).finish());
+                        else this.sendPacket(ClientMessage.encode({payload:{$case:'allocateAttributeRequest',value:{attribute:action.attribute}}}).finish());
+                    });
                     break;
                 case 'itemAddedToBag':
                     this.handleItemAddedToBag(message.payload.value);

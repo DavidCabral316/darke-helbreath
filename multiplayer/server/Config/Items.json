@@ -1758,5 +1758,1205 @@
     "id": 328,
     "name": "Crafting Vessel",
     "itemType": "misc"
+  },
+  {
+    "id": 329,
+    "name": "Espadón Hierro",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 330,
+    "name": "Escudo Hierro",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 331,
+    "name": "Coraza Hierro",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 332,
+    "name": "Camisote Hierro",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 333,
+    "name": "Grebas Hierro",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 334,
+    "name": "Yelmo Hierro",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 335,
+    "name": "Botas Hierro",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 336,
+    "name": "Capa Hierro",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10133670
+      },
+      {
+        "effect": 5,
+        "effectColor": 10133670
+      }
+    ]
+  },
+  {
+    "id": 337,
+    "name": "Espadón Azur",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 338,
+    "name": "Escudo Azur",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 339,
+    "name": "Coraza Azur",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 340,
+    "name": "Camisote Azur",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 341,
+    "name": "Grebas Azur",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 342,
+    "name": "Yelmo Azur",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 343,
+    "name": "Botas Azur",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 344,
+    "name": "Capa Azur",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5082623
+      },
+      {
+        "effect": 5,
+        "effectColor": 5082623
+      }
+    ]
+  },
+  {
+    "id": 345,
+    "name": "Espadón Esmeralda",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 346,
+    "name": "Escudo Esmeralda",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 347,
+    "name": "Coraza Esmeralda",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 348,
+    "name": "Camisote Esmeralda",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 349,
+    "name": "Grebas Esmeralda",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 350,
+    "name": "Yelmo Esmeralda",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 351,
+    "name": "Botas Esmeralda",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 352,
+    "name": "Capa Esmeralda",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 3520602
+      },
+      {
+        "effect": 5,
+        "effectColor": 3520602
+      }
+    ]
+  },
+  {
+    "id": 353,
+    "name": "Espadón Carmesí",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 354,
+    "name": "Escudo Carmesí",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 355,
+    "name": "Coraza Carmesí",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 356,
+    "name": "Camisote Carmesí",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 357,
+    "name": "Grebas Carmesí",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 358,
+    "name": "Yelmo Carmesí",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 359,
+    "name": "Botas Carmesí",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 360,
+    "name": "Capa Carmesí",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 14174794
+      },
+      {
+        "effect": 5,
+        "effectColor": 14174794
+      }
+    ]
+  },
+  {
+    "id": 361,
+    "name": "Espadón Amatista",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 362,
+    "name": "Escudo Amatista",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 363,
+    "name": "Coraza Amatista",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 364,
+    "name": "Camisote Amatista",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 365,
+    "name": "Grebas Amatista",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 366,
+    "name": "Yelmo Amatista",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 367,
+    "name": "Botas Amatista",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 368,
+    "name": "Capa Amatista",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 10181094
+      },
+      {
+        "effect": 5,
+        "effectColor": 10181094
+      }
+    ]
+  },
+  {
+    "id": 369,
+    "name": "Espadón Obsidiana",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 370,
+    "name": "Escudo Obsidiana",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 371,
+    "name": "Coraza Obsidiana",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 372,
+    "name": "Camisote Obsidiana",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 373,
+    "name": "Grebas Obsidiana",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 374,
+    "name": "Yelmo Obsidiana",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 375,
+    "name": "Botas Obsidiana",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 376,
+    "name": "Capa Obsidiana",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5593451
+      },
+      {
+        "effect": 5,
+        "effectColor": 5593451
+      }
+    ]
+  },
+  {
+    "id": 377,
+    "name": "Espadón Marfil",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 378,
+    "name": "Escudo Marfil",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 379,
+    "name": "Coraza Marfil",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 380,
+    "name": "Camisote Marfil",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 381,
+    "name": "Grebas Marfil",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 382,
+    "name": "Yelmo Marfil",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 383,
+    "name": "Botas Marfil",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 384,
+    "name": "Capa Marfil",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 15722191
+      },
+      {
+        "effect": 5,
+        "effectColor": 15722191
+      }
+    ]
+  },
+  {
+    "id": 385,
+    "name": "Espadón Solar",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 386,
+    "name": "Escudo Solar",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 387,
+    "name": "Coraza Solar",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 388,
+    "name": "Camisote Solar",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 389,
+    "name": "Grebas Solar",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 390,
+    "name": "Yelmo Solar",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 391,
+    "name": "Botas Solar",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 392,
+    "name": "Capa Solar",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16041282
+      },
+      {
+        "effect": 5,
+        "effectColor": 16041282
+      }
+    ]
+  },
+  {
+    "id": 393,
+    "name": "Espadón Astral",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 394,
+    "name": "Escudo Astral",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 395,
+    "name": "Coraza Astral",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 396,
+    "name": "Camisote Astral",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 397,
+    "name": "Grebas Astral",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 398,
+    "name": "Yelmo Astral",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 399,
+    "name": "Botas Astral",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 400,
+    "name": "Capa Astral",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 5432831
+      },
+      {
+        "effect": 5,
+        "effectColor": 5432831
+      }
+    ]
+  },
+  {
+    "id": 401,
+    "name": "Espadón Eclipse",
+    "itemType": "weapon",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 402,
+    "name": "Escudo Eclipse",
+    "itemType": "shield",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 403,
+    "name": "Coraza Eclipse",
+    "itemType": "armor",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 404,
+    "name": "Camisote Eclipse",
+    "itemType": "hauberk",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 405,
+    "name": "Grebas Eclipse",
+    "itemType": "leggings",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 406,
+    "name": "Yelmo Eclipse",
+    "itemType": "helmet",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 407,
+    "name": "Botas Eclipse",
+    "itemType": "boots",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
+  },
+  {
+    "id": 408,
+    "name": "Capa Eclipse",
+    "itemType": "cape",
+    "effects": [
+      {
+        "effect": 4,
+        "effectColor": 16743141
+      },
+      {
+        "effect": 5,
+        "effectColor": 16743141
+      }
+    ]
   }
 ]

@@ -31,9 +31,9 @@
     "antiHackTimingLagFactor": 0.05
   },
   "ping": {
-    "timeout": 5000,
+    "timeout": 30000,
     "interval": 1000,
-    "allowedVariance": 500,
+    "allowedVariance": 10000,
     "varianceSampleSize": 20
   },
   "gameWorld": {

@@ -337,15 +337,15 @@ public static class Combat {
     }
 
     /// <summary>Applies authoritative player damage to a monster for non-melee sources (for example, server-resolved spells) while reusing normal damage and death fan-out.</summary>
-    public static void ApplyPlayerDamageToMonster(GameWorldRef wr, GameWorldPlayer attacker, GameWorldMonster targetMonster, AttackType attackType) {
+    public static void ApplyPlayerDamageToMonster(GameWorldRef wr, GameWorldPlayer attacker, GameWorldMonster targetMonster, AttackType attackType, int? spellId = null) {
         ArgumentNullException.ThrowIfNull(attacker);
         ArgumentNullException.ThrowIfNull(targetMonster);
 
-        ApplyPlayerAttackToMonster(wr, attacker, targetMonster, attackType);
+        ApplyPlayerAttackToMonster(wr, attacker, targetMonster, attackType, spellId.HasValue ? attacker.MagicDamageForSpell(spellId.Value) : attacker.MagicDamage);
     }
 
     /// <summary>Applies authoritative player damage to another player for non-melee sources (for example, server-resolved spells) while reusing normal damage, interrupt, and death fan-out.</summary>
-    public static void ApplyPlayerDamageToPlayer(GameWorldRef wr, GameWorldPlayer attacker, GameWorldPlayer targetPlayer, AttackType attackType) {
+    public static void ApplyPlayerDamageToPlayer(GameWorldRef wr, GameWorldPlayer attacker, GameWorldPlayer targetPlayer, AttackType attackType, int? spellId = null) {
         ArgumentNullException.ThrowIfNull(attacker);
         ArgumentNullException.ThrowIfNull(targetPlayer);
 
@@ -353,7 +353,7 @@ public static class Combat {
             return;
         }
 
-        ApplyPlayerAttackToPlayer(wr, attacker, targetPlayer, attackType);
+        ApplyPlayerAttackToPlayer(wr, attacker, targetPlayer, attackType, spellId.HasValue ? attacker.MagicDamageForSpell(spellId.Value) : attacker.MagicDamage);
     }
 
     /// <summary>Applies spell damage from a monster to a player using explicit damage and spell hit mode; reuses monster melee knockback/stun rules with <paramref name="spellAttackType"/>.</summary>
@@ -515,6 +515,7 @@ public static class Combat {
         if (damage <= 0 || targetMonster.Dead) {
             return;
         }
+        var hpBefore = targetMonster.Hp;
 
         var attackStunDurationMs = 0;
         var attackerPosX = targetMonster.PosX;
@@ -542,6 +543,7 @@ public static class Combat {
         if (resolution.HpAfter > 0) {
             targetMonster.SetAggroFromDamagePlayerAttacker(attackerPlayerId);
         }
+        Adventure.RecordHit(wr, targetMonster, caster, Math.Min(hpBefore, damage));
 
         MonsterVisibility.BroadcastMonsterTakeDamage(
             wr,
@@ -693,11 +695,15 @@ public static class Combat {
         return true;
     }
 
-    private static void ApplyPlayerAttackToMonster(GameWorldRef wr, GameWorldPlayer attacker, GameWorldMonster targetMonster, AttackType attackType) {
+    private static void ApplyPlayerAttackToMonster(GameWorldRef wr, GameWorldPlayer attacker, GameWorldMonster targetMonster, AttackType attackType, int? spellDamage = null) {
+        if (attacker.IsDead || Adventure.IsSanctuary(wr, attacker) || targetMonster.Dead) return;
+        if (!spellDamage.HasValue && !attacker.TrySpendStamina()) { Adventure.Send(wr, attacker, "Te falta energía. Esperá un momento."); return; }
+        var hpBefore = targetMonster.Hp;
+        var appliedDamage = spellDamage ?? attacker.Damage;
         if (!TryResolveMonsterAttack(
                 wr,
                 targetMonster,
-                attacker.Damage,
+                appliedDamage,
                 attackType,
                 attacker.AttackStunDurationMs,
                 attacker.PosX,
@@ -709,11 +715,12 @@ public static class Combat {
         if (resolution.HpAfter > 0) {
             targetMonster.SetAggroFromDamagePlayerAttacker(attacker.PlayerId);
         }
+        Adventure.RecordHit(wr, targetMonster, attacker, Math.Min(hpBefore, appliedDamage));
 
         MonsterVisibility.BroadcastMonsterTakeDamage(
             wr,
             targetMonster,
-            attacker.Damage,
+            appliedDamage,
             resolution.PacketAttackType,
             resolution.HpAfter,
             resolution.StunlockMs,
@@ -727,7 +734,7 @@ public static class Combat {
         }
     }
 
-    private static void ApplyPlayerAttackToPlayer(GameWorldRef wr, GameWorldPlayer attacker, GameWorldPlayer targetPlayer, AttackType attackType) {
+    private static void ApplyPlayerAttackToPlayer(GameWorldRef wr, GameWorldPlayer attacker, GameWorldPlayer targetPlayer, AttackType attackType, int? spellDamage = null) {
         var stunPacketMs = 0;
         var knockbackDurMs = 0;
         var destKbX = -1;
@@ -767,7 +774,7 @@ public static class Combat {
         MonsterVisibility.BroadcastPlayerTakeDamage(
             wr,
             targetPlayer.PlayerId,
-            attacker.Damage,
+            spellDamage ?? attacker.Damage,
             attacker.PlayerId,
             attackTypeOut,
             stunPacketMs,

@@ -1,0 +1,1046 @@
+{
+  "offers": [
+    {
+      "id": "red",
+      "name": "Poción de vida (+50)",
+      "service": "shop",
+      "price": 8,
+      "itemId": 36
+    },
+    {
+      "id": "blue",
+      "name": "Poción de maná (+40)",
+      "service": "shop",
+      "price": 10,
+      "itemId": 165
+    },
+    {
+      "id": "short",
+      "name": "Espada corta · daño +5",
+      "service": "blacksmith",
+      "price": 25,
+      "itemId": 3
+    },
+    {
+      "id": "long",
+      "name": "Espada larga · daño +9",
+      "service": "blacksmith",
+      "price": 90,
+      "itemId": 53,
+      "level": 3
+    },
+    {
+      "id": "sabre",
+      "name": "Sable · daño +13",
+      "service": "blacksmith",
+      "price": 180,
+      "itemId": 54,
+      "level": 5
+    },
+    {
+      "id": "broad",
+      "name": "Espada ancha · daño +18",
+      "service": "blacksmith",
+      "price": 320,
+      "itemId": 59,
+      "level": 7
+    },
+    {
+      "id": "shield1",
+      "name": "Escudo de cuero · defensa +2",
+      "service": "blacksmith",
+      "price": 35,
+      "itemId": 7
+    },
+    {
+      "id": "shield2",
+      "name": "Escudo de caballero · defensa +4",
+      "service": "blacksmith",
+      "price": 120,
+      "itemId": 5,
+      "level": 4
+    },
+    {
+      "id": "shield3",
+      "name": "Escudo torre · defensa +6",
+      "service": "blacksmith",
+      "price": 240,
+      "itemId": 4,
+      "level": 7
+    },
+    {
+      "id": "shirt",
+      "name": "Camisa · defensa +1",
+      "service": "blacksmith",
+      "price": 15,
+      "itemId": 128
+    },
+    {
+      "id": "shoes",
+      "name": "Zapatos · defensa +1",
+      "service": "blacksmith",
+      "price": 20,
+      "itemId": 127
+    },
+    {
+      "id": "trousers",
+      "name": "Pantalones · defensa +1",
+      "service": "blacksmith",
+      "price": 25,
+      "itemId": 134
+    },
+    {
+      "id": "leather",
+      "name": "Armadura de cuero · defensa +2",
+      "service": "blacksmith",
+      "price": 50,
+      "itemId": 130,
+      "level": 2
+    },
+    {
+      "id": "helmet",
+      "name": "Casco · defensa +1",
+      "service": "blacksmith",
+      "price": 45,
+      "itemId": 143,
+      "level": 3
+    },
+    {
+      "id": "chain",
+      "name": "Cota de malla · defensa +3",
+      "service": "blacksmith",
+      "price": 140,
+      "itemId": 131,
+      "level": 5
+    },
+    {
+      "id": "hose",
+      "name": "Calzas de malla · defensa +2",
+      "service": "blacksmith",
+      "price": 100,
+      "itemId": 136,
+      "level": 5
+    },
+    {
+      "id": "hauberk",
+      "name": "Camisote · defensa +2",
+      "service": "blacksmith",
+      "price": 110,
+      "itemId": 129,
+      "level": 6
+    },
+    {
+      "id": "plate",
+      "name": "Armadura de placas · defensa +4",
+      "service": "blacksmith",
+      "price": 280,
+      "itemId": 133,
+      "level": 8
+    },
+    {
+      "id": "legs",
+      "name": "Grebas · defensa +3",
+      "service": "blacksmith",
+      "price": 190,
+      "itemId": 137,
+      "level": 8
+    },
+    {
+      "id": "fullhelm",
+      "name": "Casco completo · defensa +2",
+      "service": "blacksmith",
+      "price": 130,
+      "itemId": 144,
+      "level": 7
+    },
+    {
+      "id": "cape",
+      "name": "Capa · defensa +1",
+      "service": "blacksmith",
+      "price": 90,
+      "itemId": 125,
+      "level": 4
+    },
+    {
+      "id": "robe",
+      "name": "Túnica · defensa +1, magia +3, maná +15",
+      "service": "blacksmith",
+      "price": 120,
+      "itemId": 142,
+      "level": 4
+    },
+    {
+      "id": "wizardcap",
+      "name": "Gorro de mago · magia +2, maná +10",
+      "service": "blacksmith",
+      "price": 80,
+      "itemId": 152,
+      "level": 3
+    },
+    {
+      "id": "tier-1-0",
+      "name": "Espadón Hierro",
+      "service": "blacksmith",
+      "price": 313,
+      "itemId": 329,
+      "level": 10
+    },
+    {
+      "id": "tier-1-1",
+      "name": "Escudo Hierro",
+      "service": "blacksmith",
+      "price": 200,
+      "itemId": 330,
+      "level": 10
+    },
+    {
+      "id": "tier-1-2",
+      "name": "Coraza Hierro",
+      "service": "blacksmith",
+      "price": 250,
+      "itemId": 331,
+      "level": 10
+    },
+    {
+      "id": "tier-1-3",
+      "name": "Camisote Hierro",
+      "service": "blacksmith",
+      "price": 163,
+      "itemId": 332,
+      "level": 10
+    },
+    {
+      "id": "tier-1-4",
+      "name": "Grebas Hierro",
+      "service": "blacksmith",
+      "price": 200,
+      "itemId": 333,
+      "level": 10
+    },
+    {
+      "id": "tier-1-5",
+      "name": "Yelmo Hierro",
+      "service": "blacksmith",
+      "price": 138,
+      "itemId": 334,
+      "level": 10
+    },
+    {
+      "id": "tier-1-6",
+      "name": "Botas Hierro",
+      "service": "blacksmith",
+      "price": 113,
+      "itemId": 335,
+      "level": 10
+    },
+    {
+      "id": "tier-1-7",
+      "name": "Capa Hierro",
+      "service": "blacksmith",
+      "price": 125,
+      "itemId": 336,
+      "level": 10
+    },
+    {
+      "id": "tier-2-0",
+      "name": "Espadón Azur",
+      "service": "blacksmith",
+      "price": 5000,
+      "itemId": 337,
+      "level": 30
+    },
+    {
+      "id": "tier-2-1",
+      "name": "Escudo Azur",
+      "service": "blacksmith",
+      "price": 3200,
+      "itemId": 338,
+      "level": 30
+    },
+    {
+      "id": "tier-2-2",
+      "name": "Coraza Azur",
+      "service": "blacksmith",
+      "price": 4000,
+      "itemId": 339,
+      "level": 30
+    },
+    {
+      "id": "tier-2-3",
+      "name": "Camisote Azur",
+      "service": "blacksmith",
+      "price": 2600,
+      "itemId": 340,
+      "level": 30
+    },
+    {
+      "id": "tier-2-4",
+      "name": "Grebas Azur",
+      "service": "blacksmith",
+      "price": 3200,
+      "itemId": 341,
+      "level": 30
+    },
+    {
+      "id": "tier-2-5",
+      "name": "Yelmo Azur",
+      "service": "blacksmith",
+      "price": 2200,
+      "itemId": 342,
+      "level": 30
+    },
+    {
+      "id": "tier-2-6",
+      "name": "Botas Azur",
+      "service": "blacksmith",
+      "price": 1800,
+      "itemId": 343,
+      "level": 30
+    },
+    {
+      "id": "tier-2-7",
+      "name": "Capa Azur",
+      "service": "blacksmith",
+      "price": 2000,
+      "itemId": 344,
+      "level": 30
+    },
+    {
+      "id": "tier-3-0",
+      "name": "Espadón Esmeralda",
+      "service": "blacksmith",
+      "price": 25313,
+      "itemId": 345,
+      "level": 50
+    },
+    {
+      "id": "tier-3-1",
+      "name": "Escudo Esmeralda",
+      "service": "blacksmith",
+      "price": 16200,
+      "itemId": 346,
+      "level": 50
+    },
+    {
+      "id": "tier-3-2",
+      "name": "Coraza Esmeralda",
+      "service": "blacksmith",
+      "price": 20250,
+      "itemId": 347,
+      "level": 50
+    },
+    {
+      "id": "tier-3-3",
+      "name": "Camisote Esmeralda",
+      "service": "blacksmith",
+      "price": 13163,
+      "itemId": 348,
+      "level": 50
+    },
+    {
+      "id": "tier-3-4",
+      "name": "Grebas Esmeralda",
+      "service": "blacksmith",
+      "price": 16200,
+      "itemId": 349,
+      "level": 50
+    },
+    {
+      "id": "tier-3-5",
+      "name": "Yelmo Esmeralda",
+      "service": "blacksmith",
+      "price": 11138,
+      "itemId": 350,
+      "level": 50
+    },
+    {
+      "id": "tier-3-6",
+      "name": "Botas Esmeralda",
+      "service": "blacksmith",
+      "price": 9113,
+      "itemId": 351,
+      "level": 50
+    },
+    {
+      "id": "tier-3-7",
+      "name": "Capa Esmeralda",
+      "service": "blacksmith",
+      "price": 10125,
+      "itemId": 352,
+      "level": 50
+    },
+    {
+      "id": "tier-4-0",
+      "name": "Espadón Carmesí",
+      "service": "blacksmith",
+      "price": 80000,
+      "itemId": 353,
+      "level": 70
+    },
+    {
+      "id": "tier-4-1",
+      "name": "Escudo Carmesí",
+      "service": "blacksmith",
+      "price": 51200,
+      "itemId": 354,
+      "level": 70
+    },
+    {
+      "id": "tier-4-2",
+      "name": "Coraza Carmesí",
+      "service": "blacksmith",
+      "price": 64000,
+      "itemId": 355,
+      "level": 70
+    },
+    {
+      "id": "tier-4-3",
+      "name": "Camisote Carmesí",
+      "service": "blacksmith",
+      "price": 41600,
+      "itemId": 356,
+      "level": 70
+    },
+    {
+      "id": "tier-4-4",
+      "name": "Grebas Carmesí",
+      "service": "blacksmith",
+      "price": 51200,
+      "itemId": 357,
+      "level": 70
+    },
+    {
+      "id": "tier-4-5",
+      "name": "Yelmo Carmesí",
+      "service": "blacksmith",
+      "price": 35200,
+      "itemId": 358,
+      "level": 70
+    },
+    {
+      "id": "tier-4-6",
+      "name": "Botas Carmesí",
+      "service": "blacksmith",
+      "price": 28800,
+      "itemId": 359,
+      "level": 70
+    },
+    {
+      "id": "tier-4-7",
+      "name": "Capa Carmesí",
+      "service": "blacksmith",
+      "price": 32000,
+      "itemId": 360,
+      "level": 70
+    },
+    {
+      "id": "tier-5-0",
+      "name": "Espadón Amatista",
+      "service": "blacksmith",
+      "price": 195313,
+      "itemId": 361,
+      "level": 90
+    },
+    {
+      "id": "tier-5-1",
+      "name": "Escudo Amatista",
+      "service": "blacksmith",
+      "price": 125000,
+      "itemId": 362,
+      "level": 90
+    },
+    {
+      "id": "tier-5-2",
+      "name": "Coraza Amatista",
+      "service": "blacksmith",
+      "price": 156250,
+      "itemId": 363,
+      "level": 90
+    },
+    {
+      "id": "tier-5-3",
+      "name": "Camisote Amatista",
+      "service": "blacksmith",
+      "price": 101563,
+      "itemId": 364,
+      "level": 90
+    },
+    {
+      "id": "tier-5-4",
+      "name": "Grebas Amatista",
+      "service": "blacksmith",
+      "price": 125000,
+      "itemId": 365,
+      "level": 90
+    },
+    {
+      "id": "tier-5-5",
+      "name": "Yelmo Amatista",
+      "service": "blacksmith",
+      "price": 85938,
+      "itemId": 366,
+      "level": 90
+    },
+    {
+      "id": "tier-5-6",
+      "name": "Botas Amatista",
+      "service": "blacksmith",
+      "price": 70313,
+      "itemId": 367,
+      "level": 90
+    },
+    {
+      "id": "tier-5-7",
+      "name": "Capa Amatista",
+      "service": "blacksmith",
+      "price": 78125,
+      "itemId": 368,
+      "level": 90
+    },
+    {
+      "id": "tier-6-0",
+      "name": "Espadón Obsidiana",
+      "service": "blacksmith",
+      "price": 405000,
+      "itemId": 369,
+      "level": 110
+    },
+    {
+      "id": "tier-6-1",
+      "name": "Escudo Obsidiana",
+      "service": "blacksmith",
+      "price": 259200,
+      "itemId": 370,
+      "level": 110
+    },
+    {
+      "id": "tier-6-2",
+      "name": "Coraza Obsidiana",
+      "service": "blacksmith",
+      "price": 324000,
+      "itemId": 371,
+      "level": 110
+    },
+    {
+      "id": "tier-6-3",
+      "name": "Camisote Obsidiana",
+      "service": "blacksmith",
+      "price": 210600,
+      "itemId": 372,
+      "level": 110
+    },
+    {
+      "id": "tier-6-4",
+      "name": "Grebas Obsidiana",
+      "service": "blacksmith",
+      "price": 259200,
+      "itemId": 373,
+      "level": 110
+    },
+    {
+      "id": "tier-6-5",
+      "name": "Yelmo Obsidiana",
+      "service": "blacksmith",
+      "price": 178200,
+      "itemId": 374,
+      "level": 110
+    },
+    {
+      "id": "tier-6-6",
+      "name": "Botas Obsidiana",
+      "service": "blacksmith",
+      "price": 145800,
+      "itemId": 375,
+      "level": 110
+    },
+    {
+      "id": "tier-6-7",
+      "name": "Capa Obsidiana",
+      "service": "blacksmith",
+      "price": 162000,
+      "itemId": 376,
+      "level": 110
+    },
+    {
+      "id": "tier-7-0",
+      "name": "Espadón Marfil",
+      "service": "blacksmith",
+      "price": 750313,
+      "itemId": 377,
+      "level": 130
+    },
+    {
+      "id": "tier-7-1",
+      "name": "Escudo Marfil",
+      "service": "blacksmith",
+      "price": 480200,
+      "itemId": 378,
+      "level": 130
+    },
+    {
+      "id": "tier-7-2",
+      "name": "Coraza Marfil",
+      "service": "blacksmith",
+      "price": 600250,
+      "itemId": 379,
+      "level": 130
+    },
+    {
+      "id": "tier-7-3",
+      "name": "Camisote Marfil",
+      "service": "blacksmith",
+      "price": 390163,
+      "itemId": 380,
+      "level": 130
+    },
+    {
+      "id": "tier-7-4",
+      "name": "Grebas Marfil",
+      "service": "blacksmith",
+      "price": 480200,
+      "itemId": 381,
+      "level": 130
+    },
+    {
+      "id": "tier-7-5",
+      "name": "Yelmo Marfil",
+      "service": "blacksmith",
+      "price": 330138,
+      "itemId": 382,
+      "level": 130
+    },
+    {
+      "id": "tier-7-6",
+      "name": "Botas Marfil",
+      "service": "blacksmith",
+      "price": 270113,
+      "itemId": 383,
+      "level": 130
+    },
+    {
+      "id": "tier-7-7",
+      "name": "Capa Marfil",
+      "service": "blacksmith",
+      "price": 300125,
+      "itemId": 384,
+      "level": 130
+    },
+    {
+      "id": "tier-8-0",
+      "name": "Espadón Solar",
+      "service": "blacksmith",
+      "price": 1280000,
+      "itemId": 385,
+      "level": 155
+    },
+    {
+      "id": "tier-8-1",
+      "name": "Escudo Solar",
+      "service": "blacksmith",
+      "price": 819200,
+      "itemId": 386,
+      "level": 155
+    },
+    {
+      "id": "tier-8-2",
+      "name": "Coraza Solar",
+      "service": "blacksmith",
+      "price": 1024000,
+      "itemId": 387,
+      "level": 155
+    },
+    {
+      "id": "tier-8-3",
+      "name": "Camisote Solar",
+      "service": "blacksmith",
+      "price": 665600,
+      "itemId": 388,
+      "level": 155
+    },
+    {
+      "id": "tier-8-4",
+      "name": "Grebas Solar",
+      "service": "blacksmith",
+      "price": 819200,
+      "itemId": 389,
+      "level": 155
+    },
+    {
+      "id": "tier-8-5",
+      "name": "Yelmo Solar",
+      "service": "blacksmith",
+      "price": 563200,
+      "itemId": 390,
+      "level": 155
+    },
+    {
+      "id": "tier-8-6",
+      "name": "Botas Solar",
+      "service": "blacksmith",
+      "price": 460800,
+      "itemId": 391,
+      "level": 155
+    },
+    {
+      "id": "tier-8-7",
+      "name": "Capa Solar",
+      "service": "blacksmith",
+      "price": 512000,
+      "itemId": 392,
+      "level": 155
+    },
+    {
+      "id": "tier-9-0",
+      "name": "Espadón Astral",
+      "service": "blacksmith",
+      "price": 2050313,
+      "itemId": 393,
+      "level": 180
+    },
+    {
+      "id": "tier-9-1",
+      "name": "Escudo Astral",
+      "service": "blacksmith",
+      "price": 1312200,
+      "itemId": 394,
+      "level": 180
+    },
+    {
+      "id": "tier-9-2",
+      "name": "Coraza Astral",
+      "service": "blacksmith",
+      "price": 1640250,
+      "itemId": 395,
+      "level": 180
+    },
+    {
+      "id": "tier-9-3",
+      "name": "Camisote Astral",
+      "service": "blacksmith",
+      "price": 1066163,
+      "itemId": 396,
+      "level": 180
+    },
+    {
+      "id": "tier-9-4",
+      "name": "Grebas Astral",
+      "service": "blacksmith",
+      "price": 1312200,
+      "itemId": 397,
+      "level": 180
+    },
+    {
+      "id": "tier-9-5",
+      "name": "Yelmo Astral",
+      "service": "blacksmith",
+      "price": 902138,
+      "itemId": 398,
+      "level": 180
+    },
+    {
+      "id": "tier-9-6",
+      "name": "Botas Astral",
+      "service": "blacksmith",
+      "price": 738113,
+      "itemId": 399,
+      "level": 180
+    },
+    {
+      "id": "tier-9-7",
+      "name": "Capa Astral",
+      "service": "blacksmith",
+      "price": 820125,
+      "itemId": 400,
+      "level": 180
+    },
+    {
+      "id": "tier-10-0",
+      "name": "Espadón Eclipse",
+      "service": "blacksmith",
+      "price": 3125000,
+      "itemId": 401,
+      "level": 190
+    },
+    {
+      "id": "tier-10-1",
+      "name": "Escudo Eclipse",
+      "service": "blacksmith",
+      "price": 2000000,
+      "itemId": 402,
+      "level": 190
+    },
+    {
+      "id": "tier-10-2",
+      "name": "Coraza Eclipse",
+      "service": "blacksmith",
+      "price": 2500000,
+      "itemId": 403,
+      "level": 190
+    },
+    {
+      "id": "tier-10-3",
+      "name": "Camisote Eclipse",
+      "service": "blacksmith",
+      "price": 1625000,
+      "itemId": 404,
+      "level": 190
+    },
+    {
+      "id": "tier-10-4",
+      "name": "Grebas Eclipse",
+      "service": "blacksmith",
+      "price": 2000000,
+      "itemId": 405,
+      "level": 190
+    },
+    {
+      "id": "tier-10-5",
+      "name": "Yelmo Eclipse",
+      "service": "blacksmith",
+      "price": 1375000,
+      "itemId": 406,
+      "level": 190
+    },
+    {
+      "id": "tier-10-6",
+      "name": "Botas Eclipse",
+      "service": "blacksmith",
+      "price": 1125000,
+      "itemId": 407,
+      "level": 190
+    },
+    {
+      "id": "tier-10-7",
+      "name": "Capa Eclipse",
+      "service": "blacksmith",
+      "price": 1250000,
+      "itemId": 408,
+      "level": 190
+    },
+    {
+      "id": "spell-1",
+      "name": "Aprender Fire Ball · 18 maná",
+      "service": "magic",
+      "price": 710,
+      "spellId": 1,
+      "level": 8,
+      "intelligence": 20
+    },
+    {
+      "id": "spell-2",
+      "name": "Aprender Fire Strike · 25 maná",
+      "service": "magic",
+      "price": 2547,
+      "spellId": 2,
+      "level": 18,
+      "intelligence": 28
+    },
+    {
+      "id": "spell-3",
+      "name": "Aprender Chill Wind · 30 maná",
+      "service": "magic",
+      "price": 6303,
+      "spellId": 3,
+      "level": 25,
+      "intelligence": 35
+    },
+    {
+      "id": "spell-4",
+      "name": "Aprender Poison Cloud · 38 maná",
+      "service": "magic",
+      "price": 12731,
+      "spellId": 4,
+      "level": 32,
+      "intelligence": 42
+    },
+    {
+      "id": "spell-5",
+      "name": "Aprender Triple Energy Bolt · 42 maná",
+      "service": "magic",
+      "price": 22608,
+      "spellId": 5,
+      "level": 40,
+      "intelligence": 50
+    },
+    {
+      "id": "spell-6",
+      "name": "Aprender Lightning Bolt · 48 maná",
+      "service": "magic",
+      "price": 36741,
+      "spellId": 6,
+      "level": 48,
+      "intelligence": 60
+    },
+    {
+      "id": "spell-7",
+      "name": "Aprender Spike Field · 58 maná",
+      "service": "magic",
+      "price": 55953,
+      "spellId": 7,
+      "level": 56,
+      "intelligence": 70
+    },
+    {
+      "id": "spell-8",
+      "name": "Aprender Fire Field · 65 maná",
+      "service": "magic",
+      "price": 81087,
+      "spellId": 8,
+      "level": 64,
+      "intelligence": 80
+    },
+    {
+      "id": "spell-9",
+      "name": "Aprender Ice Storm · 72 maná",
+      "service": "magic",
+      "price": 113003,
+      "spellId": 9,
+      "level": 72,
+      "intelligence": 90
+    },
+    {
+      "id": "spell-10",
+      "name": "Aprender Ice Strike · 80 maná",
+      "service": "magic",
+      "price": 152573,
+      "spellId": 10,
+      "level": 80,
+      "intelligence": 100
+    },
+    {
+      "id": "spell-11",
+      "name": "Aprender Energy Strike · 88 maná",
+      "service": "magic",
+      "price": 200683,
+      "spellId": 11,
+      "level": 90,
+      "intelligence": 112
+    },
+    {
+      "id": "spell-12",
+      "name": "Aprender Mass Fire Strike · 98 maná",
+      "service": "magic",
+      "price": 258233,
+      "spellId": 12,
+      "level": 100,
+      "intelligence": 125
+    },
+    {
+      "id": "spell-13",
+      "name": "Aprender Mass Chill Wind · 110 maná",
+      "service": "magic",
+      "price": 326132,
+      "spellId": 13,
+      "level": 110,
+      "intelligence": 138
+    },
+    {
+      "id": "spell-14",
+      "name": "Aprender Earthworm Strike · 122 maná",
+      "service": "magic",
+      "price": 405301,
+      "spellId": 14,
+      "level": 120,
+      "intelligence": 150
+    },
+    {
+      "id": "spell-15",
+      "name": "Aprender Armor Break · 130 maná",
+      "service": "magic",
+      "price": 496670,
+      "spellId": 15,
+      "level": 130,
+      "intelligence": 160
+    },
+    {
+      "id": "spell-16",
+      "name": "Aprender Bloody Shock Wave · 145 maná",
+      "service": "magic",
+      "price": 601179,
+      "spellId": 16,
+      "level": 140,
+      "intelligence": 170
+    },
+    {
+      "id": "spell-17",
+      "name": "Aprender Mass Ice Strike · 160 maná",
+      "service": "magic",
+      "price": 719778,
+      "spellId": 17,
+      "level": 150,
+      "intelligence": 180
+    },
+    {
+      "id": "spell-18",
+      "name": "Aprender Lightning Strike · 175 maná",
+      "service": "magic",
+      "price": 853422,
+      "spellId": 18,
+      "level": 160,
+      "intelligence": 190
+    },
+    {
+      "id": "spell-19",
+      "name": "Aprender Meteor Strike · 190 maná",
+      "service": "magic",
+      "price": 1003077,
+      "spellId": 19,
+      "level": 170,
+      "intelligence": 205
+    },
+    {
+      "id": "spell-20",
+      "name": "Aprender Mass Lightning Strike · 210 maná",
+      "service": "magic",
+      "price": 1169717,
+      "spellId": 20,
+      "level": 178,
+      "intelligence": 220
+    },
+    {
+      "id": "spell-21",
+      "name": "Aprender Blizzard · 230 maná",
+      "service": "magic",
+      "price": 1354320,
+      "spellId": 21,
+      "level": 184,
+      "intelligence": 235
+    },
+    {
+      "id": "spell-22",
+      "name": "Aprender Earth Shock Wave · 250 maná",
+      "service": "magic",
+      "price": 1557875,
+      "spellId": 22,
+      "level": 188,
+      "intelligence": 245
+    },
+    {
+      "id": "spell-23",
+      "name": "Aprender Mass Blizzard · 290 maná",
+      "service": "magic",
+      "price": 1781375,
+      "spellId": 23,
+      "level": 192,
+      "intelligence": 260
+    },
+    {
+      "id": "spell-24",
+      "name": "Aprender Invisibility · 90 maná",
+      "service": "magic",
+      "price": 2025821,
+      "spellId": 24,
+      "level": 95,
+      "intelligence": 120
+    },
+    {
+      "id": "spell-25",
+      "name": "Aprender Berserk · 110 maná",
+      "service": "magic",
+      "price": 2292219,
+      "spellId": 25,
+      "level": 115,
+      "intelligence": 140
+    }
+  ]
+}

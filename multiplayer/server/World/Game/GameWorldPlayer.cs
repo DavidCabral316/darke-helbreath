@@ -12,7 +12,7 @@ namespace Server.World.Game;
 /// combat interrupt stunlock timing for movement validation, and one authoritative per-player inventory.
 /// Connection callbacks may be cleared while the entity remains for reconnect grace.
 /// </summary>
-public class GameWorldPlayer : GameWorldActionableEntity {
+public partial class GameWorldPlayer : GameWorldActionableEntity {
     private Action<ServerMessage>? sendMessage;
     private Action<string?>? requestDisconnect;
     private readonly Action<WorldTransferDestination> requestWorldChange;
@@ -37,6 +37,7 @@ public class GameWorldPlayer : GameWorldActionableEntity {
 
     /// <summary>Authoritative current HP; reduced by combat hits. Reset to <see cref="maxHp"/> on <see cref="SetInitialState"/>.</summary>
     private int hp;
+    private long snapshotVersion;
     /// <summary>Authoritative max HP for this session; sent in <see cref="Mmorpg.Network.InitialState"/> and <see cref="Mmorpg.Network.HpUpdated"/>.</summary>
     private int maxHp;
     private int movementSpeedMs = 220;
@@ -348,6 +349,13 @@ public class GameWorldPlayer : GameWorldActionableEntity {
 
     /// <summary>Applies persisted player-configurable settings after spawn creation while keeping clamp logic centralized in the existing setters.</summary>
     public void ApplyPersistedState(PlayerPersistenceState state) {
+        Progress = state.Progress ?? new();
+        // Existing characters retain spells already unlocked before the shop release.
+        if (Progress.KnownSpellsMask == 0) Progress = Progress with { KnownSpellsMask = Adventure.Rules.Spells.Where(s => s.Value.Level <= Progress.Level).Aggregate(0, (mask, s) => mask | (1 << s.Key)) };
+        PersistenceKey = state.PersistenceKey;
+        snapshotVersion = state.SnapshotVersion;
+        maxHp = Math.Clamp(state.MaxHp ?? 1000, 1, 1000000);
+        hp = Math.Clamp(state.Hp ?? maxHp, 0, maxHp);
         ArgumentNullException.ThrowIfNull(state);
         SetMovementSpeedMs(state.MovementSpeedMs);
         SetCastSpeedMs(state.CastSpeedMs);
@@ -370,6 +378,7 @@ public class GameWorldPlayer : GameWorldActionableEntity {
         if (!string.IsNullOrWhiteSpace(state.CharacterName)) {
             SetCharacterName(state.CharacterName);
         }
+        RecalculateAdventureStats();
     }
 
     /// <summary>Captures the current world-backed player settings and location for persistence.</summary>
@@ -396,7 +405,10 @@ public class GameWorldPlayer : GameWorldActionableEntity {
             FacingDirection,
             inventoryManager.CreatePersistedBagItems(),
             inventoryManager.CreatePersistedEquippedItems(),
-            characterName);
+            characterName,
+            hp,
+            maxHp,
+            ++snapshotVersion, Progress, PersistenceKey);
     }
 
     /// <summary>Sets the display name from authenticate or loaded persistence.</summary>
@@ -411,6 +423,7 @@ public class GameWorldPlayer : GameWorldActionableEntity {
         }
 
         hp = Math.Max(0, hp - damage);
+        MarkCombat();
     }
 
     /// <summary>Invoked from combat fan-out after HP loss; clears pending timed logout server-side when applicable.</summary>
@@ -421,6 +434,8 @@ public class GameWorldPlayer : GameWorldActionableEntity {
     /// <summary>Restores HP to max after resurrection; clears dead state.</summary>
     public void ApplyResurrection() {
         hp = maxHp;
+        Progress = Progress with { Mana = MaxMana, Stamina = MaxStamina };
+        lastCombatAt = default;
     }
 
     public void SetPosition(int x, int y) {

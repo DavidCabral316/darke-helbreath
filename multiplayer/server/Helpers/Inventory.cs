@@ -39,6 +39,12 @@ public static class Inventory {
         ArgumentNullException.ThrowIfNull(request);
 
         var targetSlot = request.HasTargetSlot ? request.TargetSlot : null;
+        var candidate = player.InventoryManager.BagItems.FirstOrDefault(i => i.ItemUid == request.ItemUid);
+        if (player.IsDead || (candidate is not null && Adventure.Rules.Equipment.TryGetValue(candidate.ItemId, out var requirement) && player.Progress.Level < requirement.Level)) {
+            SendEquipRollbackIfNeeded(wr, player, request.ItemUid, targetSlot);
+            Spawn.SendInitialState(wr, player, includeSpells: false);
+            Adventure.Send(wr, player, "Todavía no cumplís el nivel requerido para ese equipo."); return;
+        }
         if (!player.InventoryManager.TryEquipItem(request.ItemUid, targetSlot, player.GenderValue, out var result)) {
             SendEquipRollbackIfNeeded(wr, player, request.ItemUid, targetSlot);
             return;
@@ -76,11 +82,16 @@ public static class Inventory {
         ArgumentNullException.ThrowIfNull(player);
         ArgumentNullException.ThrowIfNull(request);
 
+        var item = player.InventoryManager.BagItems.FirstOrDefault(i => i.ItemUid == request.ItemUid);
+        if (item is null || !player.CanDrinkPotion(item.ItemId)) { Adventure.Send(wr, player, "No necesitás esa poción, o debés esperar dos segundos entre usos."); return; }
+        var itemId = item.ItemId;
         if (!player.InventoryManager.TryConsumeItem(request.ItemUid, out var result)) {
             return;
         }
-
+        player.DrinkPotion(itemId);
         ApplyInventoryMutation(wr, player, result);
+        NetworkManager.SendToPlayer(player, NetworkManager.CreateHpUpdated(player.Hp, player.MaxHp));
+        Adventure.Checkpoint(wr, player);
     }
 
     /// <summary>Removes one bag entry so the world can drop it onto the current cell as an authoritative ground-item stack entry.</summary>
@@ -111,6 +122,9 @@ public static class Inventory {
     public static void ApplyInventoryMutation(GameWorldRef wr, GameWorldPlayer player, InventoryMutationResult result) {
         ArgumentNullException.ThrowIfNull(player);
         ArgumentNullException.ThrowIfNull(result);
+        player.RecalculateAdventureStats();
+        Adventure.Send(wr, player);
+        if (result.Equipped.Count > 0 || result.Unequipped.Count > 0) Spawn.SendInitialState(wr, player, includeSpells: false);
 
         foreach (var removedItemUid in result.RemovedFromBagItemUids) {
             NetworkManager.SendToPlayer(player, NetworkManager.CreateItemRemovedFromBag(removedItemUid));

@@ -3,6 +3,9 @@ export const PLAYER_RUNNING = 'C10.mp3';
 export const PLAYER_WALKING = 'C8.mp3';
 export const PLAYER_MELEE_ATTACK = 'C18.mp3';
 export const PLAYER_TAKE_UNARMED_DAMAGE = 'C5.mp3';
+/** Classic client gendered hurt/knockback voices. */
+export const MALE_TAKE_DAMAGE = 'C12.mp3';
+export const FEMALE_TAKE_DAMAGE = 'C13.mp3';
 export const PLAYER_CAST = 'C16.mp3';
 export const SPELL_CAST_FAILED = 'C17.mp3';
 export const MALE_CRITICAL_ATTACK = 'C23.mp3';
