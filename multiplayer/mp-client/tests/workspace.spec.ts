@@ -20,6 +20,10 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     if(await page.getByRole('button',{name:/Entendido/}).isVisible())await page.getByRole('button',{name:/Entendido/}).click();
     const panels=['inventory','chat','cast'];
     for(const p of panels)await expect(page.locator(`[data-dialog-id="${p}-dialog"]`)).toBeVisible();
+    await expect(page.getByRole('img',{name:'Personaje con su equipo actual'})).toBeVisible();
+    await expect(page.getByRole('region',{name:'Estadísticas del personaje'})).toContainText(/Nivel \d+/);
+    const minimapBox=await page.locator('[data-dialog-id="minimap-dialog"]').boundingBox();
+    expect(minimapBox?.width??0).toBeGreaterThanOrEqual(220);
     await expect(page.getByRole('region',{name:'Atajos rápidos'})).toBeVisible();
     async function noOverlap(){
         const boxes=await page.locator('.adventure-hud,[data-dialog-id="inventory-dialog"],[data-dialog-id="chat-dialog"],[data-dialog-id="cast-dialog"],.hotbar,#game-container').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height};}));
@@ -83,7 +87,13 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     for(const asset of ['merchant','blacksmith','warehouse','archmage'])expect((await page.request.get(`/assets/darke/ui/npc-${asset}-v2.png`)).ok()).toBe(true);
     await page.evaluate(async()=>{const store=await import('/src/adventure/store.ts'),proto=await import('/src/proto/generated/network.ts');const sample=proto.ProgressionUpdated.create({level:2,maxLevel:200,maxHp:100,hp:100,maxMana:60,mana:60,maxStamina:100,stamina:100,nextLevel:120n,service:'shop'});store.publishAdventure(sample,{},()=>{});(window as any).__qaNpcTimer=setInterval(()=>store.publishAdventure(sample,{},()=>{}),10);});
     await expect(page.getByRole('dialog',{name:'Diálogo con Liora'})).toBeVisible();await expect(page.getByAltText('Liora, Mercader de Aresden')).toBeVisible();
-    await page.screenshot({path:'test-results/workspace-npc-dialogue.png',fullPage:true});await page.evaluate(()=>clearInterval((window as any).__qaNpcTimer));
+    await page.screenshot({path:'test-results/workspace-npc-dialogue.png',fullPage:true});
+    await page.getByRole('button',{name:/Ver sus servicios/}).click();
+    await expect(page.getByRole('dialog',{name:'Mercado y provisiones'})).toBeVisible();
+    await expect(page.locator('.economy-offer-grid').first()).toBeVisible();
+    await page.locator('.economy').screenshot({path:'test-results/workspace-parchment-shop.png'});
+    await page.evaluate(async()=>{clearInterval((window as any).__qaNpcTimer);const ui=await import('/src/adventure/economyUi.ts');ui.closeEconomyPanel()});
+    const lingeringDialogue=page.getByRole('button',{name:'Cerrar diálogo'});if(await lingeringDialogue.isVisible())await lingeringDialogue.click();
     await page.setViewportSize({width:1366,height:768});await noOverlap();await page.screenshot({path:'test-results/workspace-laptop.png',fullPage:true});
     const slots=await page.locator('.inventory-slot').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height};}));
     for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){const a=slots[i],b=slots[j];expect(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>1&&Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>1).toBe(false);}

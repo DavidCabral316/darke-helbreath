@@ -16,6 +16,7 @@ import {
 } from '../../constants/EventNames';
 import { setInventoryItemHoverInfo, setInventoryItemHoverOverlaySuppressed } from '../store/InventoryItemHoverOverlay.store';
 import { Gender } from '../../Types';
+import {CharacterStatsCard,EquippedCharacterPreview} from '../../adventure/CharacterSheet';
 
 interface InventoryDialogProps {
     position: { x: number; y: number };
@@ -802,6 +803,7 @@ export function InventoryDialog({
                         };
                         return (
                             <>
+                                <EquippedCharacterPreview />
                                 {renderEquippableSlot(ItemTypes.HELMET)}
                                 {renderEquippableSlot(ItemTypes.WEAPON)}
                                 {renderEquippableSlot(ItemTypes.ARMOR)}
@@ -818,6 +820,7 @@ export function InventoryDialog({
                         );
                     })()}
                 </div>
+                <CharacterStatsCard />
                 <div
                     ref={setBagAreaRef}
                     className={`inventory-bag-area${isBagDropTarget ? ' inventory-bag-area-drop-target' : ''}`}

@@ -1,5 +1,5 @@
 /* Dedicated rails leave the playfield unobstructed, in both browser modes. */
-.adventure-workspace {--rail-left:248px;--rail-right:324px;--dock-bottom:206px;--game-top:46px;overflow:hidden;}
+.adventure-workspace {--rail-left:248px;--rail-right:360px;--dock-bottom:206px;--game-top:46px;--minimap-size:272px;overflow:hidden;}
 html:has(body.adventure-workspace),.adventure-workspace #root {height:100dvh;overflow:hidden;}
 .adventure-workspace:has(:fullscreen) {--game-top:8px;}
 .adventure-workspace #game-wrapper {height:calc(100dvh - 38px);}
@@ -9,24 +9,28 @@ html:has(body.adventure-workspace),.adventure-workspace #root {height:100dvh;ove
 .adventure-workspace .adventure-hud {left:8px;top:var(--game-top);width:var(--rail-left);box-sizing:border-box;max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 8px);z-index:10000;}
 .adventure-workspace .draggable-dialog {box-sizing:border-box;min-width:0!important;max-width:calc(100vw - 16px);}
 .adventure-workspace [data-dialog-id="minimap-dialog"] .draggable-dialog-content {padding:0!important;overflow:hidden;}
-.adventure-workspace [data-dialog-id="minimap-dialog"] .draggable-dialog-content>div {width:152px!important;height:152px!important;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] .draggable-dialog-content>div {width:var(--minimap-size)!important;height:var(--minimap-size)!important;}
 .adventure-workspace [data-dialog-id="minimap-dialog"] [data-resize-handle] {display:none;}
 .adventure-workspace[data-world-id^="darke-"] [data-dialog-id="minimap-dialog"] {display:none!important;}
 .adventure-workspace .draggable-dialog-content {min-height:0;overflow:auto;}
-.adventure-workspace [data-dialog-id="inventory-dialog"] {left:auto!important;right:8px;top:calc(var(--game-top) + 164px)!important;width:var(--rail-right);height:calc(100dvh - var(--game-top) - 172px);max-height:none!important;transform:none!important;}
-.adventure-workspace [data-dialog-id="minimap-dialog"] {left:auto!important;right:8px;top:var(--game-top)!important;width:156px!important;height:156px!important;transform:none!important;overflow:hidden;}
-.adventure-workspace [data-dialog-id="minimap-dialog"] canvas {max-width:152px!important;max-height:152px!important;}
+.adventure-workspace [data-dialog-id="inventory-dialog"] {left:auto!important;right:8px;top:calc(var(--game-top) + var(--minimap-size) + 12px)!important;width:var(--rail-right);height:calc(100dvh - var(--game-top) - var(--minimap-size) - 20px);max-height:none!important;transform:none!important;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] {left:auto!important;right:8px;top:var(--game-top)!important;width:calc(var(--minimap-size) + 4px)!important;height:calc(var(--minimap-size) + 4px)!important;transform:none!important;overflow:hidden;}
+.adventure-workspace [data-dialog-id="minimap-dialog"] :is(canvas,img) {max-width:var(--minimap-size)!important;max-height:var(--minimap-size)!important;}
 .adventure-workspace [data-dialog-id="chat-dialog"] {left:8px!important;top:auto!important;bottom:8px;width:320px;height:calc(var(--dock-bottom) - 8px);max-height:none!important;transform:none!important;}
 .adventure-workspace [data-dialog-id="chat-dialog"] .draggable-dialog-content {flex:1;padding:8px;}
 .adventure-workspace .chat-panel {width:100%!important;height:100%!important;gap:6px!important;}
 .adventure-workspace [data-dialog-id="cast-dialog"] {left:336px!important;top:auto!important;bottom:8px;width:160px;height:calc(var(--dock-bottom) - 8px);max-height:none!important;transform:none!important;}
 .adventure-workspace [data-dialog-id="cast-dialog"] .draggable-dialog-content {padding:10px;}
 .adventure-workspace .inventory-dialog-content {min-width:0;width:100%;}
-.adventure-workspace .inventory-equipped-area {grid-template-columns:repeat(4,minmax(0,1fr));padding:8px;}
+.adventure-workspace .inventory-equipped-area {grid-template-columns:54px minmax(0,1fr) minmax(0,1fr) 54px;grid-template-rows:repeat(4,44px) 48px;grid-template-areas:"hlt hero hero ut" "nck hero hero wpn" "arm hero hero shld" "hbk hero hero cpe" "lrg leg bts rrg";gap:5px;padding:7px;}
+.adventure-workspace .inventory-equipped-area .inventory-slot {width:auto;height:auto;min-height:0;align-self:stretch;justify-self:stretch;}
+.adventure-workspace .inventory-dialog-content {height:100%;box-sizing:border-box;overflow:hidden!important;}
+.adventure-workspace .inventory-bag-area {flex:1;min-height:105px;}
 .adventure-workspace .inventory-slot {min-width:0;}
 @media(max-height:850px) and (min-width:901px) {
  .adventure-workspace .inventory-slot {box-sizing:border-box;min-height:0;max-height:100%;}
- .adventure-workspace .inventory-equipped-area {grid-template-rows:45px 35px 70px 60px 45px;gap:4px;padding:6px;}
+ .adventure-workspace {--minimap-size:220px;}
+ .adventure-workspace .inventory-equipped-area {grid-template-rows:repeat(4,37px) 41px;gap:4px;padding:5px;}
  .adventure-workspace [data-dialog-id="inventory-dialog"] .draggable-dialog-content {padding:8px;}
 }
 .adventure-workspace [data-dialog-id="main-dialog"] {left:calc(var(--rail-left) + 16px)!important;top:var(--game-top)!important;max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 16px)!important;z-index:20000!important;}
@@ -49,7 +53,7 @@ html:has(body.adventure-workspace),.adventure-workspace #root {height:100dvh;ove
 .adventure-workspace [data-docked] .draggable-dialog-header {cursor:default!important;}
 .adventure-workspace :is([data-dialog-id="camera-dialog"],[data-dialog-id="sound-dialog"],[data-dialog-id="performance-dialog"],[data-dialog-id="map-dialog"],[data-dialog-id="player-dialog"],[data-dialog-id="server-dialog"]) {left:calc(var(--rail-left) + 16px)!important;top:var(--game-top)!important;max-width:calc(100vw - var(--rail-left) - var(--rail-right) - 32px);max-height:calc(100dvh - var(--game-top) - var(--dock-bottom) - 16px)!important;transform:none!important;}
 @media(max-width:1200px) {
- .adventure-workspace {--rail-left:220px;--rail-right:290px;--dock-bottom:226px;}
+ .adventure-workspace {--rail-left:220px;--rail-right:320px;--dock-bottom:226px;--minimap-size:226px;}
  .adventure-workspace [data-dialog-id="chat-dialog"] {width:252px;}
  .adventure-workspace [data-dialog-id="cast-dialog"] {left:268px!important;width:140px;}
  .adventure-workspace .hotbar {left:416px;}
