@@ -147,6 +147,7 @@ import {
     PLAYER_CONFIRM_SPELL_TARGET,
     NPC_DEAD,
     OUT_UI_GAME_STATS_UPDATE,
+    OUT_UI_MINIMAP_PORTALS_CHANGED,
     OUT_UI_HOVER_ATTACKABLE_TARGET,
     OUT_UI_HOVER_GROUND_ITEM,
     OUT_UI_HOVER_GROUND_ITEM_INFO,
@@ -1624,6 +1625,7 @@ export class GameWorld extends Scene {
     private setTeleportLocs(teleportLocs: TeleportLocSet[] | undefined): void {
         this.teleportTargetsBySourceCell.clear();
         this.lastTeleportLocSets = teleportLocs ? [...teleportLocs] : [];
+        EventBus.emit(OUT_UI_MINIMAP_PORTALS_CHANGED, this.lastTeleportLocSets);
         if (!teleportLocs?.length) {
             this.tryPushWorldTeleportCellsToCurrentMap();
             return;

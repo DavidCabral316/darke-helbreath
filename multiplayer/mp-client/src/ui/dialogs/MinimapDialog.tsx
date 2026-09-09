@@ -22,6 +22,17 @@ const DEFAULT_MINIMAP_SIZE = 300;
 const RESIZE_HANDLE_SIZE = 20;
 const PLAYER_DOT_SIZE = 8;
 const PLAYER_DOT_BORDER = 2;
+const PORTAL_DOT_SIZE = 10;
+
+function portalPresentation(worldId: string): { color: string; icon: string; kind: string } {
+    if (/(shop|wrus|bsmith|wzdtwr|cityhall|cmdhall|gldhall|cath)/i.test(worldId)) {
+        return { color: '#f5b942', icon: '◆', kind: 'Servicio' };
+    }
+    if (/(dend|d1|dglv|toh|infernia|abaddon|dungeon|huntzone)/i.test(worldId)) {
+        return { color: '#c879ff', icon: '▲', kind: 'Zona peligrosa' };
+    }
+    return { color: '#4de3ff', icon: '●', kind: 'Salida de mapa' };
+}
 
 interface ResizeHandleConfig {
     corner: Exclude<ResizeCorner, undefined>;
@@ -101,6 +112,7 @@ export function MinimapDialog({
     const minimapImage = useStore(minimapDialogStore, (state) => state.minimapImage);
     const minimapScale = useStore(minimapDialogStore, (state) => state.minimapScale);
     const minimapOriginalSize = useStore(minimapDialogStore, (state) => state.minimapOriginalSize);
+    const portalLocs = useStore(minimapDialogStore, (state) => state.portalLocs);
     const [minimapSize, setMinimapSize] = useState(DEFAULT_MINIMAP_SIZE);
     const [minimapPlayerDot, setMinimapPlayerDot] = useState<{ x: number; y: number } | undefined>(undefined);
     const [resizingCorner, setResizingCorner] = useState<ResizeCorner>(undefined);
@@ -280,6 +292,53 @@ export function MinimapDialog({
                                 boxShadow: '0 0 4px rgba(66, 135, 245, 0.8)'
                             }}
                         />
+                    )}
+                    {minimapOriginalSize > 0 && portalLocs.map((portal, index) => {
+                        if (!portal.locs.length) return null;
+                        const worldX = portal.locs.reduce((sum, loc) => sum + loc.x, 0) / portal.locs.length;
+                        const worldY = portal.locs.reduce((sum, loc) => sum + loc.y, 0) / portal.locs.length;
+                        const markerX = convertWorldPosToPixelPos(worldX) * minimapScale;
+                        const markerY = convertWorldPosToPixelPos(worldY) * minimapScale;
+                        const presentation = portalPresentation(portal.target.worldId);
+                        const title = `${presentation.kind}: ${portal.target.worldId}`;
+                        return (
+                            <div
+                                key={`${portal.target.worldId}-${index}`}
+                                role="img"
+                                aria-label={title}
+                                title={title}
+                                style={{
+                                    position: 'absolute',
+                                    left: `${(markerX / minimapOriginalSize) * 100}%`,
+                                    top: `${(markerY / minimapOriginalSize) * 100}%`,
+                                    width: `${PORTAL_DOT_SIZE}px`,
+                                    height: `${PORTAL_DOT_SIZE}px`,
+                                    color: presentation.color,
+                                    fontSize: '12px',
+                                    fontWeight: 900,
+                                    lineHeight: `${PORTAL_DOT_SIZE}px`,
+                                    textAlign: 'center',
+                                    transform: 'translate(-50%, -50%)',
+                                    pointerEvents: 'auto',
+                                    textShadow: '0 0 2px #000, 0 0 4px #000',
+                                    filter: `drop-shadow(0 0 3px ${presentation.color})`,
+                                    zIndex: 4,
+                                }}
+                            >
+                                {presentation.icon}
+                            </div>
+                        );
+                    })}
+                    {portalLocs.length > 0 && (
+                        <div style={{
+                            position: 'absolute', left: 6, bottom: 6, padding: '3px 6px',
+                            color: '#eee1c1', background: 'rgba(18, 10, 6, .78)', border: '1px solid #705126',
+                            borderRadius: 3, fontSize: 10, pointerEvents: 'none', zIndex: 5,
+                        }}>
+                            <span style={{ color: '#4de3ff' }}>●</span> salida&nbsp;
+                            <span style={{ color: '#f5b942' }}>◆</span> servicio&nbsp;
+                            <span style={{ color: '#c879ff' }}>▲</span> peligro
+                        </div>
                     )}
                     {/* Resize handles */}
                     {RESIZE_HANDLES.map(({ corner, cursor, gradient, position }) => (

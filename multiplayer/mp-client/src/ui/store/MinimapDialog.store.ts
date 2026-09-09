@@ -1,9 +1,9 @@
 import { EventBus } from '../../game/EventBus';
 import { createDialogStore } from './utils';
-import { CachedMinimap } from '../../Types';
+import { CachedMinimap, TeleportLocSet } from '../../Types';
 import { Minimap } from '../../constants/Assets';
 import { convertWorldPosToPixelPos } from '../../utils/CoordinateUtils';
-import { OUT_UI_MINIMAP_CAPTURED, OUT_UI_MINIMAP_LOADING } from '../../constants/EventNames';
+import { OUT_UI_MINIMAP_CAPTURED, OUT_UI_MINIMAP_LOADING, OUT_UI_MINIMAP_PORTALS_CHANGED } from '../../constants/EventNames';
 
 export interface MinimapLoadingPayload {
     minimap: Minimap;
@@ -16,6 +16,7 @@ interface PreGeneratedMinimapCache {
     minimapImage: string;
     minimapScale: number;
     minimapOriginalSize: number;
+    portalLocs: TeleportLocSet[];
 }
 
 /** Cache for pre-generated minimaps by map base name (e.g. 'aresden') */
@@ -37,6 +38,7 @@ const initialState: MinimapDialogState = {
     minimapImage: undefined,
     minimapScale: 0,
     minimapOriginalSize: 0,
+    portalLocs: [],
 };
 
 const { store: minimapDialogStore, setOpen: setMinimapDialogOpen } = createDialogStore(initialState);
@@ -134,4 +136,8 @@ EventBus.on(OUT_UI_MINIMAP_CAPTURED, (data: CachedMinimap) => {
         minimapScale: data.scale,
         minimapOriginalSize: data.originalSize,
     }));
+});
+
+EventBus.on(OUT_UI_MINIMAP_PORTALS_CHANGED, (portalLocs: TeleportLocSet[]) => {
+    minimapDialogStore.setState((state) => ({ ...state, portalLocs: [...portalLocs] }));
 });

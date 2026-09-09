@@ -332,6 +332,8 @@ export const OUT_UI_CAMERA_FOLLOW_PLAYER_CHANGED = 'ui-receive-camera-follow-pla
 export const OUT_UI_MINIMAP_CAPTURED = 'ui-minimap-captured';
 /** Emitted when a map starts loading. Payload: { minimap, mapName, mapSizeX?, mapSizeY? } */
 export const OUT_UI_MINIMAP_LOADING = 'ui-minimap-loading';
+/** Phaser -> React: authoritative portal groups for the currently loaded world. */
+export const OUT_UI_MINIMAP_PORTALS_CHANGED = 'ui-minimap-portals-changed';
 /** Phaser → React: local player died (distinct string from intra-Phaser `PLAYER_DIED`). */
 export const OUT_UI_PLAYER_DIED = 'player-died';
 export const OUT_MAP_LOADED = 'map-loaded';

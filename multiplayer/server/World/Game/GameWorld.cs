@@ -825,10 +825,19 @@ public sealed partial class GameWorld : IWorkerWorld {
             return;
         }
 
+        // Tutorial characters return to their refuge. Everywhere else, prefer the
+        // first configured portal (the return/entry portal in our world config)
+        // so a death can never strand a player in the middle of an unfamiliar map.
+        var resurrectionX = id == Adventure.TrainingWorld ? Adventure.SpawnX : occupancyTracker.SizeX / 2;
+        var resurrectionY = id == Adventure.TrainingWorld ? Adventure.SpawnY : occupancyTracker.SizeY / 2;
+        if (id != Adventure.TrainingWorld && id != "aresden" && teleportLocs.Count > 0 && teleportLocs[0].Locs.Length > 0) {
+            resurrectionX = (int)Math.Round(teleportLocs[0].Locs.Average(loc => loc.X));
+            resurrectionY = (int)Math.Round(teleportLocs[0].Locs.Average(loc => loc.Y));
+        }
+
         var maxRadius = Math.Max(occupancyTracker.SizeX, occupancyTracker.SizeY);
         var loc = Location.FindNearestFreeLocation(occupancyTracker.IsFreeAndNotTeleportCell,
-            id == Adventure.TrainingWorld ? Adventure.SpawnX : occupancyTracker.SizeX / 2,
-            id == Adventure.TrainingWorld ? Adventure.SpawnY : occupancyTracker.SizeY / 2, maxRadius);
+            resurrectionX, resurrectionY, maxRadius);
         if (!loc.HasValue) {
             Console.WriteLine($"[GameWorld:{id}] Resurrect failed: no free cell near ({player.PosX},{player.PosY}) for player {player.PlayerId}.");
             return;
@@ -857,7 +866,12 @@ public sealed partial class GameWorld : IWorkerWorld {
             NetworkManager.SendToPlayer(recipient, resMsg);
             NetworkManager.SendToPlayer(recipient, NetworkManager.CreateSpawnProtectionEnabled(player.PlayerId));
         }
-        Adventure.Send(gameWorldRef, player, "Volviste al refugio. Conservás tu experiencia y tus objetos.");
+        var resurrectionMessage = id == Adventure.TrainingWorld
+            ? "Volviste al refugio. Conservás tu experiencia y tus objetos."
+            : id == "aresden"
+                ? "Volviste al centro de Aresden. Conservás tu experiencia y tus objetos."
+                : "Reapareciste junto al portal de entrada. Conservás tu experiencia y tus objetos.";
+        Adventure.Send(gameWorldRef, player, resurrectionMessage);
         Adventure.Checkpoint(gameWorldRef, player);
     }
 
