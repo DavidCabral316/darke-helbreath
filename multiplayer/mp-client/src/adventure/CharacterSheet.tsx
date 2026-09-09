@@ -14,10 +14,11 @@ export function EquippedCharacterPreview(){
  const hair=useStore(playerDialogStore,s=>s.hairStyleIndex),clothes=useStore(playerDialogStore,s=>s.underwearColorIndex);
  const [error,setError]=useState(false);
  const signature=useMemo(()=>Object.entries(equipped).map(([slot,item])=>`${slot}:${item?.itemId??0}`).join('|'),[equipped]);
+ const stableEquipped=useMemo(()=>equipped,[signature]);
  useEffect(()=>{let cancelled=false,timer:ReturnType<typeof setInterval>|undefined;const bitmaps:ImageBitmap[]=[];setError(false);
   async function start(){
    const base={human:PlayerAppearanceManager.getHumanSpriteName(gender,skin),hairStyleIndex:hair,underwearColorIndex:clothes};
-   const gear=PlayerAppearanceManager.resolveGearFromEquippedItems(base,equipped,gender);
+   const gear=PlayerAppearanceManager.resolveGearFromEquippedItems(base,stableEquipped,gender);
    const allowed=new Set([gear.human,gear.underwear,gear.hauberk,gear.leggings,gear.boots,gear.helm,gear.armor,gear.cape,gear.weapon,gear.shield,gear.accessory,gender===Gender.MALE?'mhr':'whr'].filter(Boolean));
    let configs=PlayerAppearanceManager.buildAssetConfigs(4,PlayerState.IdlePeaceMode,gear).configs.filter(config=>allowed.has(config.spriteName));
    if(gear.helm)configs=configs.filter(c=>c.spriteName!==(gender===Gender.MALE?'mhr':'whr'));
@@ -31,7 +32,7 @@ export function EquippedCharacterPreview(){
    draw();timer=setInterval(draw,180);
   }
   start().catch(()=>{if(!cancelled)setError(true)});return()=>{cancelled=true;clearInterval(timer);bitmaps.forEach(b=>b.close())};
- },[gender,skin,hair,clothes,signature,equipped]);
+ },[gender,skin,hair,clothes,stableEquipped]);
  return <div className="equipped-character-preview"><canvas ref={canvas} width={220} height={220} role="img" aria-label="Personaje con su equipo actual"/>{error&&<small>Vista no disponible</small>}</div>;
 }
 
