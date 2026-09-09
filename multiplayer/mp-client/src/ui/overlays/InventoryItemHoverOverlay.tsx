@@ -7,7 +7,7 @@ import {useFullscreenPortalTarget} from '../hooks/utils';
 import {useAdventure} from '../../adventure/store';
 import type {EquipmentSlot} from '../../constants/Items';
 
-type Bonus={damage:number;defense:number;level:number;magic:number;mana:number};
+type Bonus={damage:number;defense:number;level:number;magic:number;mana:number;attackSpeed:number};
 export function InventoryItemHoverOverlay(){
     const info=useStore(inventoryItemHoverOverlayStore,s=>s.hoverInfo),suppress=useStore(inventoryItemHoverOverlayStore,s=>s.suppressOverlay);
     const equipment=useStore(inventoryDialogStore,s=>s.equippedItems);
@@ -26,7 +26,8 @@ export function InventoryItemHoverOverlay(){
         {info.stackable&&<p>Cantidad: {info.quantity??1}</p>}
         {info.itemId===36?<p>Recupera hasta 50 de vida. Espera: 2 segundos.</p>:info.itemId===165?<p>Recupera hasta 40 de maná. Espera: 2 segundos.</p>:<>
             {!rules?<p>No se pudieron cargar las estadísticas todavía.</p>:<>
-                <p>{[['Daño',bonus?.damage],['Defensa',bonus?.defense],['Magia',bonus?.magic],['Maná',bonus?.mana]].filter(x=>x[1]).map(x=>`${x[0]} +${x[1]}`).join(' · ')||'Sin bonificación de combate en esta alfa.'}</p>
+                <p>{[['Daño',bonus?.damage],['Defensa',bonus?.defense],['Magia',bonus?.magic],['Maná',bonus?.mana]].filter(x=>x[1]).map(x=>`${x[0]} +${x[1]}`).join(' · ')||'Sin bonificación directa de combate.'}</p>
+                {!!bonus?.attackSpeed&&<p className={bonus.attackSpeed<0?'item-gain':'item-loss'}>Velocidad: {bonus.attackSpeed<0?'más rápida':'más lenta'} ({Math.abs(bonus.attackSpeed)} ms)</p>}
                 <p className={(stats?.level??1)<(bonus?.level??1)?'item-loss':''}>Nivel requerido: {bonus?.level??1}</p>
                 {alreadyEquipped?<p>✓ Equipado actualmente</p>:stats&&info.itemType!=='misc'&&<><p>Al reemplazar tu equipo actual:</p>{delta('Daño','damage',stats.damage)}{delta('Defensa','defense',stats.defense)}</>}
             </>}

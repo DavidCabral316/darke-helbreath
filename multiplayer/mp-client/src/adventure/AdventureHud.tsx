@@ -16,6 +16,7 @@ export function AdventureHud() {
     const {stats:s,notice,connected} = useAdventure();
     const [attributes,setAttributes] = useState(false);
     const [help,setHelp] = useState(!sessionStorage.getItem('darke.adventure.welcome'));
+    const [intro,setIntro] = useState(!localStorage.getItem('darke.lore.intro'));
     const bag = useStore(inventoryDialogStore,s=>s.baggedItems);
     const target = useStore(monsterHoverOverlayStore,s=>s.monsterInfo);
     const worldId=s?.worldId;
@@ -26,7 +27,8 @@ export function AdventureHud() {
     const xp = Number(s.experience-s.levelStart); const xpMax = Number(s.nextLevel-s.levelStart);
     const worldNames:Record<string,string>={training:'Patio de iniciación',aresden:'Aresden',elvine:'Elvine',middleland:'Middleland','darke-shop':'Mercado del Umbral','darke-vault':'Almacén del Umbral','darke-bsmith':'Forja del Umbral','darke-magic':'Santuario arcano',areshop:'Tienda de Aresden',arewrus:'Almacén de Aresden',arebsmith:'Forja de Aresden',arewzdtwr:'Santuario de Aresden',elvshop:'Tienda de Elvine',elvwrus:'Almacén de Elvine',elvbsmith:'Forja de Elvine',elvwzdtwr:'Santuario de Elvine'};
     const location=worldNames[s.worldId]??s.worldId??(s.sanctuary?'✦ Refugio seguro':'Tierras desconocidas');
-    return <aside className="adventure-hud" aria-label="Estado del aventurero">
+    return <><aside className="adventure-hud" aria-label="Estado del aventurero">
+        <img className="adventure-portrait" src="/assets/darke/ui/hud-heroine.png" alt="Heroína adulta de Aresden"/>
         <header><span>PRIMERA AVENTURA</span><strong>Nivel {s.level}</strong></header>
         <div className="adventure-location">{location} · {s.x}, {s.y}</div>
         <div className="adventure-gold">🪙 {s.gold} oro</div>
@@ -48,5 +50,5 @@ export function AdventureHud() {
         <GameMasterPanel/>
         <div className="adventure-actions"><button onClick={()=>setHelp(!help)}>Primeros pasos</button><button onClick={toggleControlsDialog}>Menú del juego</button></div>
         {help&&<section className="adventure-help"><h2>Del refugio al primer combate</h2><ol><li>Movete con clic sobre el suelo. El refugio está alrededor de 150,150.</li><li>Buscá slimes cerca de <b>141,140</b>. Hacé clic sobre un enemigo en modo ataque.</li><li>Después probá hormigas (132,141), serpientes (141,132) y orcos (132,132).</li><li>Cada muerte da XP y oro. Recogé el botín haciendo clic; también pueden caer piezas de armadura.</li><li>Los comercios ahora son lugares físicos: cruzá la puerta de cada edificio y acercate a su NPC.</li><li>La tienda vende pociones, la forja armas y armaduras, el almacén guarda objetos y el santuario enseña magia.</li><li>Las salidas de la ciudad conducen a Middleland; desde allí podés viajar entre Aresden y Elvine.</li><li>Al morir, elegí Volver al refugio. No perdés XP, oro ni equipo.</li></ol><button onClick={()=>{sessionStorage.setItem('darke.adventure.welcome','1');setHelp(false);}}>Entendido, ¡a explorar!</button></section>}
-    </aside>;
+    </aside>{intro&&<div className="lore-backdrop" role="dialog" aria-modal="true" aria-labelledby="lore-title"><section className="lore-intro"><div><span>CRÓNICAS DE HELBREATH</span><h1 id="lore-title">Dos reinos. Una tierra herida.</h1><p>Aresden y Elvine disputan desde hace generaciones el corazón de Middleland. Entre portales antiguos, criaturas corrompidas y secretos arcanos, una nueva estirpe de aventureros decidirá si este mundo encuentra equilibrio… o arde para siempre.</p><button onClick={()=>{localStorage.setItem('darke.lore.intro','1');setIntro(false)}}>Comenzar mi historia</button></div></section></div>}</>;
 }

@@ -16,6 +16,7 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     await page.evaluate(async()=>{const path='/src/game/EventBus.ts';const {EventBus}=await import(path);EventBus.on('current-scene-ready',(scene:any)=>{if(scene.sys.settings.key==='GameWorld')(window as any).__qaScene=scene;});});
     const hud=page.getByRole('complementary',{name:'Estado del aventurero'});
     await expect(hud).toBeVisible({timeout:100000});
+    if(await page.getByRole('button',{name:'Comenzar mi historia'}).isVisible())await page.getByRole('button',{name:'Comenzar mi historia'}).click();
     if(await page.getByRole('button',{name:/Entendido/}).isVisible())await page.getByRole('button',{name:/Entendido/}).click();
     const panels=['inventory','chat','cast'];
     for(const p of panels)await expect(page.locator(`[data-dialog-id="${p}-dialog"]`)).toBeVisible();
@@ -53,11 +54,11 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     await page.screenshot({path:'test-results/workspace-tooltip.png',fullPage:true});
     // Isolated UI fixture: preview an unowned sword; it is never added to the account.
     await page.evaluate(async()=>{const path='/src/ui/store/InventoryItemHoverOverlay.store.ts';const m=await import(path);m.setInventoryItemHoverInfo({itemName:'Long Sword',itemType:'weapon',itemId:53,itemUid:'qa-preview',source:'ground',mouseX:700,mouseY:400});});
-    await expect(page.getByRole('tooltip').locator('.item-gain')).toContainText('+4');
+    await expect(page.getByRole('tooltip').locator('.item-gain').filter({hasText:'Daño'})).toContainText('+4');
     await expect(page.getByRole('tooltip')).toContainText('Nivel requerido: 3');
     await page.screenshot({path:'test-results/workspace-comparison.png',fullPage:true});
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts',b='/src/ui/store/InventoryItemHoverOverlay.store.ts';const inv=await import(a),hover=await import(b);(window as any).__qaWeapon=inv.inventoryDialogStore.state.equippedItems.weapon;inv.setEquippedItem('weapon',{itemId:53,itemUid:'qa-strong'});hover.setInventoryItemHoverInfo({itemName:'Short Sword',itemType:'weapon',itemId:3,itemUid:'qa-preview',source:'ground',mouseX:700,mouseY:400});});
-    await expect(page.getByRole('tooltip').locator('.item-loss')).toContainText('-4');
+    await expect(page.getByRole('tooltip').locator('.item-loss').filter({hasText:'Daño'})).toContainText('-4');
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.setEquippedItem('weapon',(window as any).__qaWeapon);});
     const audio=await page.evaluate(async()=>{
         const path='/src/game/objects/Player.ts';const {Player}=await import(path);const played:string[]=[];

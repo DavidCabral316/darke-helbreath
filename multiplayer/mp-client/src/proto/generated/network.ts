@@ -514,6 +514,7 @@ export interface ProgressionUpdated {
   warehouse: InventoryItemEntry[];
   worldId: string;
   tradeRevision: bigint;
+  questRewardsMask: number;
 }
 
 export interface TemporaryEffectApplied {
@@ -6677,6 +6678,7 @@ function createBaseProgressionUpdated(): ProgressionUpdated {
     warehouse: [],
     worldId: "",
     tradeRevision: 0n,
+    questRewardsMask: 0,
   };
 }
 
@@ -6785,6 +6787,9 @@ export const ProgressionUpdated: MessageFns<ProgressionUpdated> = {
         throw new globalThis.Error("value provided for field message.tradeRevision of type int64 too large");
       }
       writer.uint32(240).int64(message.tradeRevision);
+    }
+    if (message.questRewardsMask !== 0) {
+      writer.uint32(248).int32(message.questRewardsMask);
     }
     return writer;
   },
@@ -7046,6 +7051,14 @@ export const ProgressionUpdated: MessageFns<ProgressionUpdated> = {
           message.tradeRevision = reader.int64() as bigint;
           continue;
         }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.questRewardsMask = reader.int32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7090,6 +7103,7 @@ export const ProgressionUpdated: MessageFns<ProgressionUpdated> = {
     message.warehouse = object.warehouse?.map((e) => InventoryItemEntry.fromPartial(e)) || [];
     message.worldId = object.worldId ?? "";
     message.tradeRevision = object.tradeRevision ?? 0n;
+    message.questRewardsMask = object.questRewardsMask ?? 0;
     return message;
   },
 };
