@@ -12,7 +12,9 @@ public partial class GameWorldPlayer {
     public int EquipmentMana { get; private set; }
     public int EquipmentMagic { get; private set; }
     public int MaxStamina => 100 + (Progress.Agility - 10) * 3 + (Progress.Level - 1) * 3 + VeteranGrowth + MythicGrowth;
-    public int MagicDamage => 8 + Progress.Intelligence + Progress.Level * 2 + EliteGrowth + MythicGrowth * 2 + EquipmentMagic;
+    // Intelligence is the principal source of spell power. Level contributes only
+    // a modest baseline, so investing in Strength never improves magic damage.
+    public int MagicDamage => 6 + Progress.Intelligence * 2 + Progress.Level / 4 + EliteGrowth / 2 + MythicGrowth + EquipmentMagic;
     public int MagicDamageForSpell(int spellId) => Adventure.Rules.Spells.TryGetValue(spellId, out var spell)
         ? Math.Max(1, MagicDamage * spell.PowerPercent / 100)
         : MagicDamage;
@@ -20,16 +22,16 @@ public partial class GameWorldPlayer {
     private DateTimeOffset lastCombatAt, lastPotionAt, lastRecoveryAt;
 
     public void RecalculateAdventureStats() {
-        var weapon = 0; var armor = 0; EquipmentMana = 0; EquipmentMagic = 0;
+        var weapon = 0; var armor = 0; var weaponSpeed = 0; EquipmentMana = 0; EquipmentMagic = 0;
         foreach (var item in inventoryManager.EquippedItems.Values) {
-            if (Adventure.Rules.Equipment.TryGetValue(item.ItemId, out var bonus)) { weapon += bonus.Damage; armor += bonus.Defense; EquipmentMana += bonus.Mana; EquipmentMagic += bonus.Magic; }
+            if (Adventure.Rules.Equipment.TryGetValue(item.ItemId, out var bonus)) { weapon += bonus.Damage; armor += bonus.Defense; EquipmentMana += bonus.Mana; EquipmentMagic += bonus.Magic; weaponSpeed += bonus.AttackSpeed; }
         }
         maxHp = 100 + (Progress.Vitality - 10) * 5 + (Progress.Level - 1) * 12 + VeteranGrowth * 3 + EliteGrowth * 5 + MythicGrowth * 8;
         hp = Math.Clamp(hp, 0, maxHp);
         damage = 6 + Progress.Strength / 2 + Progress.Level / 3 + EliteGrowth / 2 + MythicGrowth + weapon;
         Defense = (Progress.Agility - 10) / 3 + (Progress.Vitality - 10) / 4 + armor;
         attackRangeCells = 1;
-        attackSpeedMs = Math.Clamp(600 - (Progress.Agility - 10) * 4, 350, 600);
+        attackSpeedMs = Math.Clamp(600 - (Progress.Agility - 10) * 4 + weaponSpeed, 250, 900);
         castSpeedMs = Math.Clamp(1200 - (Progress.Intelligence - 10) * 8, 600, 1200);
         Progress = Progress with { Mana = Math.Clamp(Progress.Mana, 0, MaxMana), Stamina = Math.Clamp(Progress.Stamina, 0, MaxStamina) };
     }
@@ -54,10 +56,11 @@ public partial class GameWorldPlayer {
         if (level > p.Level) { hp = maxHp; Progress = Progress with { Mana = MaxMana, Stamina = MaxStamina }; }
     }
     public bool CanUseSpell(int spellId) => (Progress.KnownSpellsMask & (1 << spellId)) != 0 && Adventure.Rules.Spells.TryGetValue(spellId, out var rule) &&
-        Progress.Level >= rule.Level && Progress.Intelligence >= rule.Intelligence && Progress.Mana >= rule.Mana && !IsDead;
+        (IsGameMaster || (Progress.Level >= rule.Level && Progress.Intelligence >= rule.Intelligence && Progress.Mana >= rule.Mana)) && !IsDead;
     public bool SpendSpellMana(int spellId) {
         if (!CanUseSpell(spellId)) return false;
-        Progress = Progress with { Mana = Progress.Mana - Adventure.Rules.Spells[spellId].Mana }; MarkCombat(); return true;
+        if (!IsGameMaster) Progress = Progress with { Mana = Progress.Mana - Adventure.Rules.Spells[spellId].Mana };
+        MarkCombat(); return true;
     }
     public void MarkCombat() => lastCombatAt = DateTimeOffset.UtcNow;
     public bool CanTrade => !IsDead && !Disconnected && (DateTimeOffset.UtcNow - lastCombatAt).TotalSeconds >= 8;

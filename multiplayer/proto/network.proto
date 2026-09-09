@@ -461,6 +461,7 @@ message ProgressionUpdated {
   int32 gold = 25; repeated int32 known_spells = 26; string service = 27;
   repeated InventoryItemEntry warehouse = 28; string world_id = 29;
   int64 trade_revision = 30;
+  int32 quest_rewards_mask = 31;
 }
 
 message TemporaryEffectApplied {

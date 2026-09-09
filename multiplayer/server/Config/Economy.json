@@ -61,6 +61,86 @@
       "intelligence": 10
     },
     {
+      "id": "dagger",
+      "name": "Daga veloz · daño +4 · muy rápida",
+      "service": "blacksmith",
+      "price": 35,
+      "itemId": 52,
+      "spellId": -1,
+      "level": 1,
+      "intelligence": 10
+    },
+    {
+      "id": "rapier",
+      "name": "Estoque · daño +15 · rápida",
+      "service": "blacksmith",
+      "price": 260,
+      "itemId": 58,
+      "level": 7,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "light-axe",
+      "name": "Hacha ligera · daño +22",
+      "service": "blacksmith",
+      "price": 520,
+      "itemId": 64,
+      "level": 10,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "hammer",
+      "name": "Martillo · daño +27 · lento",
+      "service": "blacksmith",
+      "price": 850,
+      "itemId": 154,
+      "level": 14,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "bastard",
+      "name": "Espada bastarda · daño +32 · lenta",
+      "service": "blacksmith",
+      "price": 1450,
+      "itemId": 60,
+      "level": 18,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "battle-axe",
+      "name": "Hacha de batalla · daño +38 · muy lenta",
+      "service": "blacksmith",
+      "price": 2400,
+      "itemId": 70,
+      "level": 23,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "great-sword",
+      "name": "Mandoble · daño +46 · muy lento",
+      "service": "blacksmith",
+      "price": 3900,
+      "itemId": 62,
+      "level": 28,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
+      "id": "battle-hammer",
+      "name": "Martillo de guerra · daño +55 · devastador",
+      "service": "blacksmith",
+      "price": 6800,
+      "itemId": 155,
+      "level": 35,
+      "spellId": -1,
+      "intelligence": 10
+    },
+    {
       "id": "shield1",
       "name": "Escudo de cuero · defensa +2",
       "service": "blacksmith",
@@ -1279,6 +1359,35 @@
       "level": 115,
       "intelligence": 140,
       "itemId": 0
+    }
+  ],
+  "quests": [
+    {
+      "id": "first-blood",
+      "name": "Primer encargo",
+      "service": "shop",
+      "description": "La mercader necesita que despejes los caminos. Derrota 3 criaturas.",
+      "requiredKills": 3,
+      "gold": 45,
+      "itemId": 36
+    },
+    {
+      "id": "forge-trial",
+      "name": "Prueba de la forja",
+      "service": "blacksmith",
+      "description": "Demuestra que puedes proteger tu equipo. Alcanza 10 victorias contra monstruos.",
+      "requiredKills": 10,
+      "gold": 180,
+      "itemId": 52
+    },
+    {
+      "id": "arcane-pilgrim",
+      "name": "Peregrinación arcana",
+      "service": "magic",
+      "description": "La hechicera observa a quienes sobreviven a 20 combates.",
+      "requiredKills": 20,
+      "gold": 420,
+      "itemId": 165
     }
   ]
 }

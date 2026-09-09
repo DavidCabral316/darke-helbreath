@@ -39,6 +39,14 @@ for (let level = 10; level < 200; level++) {
 const adventure = read('Adventure.json');
 adventure.levelThresholds = thresholds;
 adventure.equipment = Object.fromEntries(Object.entries(adventure.equipment).filter(([id]) => Number(id) < 329));
+Object.assign(adventure.equipment, {
+  3:{damage:5,level:1,attackSpeed:0}, 52:{damage:4,level:1,attackSpeed:-110},
+  53:{damage:9,level:3,attackSpeed:-20}, 54:{damage:13,level:5,attackSpeed:-35},
+  58:{damage:15,level:7,attackSpeed:-75}, 59:{damage:18,level:7,attackSpeed:20},
+  64:{damage:22,level:10,attackSpeed:55}, 154:{damage:27,level:14,attackSpeed:105},
+  60:{damage:32,level:18,attackSpeed:70}, 70:{damage:38,level:23,attackSpeed:125},
+  62:{damage:46,level:28,attackSpeed:145}, 155:{damage:55,level:35,attackSpeed:185},
+});
 for (const [tierIndex, [, level]] of tiers.entries()) {
   const t = tierIndex + 1;
   const bonuses = [
@@ -92,6 +100,14 @@ const economy = { offers: [
   {id:'long',name:'Espada larga · daño +9',service:'blacksmith',price:90,itemId:53,level:3},
   {id:'sabre',name:'Sable · daño +13',service:'blacksmith',price:180,itemId:54,level:5},
   {id:'broad',name:'Espada ancha · daño +18',service:'blacksmith',price:320,itemId:59,level:7},
+  {id:'dagger',name:'Daga veloz · daño +4 · muy rápida',service:'blacksmith',price:35,itemId:52},
+  {id:'rapier',name:'Estoque · daño +15 · rápida',service:'blacksmith',price:260,itemId:58,level:7},
+  {id:'light-axe',name:'Hacha ligera · daño +22',service:'blacksmith',price:520,itemId:64,level:10},
+  {id:'hammer',name:'Martillo · daño +27 · lento',service:'blacksmith',price:850,itemId:154,level:14},
+  {id:'bastard',name:'Espada bastarda · daño +32 · lenta',service:'blacksmith',price:1450,itemId:60,level:18},
+  {id:'battle-axe',name:'Hacha de batalla · daño +38 · muy lenta',service:'blacksmith',price:2400,itemId:70,level:23},
+  {id:'great-sword',name:'Mandoble · daño +46 · muy lento',service:'blacksmith',price:3900,itemId:62,level:28},
+  {id:'battle-hammer',name:'Martillo de guerra · daño +55 · devastador',service:'blacksmith',price:6800,itemId:155,level:35},
   {id:'shield1',name:'Escudo de cuero · defensa +2',service:'blacksmith',price:35,itemId:7},
   {id:'shield2',name:'Escudo de caballero · defensa +4',service:'blacksmith',price:120,itemId:5,level:4},
   {id:'shield3',name:'Escudo torre · defensa +6',service:'blacksmith',price:240,itemId:4,level:7},
@@ -109,6 +125,10 @@ const economy = { offers: [
   {id:'cape',name:'Capa · defensa +1',service:'blacksmith',price:90,itemId:125,level:4},
   {id:'robe',name:'Túnica · defensa +1, magia +3, maná +15',service:'blacksmith',price:120,itemId:142,level:4},
   {id:'wizardcap',name:'Gorro de mago · magia +2, maná +10',service:'blacksmith',price:80,itemId:152,level:3},
+], quests: [
+  {id:'first-blood',name:'Primer encargo',service:'shop',description:'La mercader necesita que despejes los caminos. Derrota 3 criaturas.',requiredKills:3,gold:45,itemId:36},
+  {id:'forge-trial',name:'Prueba de la forja',service:'blacksmith',description:'Demuestra que puedes proteger tu equipo. Alcanza 10 victorias contra monstruos.',requiredKills:10,gold:180,itemId:52},
+  {id:'arcane-pilgrim',name:'Peregrinación arcana',service:'magic',description:'La hechicera observa a quienes sobreviven a 20 combates.',requiredKills:20,gold:420,itemId:165},
 ] };
 for (const [tierIndex, [tierName, level]] of tiers.entries()) {
   for (const [slotIndex, [slotName]] of slots.entries()) {

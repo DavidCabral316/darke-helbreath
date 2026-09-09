@@ -6,7 +6,8 @@ using Server.World.Game;
 namespace Server.Helpers;
 
 public sealed record ShopOffer(string Id, string Name, string Service, int Price, int ItemId = 0, int SpellId = -1, int Level = 1, int Intelligence = 10);
-public sealed record EconomyRules(ShopOffer[] Offers);
+public sealed record QuestDefinition(string Id, string Name, string Service, string Description, int RequiredKills, int Gold, int ItemId = 0);
+public sealed record EconomyRules(ShopOffer[] Offers, QuestDefinition[] Quests);
 
 // All operations execute inside the owning world's serial mailbox. Gold, inventory,
 // learned spells and personal warehouse share one versioned JSONB snapshot.
@@ -14,7 +15,9 @@ public static class Economy {
     public static EconomyRules Rules { get; } = Load();
     private static EconomyRules Load() {
         var rules = JsonSerializer.Deserialize<EconomyRules>(File.ReadAllText("Config/Economy.json"), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        if (rules.Offers.Select(o => o.Id).Distinct().Count() != rules.Offers.Length ||
+        if (rules.Offers.Select(o => o.Id).Distinct().Count() != rules.Offers.Length || rules.Quests.Length > 30 ||
+            rules.Quests.Select(q => q.Id).Distinct().Count() != rules.Quests.Length ||
+            rules.Quests.Any(q => q.RequiredKills < 1 || q.Gold < 0 || q.ItemId < 0) ||
             rules.Offers.Any(o => o.Price < 1 || o.Price > 100000000 || o.Level < 1 || o.Intelligence < 10 || (o.ItemId > 0) == (o.SpellId >= 0)))
             throw new InvalidOperationException("Invalid economy offers.");
         return rules;
@@ -48,7 +51,15 @@ public static class Economy {
         var progress = player.Progress;
         var bag = player.InventoryManager;
         string notice;
-        if (request.Action == "buy") {
+        if (request.Action == "quest-claim") {
+            var questIndex = Array.FindIndex(Rules.Quests, q => q.Id == request.OfferId && q.Service == service);
+            var quest = questIndex >= 0 ? Rules.Quests[questIndex] : null;
+            var bit = questIndex >= 0 ? 1 << questIndex : 0;
+            if (quest is null || (progress.QuestRewardsMask & bit) != 0 || progress.Kills < quest.RequiredKills) { Reject("Esa misión todavía no está lista para cobrar."); return; }
+            if (quest.ItemId > 0 && (bag.BagItems.Count >= 80 || !bag.TryCreateItem(quest.ItemId, null, out _))) { Reject("Necesitás espacio en la mochila para recibir la recompensa."); return; }
+            progress = progress with { Gold = (int)Math.Min(1000000000L, (long)progress.Gold + quest.Gold), QuestRewardsMask = progress.QuestRewardsMask | bit };
+            notice = $"Misión completada: {quest.Name} · +{quest.Gold} oro.";
+        } else if (request.Action == "buy") {
             var offer = Rules.Offers.FirstOrDefault(o => o.Id == request.OfferId && o.Service == service);
             if (offer is null || progress.Level < offer.Level || progress.Intelligence < offer.Intelligence || progress.Gold < offer.Price) { Reject("No tenés el oro, el nivel o la inteligencia requerida para esa compra."); return; }
             if (offer.SpellId >= 0) {

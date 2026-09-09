@@ -9,10 +9,12 @@ namespace Server.Helpers;
 public sealed record ProgressState(int Level = 1, long Experience = 0, int Strength = 10,
     int Vitality = 10, int Intelligence = 10, int Agility = 10, int Points = 0,
     int Mana = 60, int Stamina = 100, int Kills = 0, int Gold = 0,
-    int KnownSpellsMask = 0, PersistedInventoryItem[]? Warehouse = null, long TradeRevision = 0);
+    int KnownSpellsMask = 0, PersistedInventoryItem[]? Warehouse = null, long TradeRevision = 0,
+    int QuestRewardsMask = 0);
 public sealed record LootRow(int ItemId, double Chance, int Min, int Max);
 public sealed record MonsterReward(int Experience, LootRow[] Drops, int GoldMin = 0, int GoldMax = 0);
-public sealed record EquipmentBonus(int Damage = 0, int Defense = 0, int Level = 1, int Magic = 0, int Mana = 0);
+public sealed record EquipmentBonus(int Damage = 0, int Defense = 0, int Level = 1, int Magic = 0, int Mana = 0,
+    int AttackSpeed = 0);
 public sealed record SpellCost(int Level, int Mana, int Intelligence = 10, int PowerPercent = 100);
 public sealed record AdventureRules(long[] LevelThresholds, int PointsPerLevel,
     Dictionary<string, MonsterReward> Monsters, Dictionary<int, EquipmentBonus> Equipment, Dictionary<int, SpellCost> Spells);
@@ -44,7 +46,8 @@ public static class Adventure {
             Mana = p.Mana, MaxMana = player.MaxMana, Stamina = p.Stamina, MaxStamina = player.MaxStamina,
             Damage = player.Damage, Defense = player.Defense, MagicDamage = player.MagicDamage,
             Kills = p.Kills, Notice = notice, Sanctuary = IsSanctuary(wr, player), X = player.PosX, Y = player.PosY,
-            Gold = p.Gold, TradeRevision = p.TradeRevision, KnownSpells = { Rules.Spells.Keys.Where(id => (p.KnownSpellsMask & (1 << id)) != 0) }, Service = Economy.ServiceAt(wr, player), WorldId = wr.WorldId,
+            Gold = p.Gold, TradeRevision = p.TradeRevision, QuestRewardsMask = p.QuestRewardsMask,
+            KnownSpells = { Rules.Spells.Keys.Where(id => (p.KnownSpellsMask & (1 << id)) != 0) }, Service = Economy.ServiceAt(wr, player), WorldId = wr.WorldId,
             Warehouse = { (p.Warehouse ?? Array.Empty<PersistedInventoryItem>()).Select(i => NetworkManager.ToInventoryItemEntry(InventoryItemState.FromPersistedItem(i))) }
         }});
     }

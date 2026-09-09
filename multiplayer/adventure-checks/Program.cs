@@ -95,6 +95,10 @@ Packet(gmPlayer,new ClientMessage{ChatMessageSendRequest=new(){Message="/gm god"
 Check(gmPlayer.Hp==gmHp&&gmPlayer.GameMasterInvulnerable,"GM invulnerability rejects lethal damage");
 Packet(gmPlayer,new ClientMessage{ChatMessageSendRequest=new(){Message="/gm spells"}});
 Check(Adventure.Rules.Spells.Keys.All(id=>(gmPlayer.Progress.KnownSpellsMask&(1<<id))!=0),"GM can unlock all test spells");
+var gmMana=gmPlayer.Progress.Mana;
+Check(gmPlayer.CanUseSpell(23)&&gmPlayer.SpendSpellMana(23)&&gmPlayer.Progress.Mana==gmMana,"GM can cast every unlocked spell without progression or mana restrictions");
+var magicBeforeStrength=gmPlayer.MagicDamage;gmPlayer.TryAllocateAttribute("strength");
+Check(gmPlayer.MagicDamage==magicBeforeStrength,"Strength allocation never increases magic damage");
 // Ground ownership survives reconnect via a stable character key, not ephemeral player ID.
 var loot=new GroundItemState(53,555,1,null,180,180){OwnerKey="owner",ReservedUntil=DateTimeOffset.UtcNow.AddSeconds(60)};
 wr.GroundStateTracker.TryAddGroundItem(loot,out _,out _);
@@ -158,4 +162,9 @@ Check(liveBuyer.Progress.Gold==450&&liveBuyer.Progress.TradeRevision==1&&liveBuy
 var itemCount=liveBuyer.InventoryManager.BagItems.Count;
 Economy.Handle(shopWr,liveBuyer,new EconomyRequest{Action="buy",OfferId="leather",Revision=0,RequestId="replay"});
 Check(liveBuyer.Progress.Gold==450&&liveBuyer.InventoryManager.BagItems.Count==itemCount,"stale purchase replay cannot duplicate an item");
+liveBuyer.SetEconomyProgress(liveBuyer.Progress with {Kills=10});
+Economy.Handle(shopWr,liveBuyer,new EconomyRequest{Action="quest-claim",OfferId="forge-trial",Revision=1,RequestId="quest"});
+Check(liveBuyer.Progress.Gold==630&&(liveBuyer.Progress.QuestRewardsMask&2)!=0&&liveBuyer.InventoryManager.BagItems.Any(i=>i.ItemId==52),"NPC quest reward is persistent, proximity-gated and grants its exact item");
+Economy.Handle(shopWr,liveBuyer,new EconomyRequest{Action="quest-claim",OfferId="forge-trial",Revision=2,RequestId="quest-replay"});
+Check(liveBuyer.Progress.Gold==630,"completed quest cannot be claimed twice");
 Console.WriteLine($"Adventure checks: {passed} passed.");

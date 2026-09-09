@@ -32,7 +32,8 @@ public static class Spawn {
     /// <summary>Sends spell entries when <paramref name="includeSpells"/> is true, item directory on every send, plus session-scoped player tunables; called on every join (spells omitted on world transfer).</summary>
     public static void SendInitialState(GameWorldRef wr, GameWorldPlayer player, bool includeSpells) {
         IEnumerable<SpellConfig> spells = includeSpells
-            ? wr.SpellsById.OrderBy(kv => kv.Key).Where(kv => (player.Progress.KnownSpellsMask & (1 << kv.Key)) != 0 && Adventure.Rules.Spells.TryGetValue(kv.Key, out var rule) && player.Progress.Level >= rule.Level).Select(kv => kv.Value)
+            ? wr.SpellsById.OrderBy(kv => kv.Key).Where(kv => (player.Progress.KnownSpellsMask & (1 << kv.Key)) != 0 &&
+                Adventure.Rules.Spells.TryGetValue(kv.Key, out var rule) && (player.IsGameMaster || player.Progress.Level >= rule.Level)).Select(kv => kv.Value)
             : Array.Empty<SpellConfig>();
         NetworkManager.SendToPlayer(
             player,

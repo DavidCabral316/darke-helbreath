@@ -2,9 +2,9 @@
 
 > **Darke Helbreath** es una evolución multijugador en navegador inspirada en
 > Helbreath clásico. Esta rama agrega portal de cuentas y personajes, persistencia
-> PostgreSQL, progresión PvE hasta nivel 200, economía, edificios y comerciantes,
-> Aresden, Elvine, Middleland y dungeons conectados, equipo por tiers, chat y una
-> interfaz adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md).
+> PostgreSQL, progresión PvE hasta nivel 200, economía, misiones y comerciantes,
+> Aresden, Elvine, Middleland y dungeons conectados, equipo por tiers, magia, chat
+> y una interfaz narrativa adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md).
 
 ## Inicio rápido de Darke (Windows)
 
