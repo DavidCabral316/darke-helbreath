@@ -24,6 +24,13 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     const panels=['inventory','chat','cast'];
     for(const p of panels)await expect(page.locator(`[data-dialog-id="${p}-dialog"]`)).toBeVisible();
     await expect(page.getByRole('img',{name:'Personaje con su equipo actual'})).toBeVisible();
+    const paperDoll=page.getByRole('img',{name:'Personaje con su equipo actual'});
+    await expect.poll(()=>paperDoll.evaluate((canvas:HTMLCanvasElement)=>{const pixels=canvas.getContext('2d')!.getImageData(0,0,canvas.width,canvas.height).data;for(let i=3;i<pixels.length;i+=4)if(pixels[i])return true;return false})).toBe(true);
+    const stablePaperDoll=await paperDoll.evaluate((canvas:HTMLCanvasElement)=>canvas.toDataURL());await page.waitForTimeout(550);expect(await paperDoll.evaluate((canvas:HTMLCanvasElement)=>canvas.toDataURL())).toBe(stablePaperDoll);
+    await page.evaluate(async()=>{const inventory=await import('/src/ui/store/InventoryDialog.store.ts');(window as any).__qaPaperDollWeapon=inventory.inventoryDialogStore.state.equippedItems.weapon;inventory.setEquippedItem('weapon',undefined)});
+    await expect.poll(()=>paperDoll.evaluate((canvas:HTMLCanvasElement)=>canvas.toDataURL())).not.toBe(stablePaperDoll);
+    const unequippedPaperDoll=await paperDoll.evaluate((canvas:HTMLCanvasElement)=>canvas.toDataURL());await page.waitForTimeout(550);expect(await paperDoll.evaluate((canvas:HTMLCanvasElement)=>canvas.toDataURL())).toBe(unequippedPaperDoll);
+    await page.evaluate(async()=>{const inventory=await import('/src/ui/store/InventoryDialog.store.ts');inventory.setEquippedItem('weapon',(window as any).__qaPaperDollWeapon)});
     await expect(page.getByRole('region',{name:'Estadísticas del personaje'})).toContainText(/Nivel \d+/);
     const minimapBox=await page.locator('[data-dialog-id="minimap-dialog"]').boundingBox();
     expect(minimapBox?.width??0).toBeGreaterThanOrEqual(220);

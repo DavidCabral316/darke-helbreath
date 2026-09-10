@@ -4,7 +4,8 @@
 > Helbreath clásico. Esta rama agrega portal de cuentas y personajes, persistencia
 > PostgreSQL, progresión PvE hasta nivel 200, economía, misiones y comerciantes,
 > Aresden, Elvine, Middleland y dungeons conectados, equipo por tiers, magia, chat
-> y una interfaz narrativa adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md).
+> y una interfaz narrativa adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md)
+> y el [mapa de trabajo para jugar con Mary y otros jugadores](./docs/MULTIJUGADOR-DOS-JUGADORES.md).
 
 ## Inicio rápido de Darke (Windows)
 

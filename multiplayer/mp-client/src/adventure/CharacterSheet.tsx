@@ -15,7 +15,7 @@ export function EquippedCharacterPreview(){
  const [error,setError]=useState(false);
  const signature=useMemo(()=>Object.entries(equipped).map(([slot,item])=>`${slot}:${item?.itemId??0}`).join('|'),[equipped]);
  const stableEquipped=useMemo(()=>equipped,[signature]);
- useEffect(()=>{let cancelled=false,timer:ReturnType<typeof setInterval>|undefined;const bitmaps:ImageBitmap[]=[];setError(false);
+ useEffect(()=>{let cancelled=false;const bitmaps:ImageBitmap[]=[];setError(false);
   async function start(){
    const base={human:PlayerAppearanceManager.getHumanSpriteName(gender,skin),hairStyleIndex:hair,underwearColorIndex:clothes};
    const gear=PlayerAppearanceManager.resolveGearFromEquippedItems(base,stableEquipped,gender);
@@ -26,12 +26,12 @@ export function EquippedCharacterPreview(){
     const sheet=(await loadHelbreathSprite(config.spriteName))[config.spriteSheetIndex??0];if(!sheet)return null;
     const bitmap=await createImageBitmap(sheet.png);if(cancelled){bitmap.close();return null}bitmaps.push(bitmap);return{config,sheet,bitmap};
    }))).filter(Boolean) as Array<{config:(typeof configs)[number];sheet:Awaited<ReturnType<typeof loadHelbreathSprite>>[number];bitmap:ImageBitmap}>;
-   let tick=0;const draw=()=>{const ctx=canvas.current?.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,220,220);ctx.imageSmoothingEnabled=false;
+   const draw=()=>{const ctx=canvas.current?.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,220,220);ctx.imageSmoothingEnabled=false;
     ctx.fillStyle='rgba(0,0,0,.42)';ctx.beginPath();ctx.ellipse(110,181,42,10,0,0,Math.PI*2);ctx.fill();
-    for(const {config,sheet,bitmap} of layers){const directional=config.animationType==='DirectionalSubFrame';const count=directional?(config.framesPerDirection??8):sheet.frames.length;const start=directional?(config.direction??0)*count:0;const frame=sheet.frames[start+(tick%Math.max(1,count))];if(frame?.w&&frame.h)ctx.drawImage(bitmap,frame.x,frame.y,frame.w,frame.h,110+frame.px*2,178+frame.py*2,frame.w*2,frame.h*2)}tick++};
-   draw();timer=setInterval(draw,180);
+    for(const {config,sheet,bitmap} of layers){const directional=config.animationType==='DirectionalSubFrame';const count=directional?(config.framesPerDirection??8):sheet.frames.length;const start=directional?(config.direction??0)*count:0;const frame=sheet.frames[start];if(frame?.w&&frame.h)ctx.drawImage(bitmap,frame.x,frame.y,frame.w,frame.h,110+frame.px*2,178+frame.py*2,frame.w*2,frame.h*2)}};
+   draw();
   }
-  start().catch(()=>{if(!cancelled)setError(true)});return()=>{cancelled=true;clearInterval(timer);bitmaps.forEach(b=>b.close())};
+  start().catch(()=>{if(!cancelled)setError(true)});return()=>{cancelled=true;bitmaps.forEach(b=>b.close())};
  },[gender,skin,hair,clothes,stableEquipped]);
  return <div className="equipped-character-preview"><canvas ref={canvas} width={220} height={220} role="img" aria-label="Personaje con su equipo actual"/>{error&&<small>Vista no disponible</small>}</div>;
 }
