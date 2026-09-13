@@ -64,7 +64,16 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await expect(page.locator('#game-container canvas')).toBeVisible({timeout:90000});
     await expect(page.getByRole('complementary',{name:'Estado del aventurero'})).toBeVisible({timeout:90000});
     await expect(page.getByRole('button',{name:'Items',exact:true})).toBeHidden();
+    await page.getByRole('button',{name:'Comenzar mi historia'}).click();
+    await expect(page.getByRole('dialog',{name:'Lumi'})).toBeVisible();
+    await expect(page.getByText('slimes, hormigas, serpientes y escorpiones')).toBeHidden();
+    await page.getByRole('button',{name:/Siguiente/}).click();
+    await expect(page.getByText(/slimes, hormigas, serpientes y escorpiones/)).toBeVisible();
+    await page.getByRole('button',{name:/Siguiente/}).click();
+    await expect(page.getByText(/comprar pociones, armas, armaduras y hechizos/)).toBeVisible();
     await page.screenshot({path:'test-results/game-entered.png',fullPage:true});
+    await page.getByRole('button',{name:/Comenzar a explorar/}).click();
+    await expect(page.getByRole('dialog',{name:'Lumi'})).toBeHidden();
     await page.getByRole('link',{name:'Volver a personajes'}).click();
     await expect(page).toHaveURL(/\/characters$/);
     await expect.poll(async()=> (await (await context.request.get('/api/characters')).json())[0].lastPlayedAt,{timeout:15000}).not.toBeNull();
@@ -82,6 +91,7 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await expect.poll(()=>Boolean(initial && world),{timeout:90000}).toBe(true);
     expect(initial.equippedItems[0].item.itemUid.toString()).toBe(itemUid);
     expect(initial.gender).toBe(1);
+    await expect(page.getByRole('dialog',{name:'Lumi'})).toBeHidden();
     await page.getByRole('link',{name:'Volver a personajes'}).click();
     expect(errors).toEqual([]);
     await writeFile('../../.run/qa-restart.json', JSON.stringify({username,password,id,itemUid}), 'utf8');

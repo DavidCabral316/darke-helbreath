@@ -59,8 +59,8 @@ ampliación del motor mágico.
 | Mundo | Pits | Población configurada | Función |
 |---|---:|---:|---|
 | Patio de iniciación | 4 | 17 | tutorial seguro y despejado |
-| Aresden | 9 | 118 | nivel bajo |
-| Elvine | 9 | 118 | nivel bajo |
+| Aresden | 17 | 216 | nivel bajo; pits abundantes en bordes y esquinas |
+| Elvine | 17 | 216 | nivel bajo; pits abundantes en bordes y esquinas |
 | Middleland | 22 | 311 | mapa compartido de riesgo creciente |
 | Dungeons de ciudad | 14 | 182 | nivel medio |
 | Middleland dungeons | 12 | 143 | nivel medio/alto |
