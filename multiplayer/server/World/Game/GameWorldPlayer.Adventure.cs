@@ -11,6 +11,7 @@ public partial class GameWorldPlayer {
     public int MaxMana => 60 + (Progress.Intelligence - 10) * 5 + (Progress.Level - 1) * 4 + EliteGrowth * 2 + MythicGrowth * 2 + EquipmentMana;
     public int EquipmentMana { get; private set; }
     public int EquipmentMagic { get; private set; }
+    public int EquipmentHealth { get; private set; }
     public int MaxStamina => 100 + (Progress.Agility - 10) * 3 + (Progress.Level - 1) * 3 + VeteranGrowth + MythicGrowth;
     // Intelligence is the principal source of spell power. Level contributes only
     // a modest baseline, so investing in Strength never improves magic damage.
@@ -22,11 +23,16 @@ public partial class GameWorldPlayer {
     private DateTimeOffset lastCombatAt, lastPotionAt, lastRecoveryAt;
 
     public void RecalculateAdventureStats() {
-        var weapon = 0; var armor = 0; var weaponSpeed = 0; EquipmentMana = 0; EquipmentMagic = 0;
+        var weapon = 0; var armor = 0; var weaponSpeed = 0; EquipmentMana = 0; EquipmentMagic = 0; EquipmentHealth = 0;
         foreach (var item in inventoryManager.EquippedItems.Values) {
             if (Adventure.Rules.Equipment.TryGetValue(item.ItemId, out var bonus)) { weapon += bonus.Damage; armor += bonus.Defense; EquipmentMana += bonus.Mana; EquipmentMagic += bonus.Magic; weaponSpeed += bonus.AttackSpeed; }
+            weapon += SpecialLoot.Value(item.EffectOverrides, SpecialLoot.Damage);
+            armor += SpecialLoot.Value(item.EffectOverrides, SpecialLoot.Defense);
+            weaponSpeed -= SpecialLoot.Value(item.EffectOverrides, SpecialLoot.AttackSpeed);
+            EquipmentHealth += SpecialLoot.Value(item.EffectOverrides, SpecialLoot.Health);
+            EquipmentMana += SpecialLoot.Value(item.EffectOverrides, SpecialLoot.Mana);
         }
-        maxHp = 100 + (Progress.Vitality - 10) * 5 + (Progress.Level - 1) * 12 + VeteranGrowth * 3 + EliteGrowth * 5 + MythicGrowth * 8;
+        maxHp = 100 + (Progress.Vitality - 10) * 5 + (Progress.Level - 1) * 12 + VeteranGrowth * 3 + EliteGrowth * 5 + MythicGrowth * 8 + EquipmentHealth;
         hp = Math.Clamp(hp, 0, maxHp);
         damage = 6 + Progress.Strength / 2 + Progress.Level / 3 + EliteGrowth / 2 + MythicGrowth + weapon;
         Defense = (Progress.Agility - 10) / 3 + (Progress.Vitality - 10) / 4 + armor;
@@ -65,6 +71,28 @@ public partial class GameWorldPlayer {
     public void MarkCombat() => lastCombatAt = DateTimeOffset.UtcNow;
     public bool CanTrade => !IsDead && !Disconnected && (DateTimeOffset.UtcNow - lastCombatAt).TotalSeconds >= 8;
     public void AddGold(int amount) { if (amount > 0) Progress = Progress with { Gold = (int)Math.Min(1000000000L, (long)Progress.Gold + amount) }; }
+    public int ApplyGoldFind(int amount) => amount + amount * EquippedAffixTotal(SpecialLoot.GoldFind) / 100;
+    public int ApplyExperienceFind(int amount) => amount + amount * EquippedAffixTotal(SpecialLoot.ExperienceFind) / 100;
+    public int EquippedAffixTotal(int effect) => inventoryManager.EquippedItems.Values.Sum(i => SpecialLoot.Value(i.EffectOverrides, effect));
+    public int RollWeaponDamage(out global::Server.AttackType procType, out int procStunMs, out bool critical) {
+        procType = global::Server.AttackType.NoInterrupt; procStunMs = 0; critical = RollPermille(EquippedAffixTotal(SpecialLoot.CriticalChance));
+        var result = critical ? Damage * 2 : Damage;
+        if (RollPermille(EquippedAffixTotal(SpecialLoot.PoisonChance))) result += Math.Max(1, Damage / 6);
+        if (RollPermille(EquippedAffixTotal(SpecialLoot.BurnChance))) result += Math.Max(1, Damage / 4);
+        if (RollPermille(EquippedAffixTotal(SpecialLoot.ParalysisChance))) { procType = global::Server.AttackType.Stun; procStunMs = 1400; }
+        else if (RollPermille(EquippedAffixTotal(SpecialLoot.FreezeChance))) { procType = global::Server.AttackType.Stun; procStunMs = 750; }
+        return result;
+    }
+    public bool ApplyWeaponLeech(int actualDamage) {
+        if (actualDamage <= 0) return false;
+        var life = EquippedAffixTotal(SpecialLoot.LifeSteal);
+        var manaGain = EquippedAffixTotal(SpecialLoot.ManaSteal);
+        var oldHp = hp; var oldMana = Progress.Mana;
+        if (life > 0) hp = Math.Min(maxHp, hp + Math.Max(1, actualDamage * life / 100));
+        if (manaGain > 0) Progress = Progress with { Mana = Math.Min(MaxMana, Progress.Mana + manaGain) };
+        return hp != oldHp || Progress.Mana != oldMana;
+    }
+    private static bool RollPermille(int chance) => chance > 0 && Random.Shared.Next(1000) < Math.Min(500, chance);
     public bool GameMasterSetMinimumLevel(int targetLevel) {
         if (!IsGameMaster || targetLevel <= Progress.Level || targetLevel > Adventure.MaxLevel) return false;
         var gained = targetLevel - Progress.Level;
@@ -92,11 +120,15 @@ public partial class GameWorldPlayer {
         Progress = Progress with { Stamina = Progress.Stamina - 2 }; MarkCombat(); return true;
     }
     public bool CanDrinkPotion(int id) => !IsDead && (DateTimeOffset.UtcNow - lastPotionAt).TotalSeconds >= 2 &&
-        ((id == 36 && Hp < MaxHp) || (id == 165 && Progress.Mana < MaxMana));
+        ((id is 36 or 164 or 307 && Hp < MaxHp) || (id is 165 or 166 or 308 && Progress.Mana < MaxMana));
     public void DrinkPotion(int id) {
         lastPotionAt = DateTimeOffset.UtcNow;
         if (id == 36) hp = Math.Min(maxHp, hp + 50);
+        if (id == 164) hp = Math.Min(maxHp, hp + 180);
+        if (id == 307) hp = Math.Min(maxHp, hp + 500);
         if (id == 165) Progress = Progress with { Mana = Math.Min(MaxMana, Progress.Mana + 40) };
+        if (id == 166) Progress = Progress with { Mana = Math.Min(MaxMana, Progress.Mana + 150) };
+        if (id == 308) Progress = Progress with { Mana = Math.Min(MaxMana, Progress.Mana + 420) };
     }
     public void RecoverResources(bool sanctuary) {
         var now = DateTimeOffset.UtcNow;

@@ -5,12 +5,12 @@ namespace Server.World.Game;
 
 public sealed partial class GameWorld {
     private DateTimeOffset nextAdventureTick;
-    public void DropAdventureLoot(GameWorldMonster monster, GameWorldPlayer winner, int itemId, int quantity) {
+    public void DropAdventureLoot(GameWorldMonster monster, GameWorldPlayer winner, int itemId, int quantity, ItemEffectConfig[]? effects = null) {
         if (!gameWorldRef.ItemsById.ContainsKey(itemId)) throw new InvalidOperationException($"Unknown loot item {itemId}");
         var location = Location.FindNearestFreeLocation((x,y) => occupancyTracker.IsFreeAndNotTeleportCell(x,y) && groundStateTracker.CanDropAt(x,y), monster.PosX, monster.PosY, 3);
         if (location is null) return;
         var item = new GroundItemState(itemId, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue,
-            quantity, null, location.Value.X, location.Value.Y) { OwnerKey = winner.PersistenceKey, ReservedUntil = DateTimeOffset.UtcNow.AddSeconds(60) };
+            quantity, effects, location.Value.X, location.Value.Y) { OwnerKey = winner.PersistenceKey, ReservedUntil = DateTimeOffset.UtcNow.AddSeconds(60) };
         if (!groundStateTracker.TryAddGroundItem(item, out var previous, out var added)) return;
         GroundStateVisibility.BroadcastGroundItemTopStateChanged(gameWorldRef, previous, added);
         scheduler.SetTimeout(180000, () => {

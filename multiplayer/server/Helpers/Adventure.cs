@@ -78,15 +78,18 @@ public static class Adventure {
         }
         if (winner is null) return;
         var before = winner.Progress.Level;
-        winner.AwardExperience(reward.Experience);
-        var gold = Random.Shared.Next(reward.GoldMin, reward.GoldMax + 1);
+        var experience = winner.ApplyExperienceFind(reward.Experience);
+        winner.AwardExperience(experience);
+        var gold = winner.ApplyGoldFind(Random.Shared.Next(reward.GoldMin, reward.GoldMax + 1));
         winner.AddGold(gold);
         foreach (var drop in reward.Drops) {
             if (Random.Shared.NextDouble() < drop.Chance) wr.World.DropAdventureLoot(monster, winner, drop.ItemId, Random.Shared.Next(drop.Min, drop.Max + 1));
         }
+        var special = SpecialLoot.TryRoll(wr, reward);
+        if (special is not null) wr.World.DropAdventureLoot(monster, winner, special.ItemId, 1, special.Effects);
         if (winner.Progress.Level != before) Spawn.SendInitialState(wr, winner, includeSpells: true);
-        Send(wr, winner, winner.Progress.Level > before ? $"¡Nivel {winner.Progress.Level}! Tenés {winner.Progress.Points} puntos para distribuir." :
-            winner.Progress.Level == MaxLevel ? $"+{gold} oro · Seguí explorando y consiguiendo equipo." : $"+{reward.Experience} XP · +{gold} oro · {monster.Name}");
+        Send(wr, winner, special is not null ? $"✦ HALLAZGO ESPECIAL: {special.DisplayName}" : winner.Progress.Level > before ? $"¡Nivel {winner.Progress.Level}! Tenés {winner.Progress.Points} puntos para distribuir." :
+            winner.Progress.Level == MaxLevel ? $"+{gold} oro · Seguí explorando y consiguiendo equipo." : $"+{experience} XP · +{gold} oro · {monster.Name}");
         Checkpoint(wr, winner);
     }
 }

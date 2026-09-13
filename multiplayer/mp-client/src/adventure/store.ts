@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import type { ProgressionUpdated } from '../proto/generated/network';
+import { SPECIAL_LOOT_DROP_SOUND } from '../constants/SoundFileNames';
+import { soundDialogStore } from '../ui/store/SoundDialog.store';
 export type EconomyAction={economy:{action:string;offerId?:string;itemUid?:string;revision:bigint}};
 type Action = { attribute: string } | { potion: string } | EconomyAction;
 let snapshot: {stats?: ProgressionUpdated; notice:string; connected:boolean} = {notice:'',connected:false};
@@ -7,6 +9,10 @@ const listeners = new Set<() => void>();
 let owner: object | undefined; let sender: ((action:Action)=>void) | undefined;
 export function publishAdventure(stats: ProgressionUpdated, source:object, send:(action:Action)=>void) {
     owner = source; sender = send;
+    if (stats.notice.startsWith('✦ HALLAZGO ESPECIAL:')) {
+        const volume=soundDialogStore.state.soundVolume/100;
+        if(volume>0){const audio=new Audio(`/assets/sounds/${SPECIAL_LOOT_DROP_SOUND}`);audio.volume=volume;void audio.play().catch(()=>undefined);}
+    }
     snapshot = {stats, notice:stats.notice || snapshot.notice, connected:true};
     listeners.forEach(fn=>fn());
 }

@@ -1,7 +1,7 @@
 import { Store } from '@tanstack/react-store';
 import { EventBus } from '../../game/EventBus';
 import { OUT_UI_HOVER_GROUND_ITEM_INFO } from '../../constants/EventNames';
-import { ItemTypes } from '../../constants/Items';
+import { ItemTypes, type Effect } from '../../constants/Items';
 import { Gender } from '../../Types';
 
 export interface InventoryItemHoverInfo {
@@ -19,6 +19,7 @@ export interface InventoryItemHoverInfo {
     stackable?: boolean;
     /** When true, item is consumable (double-click to use). */
     consumable?: boolean;
+    effectOverrides?: Effect[];
     /** Hex color for GLOW effect (base or overridden). Shown as "Appearance glow" when set. */
     appearanceGlowColor?: number;
     /** Hex color for GLARE effect (base or overridden). Shown as "Appearance glare" when set. */

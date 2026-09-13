@@ -40,7 +40,8 @@ public static class Inventory {
 
         var targetSlot = request.HasTargetSlot ? request.TargetSlot : null;
         var candidate = player.InventoryManager.BagItems.FirstOrDefault(i => i.ItemUid == request.ItemUid);
-        if (player.IsDead || (candidate is not null && Adventure.Rules.Equipment.TryGetValue(candidate.ItemId, out var requirement) && player.Progress.Level < requirement.Level)) {
+        var catalogLevel = candidate is not null && Adventure.Rules.Equipment.TryGetValue(candidate.ItemId, out var requirement) ? requirement.Level : 1;
+        if (player.IsDead || (candidate is not null && player.Progress.Level < SpecialLoot.RequiredLevelFor(candidate, catalogLevel))) {
             SendEquipRollbackIfNeeded(wr, player, request.ItemUid, targetSlot);
             Spawn.SendInitialState(wr, player, includeSpells: false);
             Adventure.Send(wr, player, "Todavía no cumplís el nivel requerido para ese equipo."); return;

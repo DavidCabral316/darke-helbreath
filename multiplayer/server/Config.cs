@@ -422,7 +422,11 @@ public static class Config {
             }
         }
 
-        return items.ToDictionary(entry => entry.Id);
+        // Progression-shop swords remain visually neutral. Per-instance monster drops
+        // add their own tint/glow, keeping colour meaningful instead of guaranteed.
+        return items.Select(entry => entry.Id is >= 329 and <= 408 && (entry.Id - 329) % 8 == 0
+            ? entry with { Effects = null }
+            : entry).ToDictionary(entry => entry.Id);
     }
 
     /// <summary>Ensures dwell area entries reference catalog ids and sane counts before worlds are constructed.</summary>

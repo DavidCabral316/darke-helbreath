@@ -5,7 +5,8 @@
 > PostgreSQL, progresión PvE hasta nivel 200, economía, misiones y comerciantes,
 > Aresden, Elvine, Middleland y dungeons conectados, equipo por tiers, magia, chat,
 > guía inicial por personaje y una interfaz narrativa adaptable con atajos. Consulta la [guía de progresión Darke](./docs/DARKE-PROGRESION-1-200.md)
-> y el [mapa de trabajo para jugar con Mary y otros jugadores](./docs/MULTIJUGADOR-DOS-JUGADORES.md).
+> el [sistema de botín especial](./docs/SISTEMA-BOTIN-ESPECIAL.md) y el
+> [mapa de trabajo para jugar con Mary y otros jugadores](./docs/MULTIJUGADOR-DOS-JUGADORES.md).
 
 ## Inicio rápido de Darke (Windows)
 

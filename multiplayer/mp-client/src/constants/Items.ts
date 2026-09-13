@@ -63,6 +63,12 @@ export enum ItemEffect {
     TINT_INVENTORY = 'TINT_INVENTORY',
     /** Tint equipped sprite appearance in-world (multiply). Color via effectColor. */
     TINT_APPEARANCE = 'TINT_APPEARANCE',
+    AFFIX_DAMAGE = 'AFFIX_DAMAGE', AFFIX_DEFENSE = 'AFFIX_DEFENSE', AFFIX_ATTACK_SPEED = 'AFFIX_ATTACK_SPEED',
+    AFFIX_CRITICAL = 'AFFIX_CRITICAL', AFFIX_POISON = 'AFFIX_POISON', AFFIX_BURN = 'AFFIX_BURN',
+    AFFIX_FREEZE = 'AFFIX_FREEZE', AFFIX_PARALYSIS = 'AFFIX_PARALYSIS', AFFIX_LIFE_STEAL = 'AFFIX_LIFE_STEAL',
+    AFFIX_MANA_STEAL = 'AFFIX_MANA_STEAL', AFFIX_HEALTH = 'AFFIX_HEALTH', AFFIX_MANA = 'AFFIX_MANA',
+    AFFIX_GOLD_FIND = 'AFFIX_GOLD_FIND', AFFIX_EXPERIENCE_FIND = 'AFFIX_EXPERIENCE_FIND',
+    AFFIX_REQUIRED_LEVEL = 'AFFIX_REQUIRED_LEVEL', AFFIX_RARITY = 'AFFIX_RARITY',
 }
 
 /** Single item effect with optional color (e.g. hex for GLARE, GLOW, TINT_APPEARANCE). */
@@ -269,14 +275,16 @@ export interface Item {
 /** Latest server item rows from InitialState; merged into lookups by id. */
 let serverItemDirectoryById: Map<number, ItemDirectoryEntry> | undefined;
 
-const ITEM_EFFECT_FROM_PROTO_INDEX: readonly ItemEffect[] = [
-    ItemEffect.STORM_BRINGER,
-    ItemEffect.STAR_TWINKLE,
-    ItemEffect.GLARE,
-    ItemEffect.GLOW,
-    ItemEffect.TINT_INVENTORY,
-    ItemEffect.TINT_APPEARANCE,
-];
+const ITEM_EFFECT_FROM_PROTO_INDEX: Partial<Record<number, ItemEffect>> = {
+    0: ItemEffect.STORM_BRINGER, 1: ItemEffect.STAR_TWINKLE, 2: ItemEffect.GLARE,
+    3: ItemEffect.GLOW, 4: ItemEffect.TINT_INVENTORY, 5: ItemEffect.TINT_APPEARANCE,
+    100: ItemEffect.AFFIX_DAMAGE, 101: ItemEffect.AFFIX_DEFENSE, 102: ItemEffect.AFFIX_ATTACK_SPEED,
+    103: ItemEffect.AFFIX_CRITICAL, 104: ItemEffect.AFFIX_POISON, 105: ItemEffect.AFFIX_BURN,
+    106: ItemEffect.AFFIX_FREEZE, 107: ItemEffect.AFFIX_PARALYSIS, 108: ItemEffect.AFFIX_LIFE_STEAL,
+    109: ItemEffect.AFFIX_MANA_STEAL, 110: ItemEffect.AFFIX_HEALTH, 111: ItemEffect.AFFIX_MANA,
+    112: ItemEffect.AFFIX_GOLD_FIND, 113: ItemEffect.AFFIX_EXPERIENCE_FIND,
+    114: ItemEffect.AFFIX_REQUIRED_LEVEL, 115: ItemEffect.AFFIX_RARITY,
+};
 
 export function effectsFromDirectoryEntries(entries: ReadonlyArray<{ effect: number; effectColor?: number }>): Effect[] | undefined {
     const effects: Effect[] = [];
@@ -3249,7 +3257,7 @@ for (const [tierIndex, [tierName, colour]] of DARKE_EQUIPMENT_TIERS.entries()) {
             ...base,
             id: 329 + tierIndex * DARKE_EQUIPMENT_BASES.length + slotIndex,
             name: `${slotName} ${tierName}`,
-            effects: [
+            effects: slotIndex === 0 ? undefined : [
                 { effect: ItemEffect.TINT_INVENTORY, effectColor: colour },
                 { effect: ItemEffect.TINT_APPEARANCE, effectColor: colour },
             ],

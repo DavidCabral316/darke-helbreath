@@ -699,13 +699,16 @@ public static class Combat {
         if (attacker.IsDead || Adventure.IsSanctuary(wr, attacker) || targetMonster.Dead) return;
         if (!spellDamage.HasValue && !attacker.TrySpendStamina()) { Adventure.Send(wr, attacker, "Te falta energía. Esperá un momento."); return; }
         var hpBefore = targetMonster.Hp;
-        var appliedDamage = spellDamage ?? attacker.Damage;
+        var resolvedAttackType = attackType;
+        var affixStunMs = attacker.AttackStunDurationMs;
+        var appliedDamage = spellDamage ?? attacker.RollWeaponDamage(out resolvedAttackType, out affixStunMs, out _);
+        if (!spellDamage.HasValue && affixStunMs == 0) resolvedAttackType = attackType;
         if (!TryResolveMonsterAttack(
                 wr,
                 targetMonster,
                 appliedDamage,
-                attackType,
-                attacker.AttackStunDurationMs,
+                spellDamage.HasValue ? attackType : resolvedAttackType,
+                spellDamage.HasValue ? attacker.AttackStunDurationMs : affixStunMs,
                 attacker.PosX,
                 attacker.PosY,
                 out var resolution)) {
@@ -716,6 +719,10 @@ public static class Combat {
             targetMonster.SetAggroFromDamagePlayerAttacker(attacker.PlayerId);
         }
         Adventure.RecordHit(wr, targetMonster, attacker, Math.Min(hpBefore, appliedDamage));
+        if (!spellDamage.HasValue && attacker.ApplyWeaponLeech(Math.Min(hpBefore, appliedDamage))) {
+            NetworkManager.SendToPlayer(attacker, NetworkManager.CreateHpUpdated(attacker.Hp, attacker.MaxHp));
+            Adventure.Send(wr, attacker);
+        }
 
         MonsterVisibility.BroadcastMonsterTakeDamage(
             wr,
@@ -743,6 +750,10 @@ public static class Combat {
         var px = targetPlayer.PosX;
         var py = targetPlayer.PosY;
 
+        var affixAttackType = AttackType.NoInterrupt;
+        var affixStunMs = 0;
+        var outgoingDamage = spellDamage ?? attacker.RollWeaponDamage(out affixAttackType, out affixStunMs, out _);
+        if (!spellDamage.HasValue && affixAttackType == AttackType.Stun) { attackTypeOut = affixAttackType; stunPacketMs = affixStunMs; }
         if (!targetPlayer.IsDead) {
             if (attackType == AttackType.Stun) {
                 stunPacketMs = attacker.AttackStunDurationMs;
@@ -774,7 +785,7 @@ public static class Combat {
         MonsterVisibility.BroadcastPlayerTakeDamage(
             wr,
             targetPlayer.PlayerId,
-            spellDamage ?? attacker.Damage,
+            outgoingDamage,
             attacker.PlayerId,
             attackTypeOut,
             stunPacketMs,
@@ -783,5 +794,9 @@ public static class Combat {
             destKbY,
             knockbackDurMs > 0 ? px : null,
             knockbackDurMs > 0 ? py : null);
+        if (!spellDamage.HasValue && attacker.ApplyWeaponLeech(outgoingDamage)) {
+            NetworkManager.SendToPlayer(attacker, NetworkManager.CreateHpUpdated(attacker.Hp, attacker.MaxHp));
+            Adventure.Send(wr, attacker);
+        }
     }
 }

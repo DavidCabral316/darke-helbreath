@@ -21,6 +21,46 @@
       "intelligence": 10
     },
     {
+      "id": "red-big",
+      "name": "Poción grande de vida (+180)",
+      "service": "shop",
+      "price": 42,
+      "itemId": 164,
+      "spellId": -1,
+      "level": 12,
+      "intelligence": 10
+    },
+    {
+      "id": "blue-big",
+      "name": "Poción grande de maná (+150)",
+      "service": "shop",
+      "price": 52,
+      "itemId": 166,
+      "spellId": -1,
+      "level": 12,
+      "intelligence": 10
+    },
+    {
+      "id": "red-super",
+      "name": "Poción superior de vida (+500)",
+      "service": "shop",
+      "price": 190,
+      "itemId": 307,
+      "spellId": -1,
+      "level": 55,
+      "intelligence": 10
+    },
+    {
+      "id": "blue-super",
+      "name": "Poción superior de maná (+420)",
+      "service": "shop",
+      "price": 225,
+      "itemId": 308,
+      "spellId": -1,
+      "level": 55,
+      "intelligence": 10
+    },
+    {
       "id": "short",
       "name": "Espada corta · daño +5",
       "service": "blacksmith",

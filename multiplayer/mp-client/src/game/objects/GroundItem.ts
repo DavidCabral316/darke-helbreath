@@ -135,6 +135,7 @@ export class GroundItem extends GameAsset {
             quantity: this.quantity,
             stackable: itemDef.stackable,
             consumable: itemDef.consumable,
+            effectOverrides: this.effectOverrides,
             appearanceGlowColor: getGlowEffectColor(itemDef, this.effectOverrides),
             appearanceGlareColor: getGlareEffectColor(itemDef, this.effectOverrides),
             appearanceTintColor: getTintAppearanceEffectColor(itemDef, this.effectOverrides),
