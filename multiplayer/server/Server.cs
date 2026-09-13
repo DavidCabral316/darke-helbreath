@@ -618,6 +618,22 @@ static (string WorldId, PlayerPersistenceState State) ResolveLoadedPlayerJoin(
     if (loadedState.Progress is null) loadedState = loadedState with { GameWorldId = Server.Helpers.Adventure.TrainingWorld, X = 150, Y = 150, Progress = new Server.Helpers.ProgressState(), Hp = 100, MaxHp = 100 };
     const string requestedFallbackWorldId = "aresden";
 
+    // One-time compatibility migration for characters created while the tutorial
+    // used an isolated copy of Aresden. Move them to their persisted faction town
+    // so monster spawns and other players are globally shared.
+    if (loadedState.GameWorldId == Server.Helpers.Adventure.TrainingWorld &&
+        gameWorldsById.TryGetValue(defaultWorldId, out var factionGameWorld) &&
+        worldRegistry.TryGetGameWorld(defaultWorldId, out var factionWorld) &&
+        factionWorld is not null) {
+        var factionSpawn = factionWorld.GetCenterSpawnHint();
+        Console.WriteLine($"[Server] Migrating legacy training character to shared world '{defaultWorldId}' at ({factionSpawn.X},{factionSpawn.Y}).");
+        return (defaultWorldId, loadedState with {
+            GameWorldId = factionGameWorld.Id,
+            X = factionSpawn.X,
+            Y = factionSpawn.Y,
+        });
+    }
+
     if (gameWorldsById.ContainsKey(loadedState.GameWorldId) &&
         worldRegistry.TryGetGameWorld(loadedState.GameWorldId, out var loadedWorld) &&
         loadedWorld is not null) {

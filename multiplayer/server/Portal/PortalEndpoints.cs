@@ -171,7 +171,9 @@ public static class PortalEndpoints {
             var cutoff = DateTimeOffset.UtcNow.AddDays(-7);
             if (await db.Characters.CountAsync(c => c.AccountId == id && (c.DeletedAt == null || c.DeletedAt > cutoff)) >= 3)
                 return Results.Conflict(new { error = "Tu cuenta ya tiene tres personajes. Los eliminados reservan su ranura durante siete días." });
-            var state = new PlayerPersistenceState(Server.Helpers.Adventure.TrainingWorld, 150, 150, 220, 1200, 600, 1, 16, 500, 2, true, true, true,
+            // Characters enter their faction's shared city from the first session.
+            // The old isolated `training` world made players see a different monster population.
+            var state = new PlayerPersistenceState(request.Town, 150, 150, 220, 1200, 600, 1, 16, 500, 2, true, true, true,
                 request.Gender, request.Skin, request.Hair, request.Clothes, 4,
                 new[] { new PersistedInventoryItem(36, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, 0, 0, 5, 0, null), new PersistedInventoryItem(165, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, 35, 0, 3, 1, null) },
                 new[] { new PersistedEquippedInventoryItem("weapon", new PersistedEquippedItem(3, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, null, null, null)) }, request.Name!, 100, 100, Progress: new Server.Helpers.ProgressState(KnownSpellsMask: 1));
