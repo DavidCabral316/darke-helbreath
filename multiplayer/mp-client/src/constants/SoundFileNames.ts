@@ -10,6 +10,9 @@ export const PLAYER_CAST = 'C16.mp3';
 export const SPELL_CAST_FAILED = 'C17.mp3';
 export const MALE_CRITICAL_ATTACK = 'C23.mp3';
 export const FEMALE_CRITICAL_ATTACK = 'C24.mp3';
+/** Classic level-up voices: player types 1–3 male, 4–6 female in the original client. */
+export const MALE_LEVEL_UP = 'C21.mp3';
+export const FEMALE_LEVEL_UP = 'C22.mp3';
 export const MALE_DEATH = 'C14.mp3';
 export const FEMALE_DEATH = 'C15.mp3';
 export const MALE_RESET_POSITION = 'C12.mp3';

@@ -102,6 +102,7 @@ import {
     OUT_UI_SET_SPELLS,
     OUT_UI_SET_STUN_DURATION_MS,
     OUT_UI_SET_UNDERWEAR_COLOR,
+    OUT_UI_PLAYER_LEVEL_UP,
     PLAYER_ITEM_APPEARANCE_PREFETCH_REQUESTED,
     PLAYER_APPEARANCE_CHANGED_RECEIVED,
     PLAYER_ATTACKED_MONSTER_RECEIVED,
@@ -426,6 +427,8 @@ export class NetworkManager {
     /** Authoritative self HP/max from server; updated by InitialState and hp_updated; used when merging map-only InitialGameWorldState. */
     private lastSelfHp: number | undefined;
     private lastSelfMaxHp: number | undefined;
+    /** Last authoritative progression level; undefined suppresses a false celebration on initial login. */
+    private lastProgressionLevel: number | undefined;
     /** Snapshot from InitialState for merging into each InitialGameWorldState (map load). */
     private initialStateMergeBase:
         | Pick<
@@ -459,6 +462,7 @@ export class NetworkManager {
     public connect(ip: string, port: number, characterName: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
+                this.lastProgressionLevel = undefined;
                 this.authenticateCharacterName = characterName.trim();
                 const websocketUrl = selectedCharacterId()
                     ? `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`
@@ -1245,8 +1249,11 @@ export class NetworkManager {
                 case 'initialState':
                     this.handleInitialState(message.payload.value);
                     break;
-                case 'progressionUpdated':
-                    publishAdventure(message.payload.value, this, action => {
+                case 'progressionUpdated': {
+                    const progression = message.payload.value;
+                    const previousLevel = this.lastProgressionLevel;
+                    this.lastProgressionLevel = progression.level;
+                    publishAdventure(progression, this, action => {
                         if ('potion' in action) this.sendConsumeItemRequest(action.potion);
                         else if ('economy' in action) this.sendPacket(ClientMessage.encode({payload:{$case:'economyRequest',value:{
                             action:action.economy.action,offerId:action.economy.offerId??'',itemUid:BigInt(action.economy.itemUid??0),
@@ -1254,7 +1261,11 @@ export class NetworkManager {
                         }}}).finish());
                         else this.sendPacket(ClientMessage.encode({payload:{$case:'allocateAttributeRequest',value:{attribute:action.attribute}}}).finish());
                     });
+                    if (previousLevel !== undefined && progression.level > previousLevel) {
+                        EventBus.emit(OUT_UI_PLAYER_LEVEL_UP, {level:progression.level,previousLevel,gender:this.initialStateMergeBase?.gender??Gender.MALE});
+                    }
                     break;
+                }
                 case 'itemAddedToBag':
                     this.handleItemAddedToBag(message.payload.value);
                     break;

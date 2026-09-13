@@ -331,6 +331,8 @@ export const OUT_UI_SET_MONSTERS = 'ui-set-monsters';
 export const OUT_UI_SET_NPC_DIRECTORY = 'ui-set-npc-directory';
 export const OUT_UI_SET_SPELLS = 'ui-set-spells';
 export const OUT_UI_GAME_STATS_UPDATE = 'ui-receive-game-stats-update';
+/** Network → React: authoritative local-player level increase. Payload: { level, previousLevel, gender }. */
+export const OUT_UI_PLAYER_LEVEL_UP = 'ui-player-level-up';
 export const OUT_UI_MOUSE_POSITION_UPDATE = 'ui-receive-mouse-position-update';
 export const OUT_UI_CAMERA_FOLLOW_PLAYER_CHANGED = 'ui-receive-camera-follow-player-changed';
 export const OUT_UI_MINIMAP_CAPTURED = 'ui-minimap-captured';

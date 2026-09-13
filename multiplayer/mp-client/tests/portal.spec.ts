@@ -74,6 +74,13 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await page.screenshot({path:'test-results/game-entered.png',fullPage:true});
     await page.getByRole('button',{name:/Comenzar a explorar/}).click();
     await expect(page.getByRole('dialog',{name:'Lumi'})).toBeHidden();
+    await page.evaluate(async()=>{
+        const [{EventBus},{OUT_UI_PLAYER_LEVEL_UP}]=await Promise.all([import('/src/game/EventBus.ts'),import('/src/constants/EventNames.ts')]);
+        EventBus.emit(OUT_UI_PLAYER_LEVEL_UP,{level:2,previousLevel:1,gender:'female'});
+    });
+    await expect(page.getByRole('status').filter({hasText:'Nivel 2'})).toBeVisible();
+    await page.screenshot({path:'test-results/level-up-celebration.png',fullPage:true});
+    await expect(page.getByRole('status').filter({hasText:'Nivel 2'})).toBeHidden({timeout:4000});
     await page.getByRole('link',{name:'Volver a personajes'}).click();
     await expect(page).toHaveURL(/\/characters$/);
     await expect.poll(async()=> (await (await context.request.get('/api/characters')).json())[0].lastPlayedAt,{timeout:15000}).not.toBeNull();
