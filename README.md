@@ -8,6 +8,9 @@
 > el [sistema de botín especial](./docs/SISTEMA-BOTIN-ESPECIAL.md) y el
 > [mapa de trabajo para jugar con Mary y otros jugadores](./docs/MULTIJUGADOR-DOS-JUGADORES.md).
 
+Última entrega: [tabla completa de drops y probabilidades](./docs/TABLA-DROPS.md) y
+[notas de interfaz, Lumi, audio y densidad](./docs/ENTREGA-EXPLORACION-LUMI.md).
+
 ## Inicio rápido de Darke (Windows)
 
 Desde la carpeta superior `darke-helbreath`:

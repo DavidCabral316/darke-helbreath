@@ -26,6 +26,7 @@ export class SoundManager {
     private oneShotSounds: Map<number, Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound> = new Map();
     private soundVolume = 100; // Default volume (0-100)
     private nextSoundId = 0; // Incrementing counter for unique sound IDs
+    private gain(key: string): number { return key === 'C8' || key === 'C10' ? 0.35 : 1; }
 
     constructor(scene: Scene) {
         this.scene = scene;
@@ -62,7 +63,7 @@ export class SoundManager {
         const phaserVolume = this.soundVolume / 100; // Convert to Phaser's volume range (0-1)
         const sound = this.scene.sound.add(soundKey, {
             loop: true,
-            volume: phaserVolume
+            volume: phaserVolume * this.gain(soundKey)
         });
 
         // Calculate and set playback rate when animation duration is specified
@@ -179,7 +180,7 @@ export class SoundManager {
                     this.applySpatialConfig(sound, spatialConfig);
                 } else {
                     // Regular sound - just set volume
-                    sound.setVolume(phaserVolume);
+                    sound.setVolume(phaserVolume * this.gain(sound.key));
                 }
             }
         });
@@ -237,7 +238,7 @@ export class SoundManager {
         const phaserVolume = this.soundVolume / 100; // Convert to Phaser's volume range (0-1)
         const sound = this.scene.sound.add(soundKey, {
             loop: false,
-            volume: phaserVolume
+            volume: phaserVolume * this.gain(soundKey)
         });
 
         // Calculate and set playback rate when animation duration is specified
@@ -292,7 +293,7 @@ export class SoundManager {
         // If animation is slower (longer duration), playback rate decreases
         const playbackRate = soundDurationMs / animationDurationMs;
         
-        return playbackRate;
+        return sound.key === 'C8' || sound.key === 'C10' ? Math.max(0.85, Math.min(1.15, playbackRate)) : playbackRate;
     }
     
     /**
@@ -312,7 +313,7 @@ export class SoundManager {
         
         // Set volume with both base volume and distance attenuation
         const phaserVolume = this.soundVolume / 100; // Base volume
-        const finalVolume = phaserVolume * spatialConfig.distanceVolume;
+        const finalVolume = phaserVolume * spatialConfig.distanceVolume * this.gain(sound.key);
         sound.setVolume(finalVolume);
     }
 }

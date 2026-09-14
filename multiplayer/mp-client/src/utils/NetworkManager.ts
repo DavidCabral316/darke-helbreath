@@ -1,4 +1,4 @@
-import { publishAdventure, disconnectAdventure } from '../adventure/store';
+import { publishAdventure, disconnectAdventure, LUMI_EVENT } from '../adventure/store';
 import {
     CastAoeSpell,
     CastDirectionalAoeSpell,
@@ -1947,6 +1947,7 @@ export class NetworkManager {
 
     private handlePlayerDied(data: { playerId: bigint; x: number; y: number }): void {
         const playerId = data.playerId.toString();
+        if (playerId === this.selfPlayerId) EventBus.emit(LUMI_EVENT, {kind:'death'});
         const existing = this.otherPlayersById.get(playerId);
         if (existing) {
             this.otherPlayersById.set(playerId, { ...existing, x: data.x, y: data.y, dead: true, activeTemporaryEffects: [] });

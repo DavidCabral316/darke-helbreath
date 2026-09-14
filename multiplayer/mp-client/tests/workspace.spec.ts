@@ -58,7 +58,7 @@ test('interfaz ordenada, chat, hotkeys, fichas y pantalla completa',async({page}
     expect(sent.filter(x=>x==='consumeItemRequest').length).toBe(beforeTyping);
     await page.getByLabel('Mensaje de chat').blur();await page.keyboard.press('q');
     await expect.poll(()=>sent.filter(x=>x==='consumeItemRequest').length).toBe(beforeTyping+1);
-    const bindings=await page.evaluate(()=>JSON.parse(localStorage.getItem('darke.hotkeys.v2')!));expect(bindings[0].code).toBe('KeyQ');
+    const bindings=await page.evaluate(()=>JSON.parse(localStorage.getItem(`darke.hotkeys.v3.${location.pathname.split('/').pop()}`)!));expect(bindings[0].code).toBe('KeyQ');
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.addItemToBag({itemId:53,itemUid:'qa-bounds',bagX:10000,bagY:10000});});
     const bagBox=await page.locator('.inventory-bag-area').boundingBox(),itemBox=await page.locator('.inventory-bag-item').last().boundingBox();expect(itemBox!.x+itemBox!.width).toBeLessThanOrEqual(bagBox!.x+bagBox!.width);expect(itemBox!.y+itemBox!.height).toBeLessThanOrEqual(bagBox!.y+bagBox!.height);
     await page.evaluate(async()=>{const a='/src/ui/store/InventoryDialog.store.ts';const inv=await import(a);inv.removeItemFromBag('qa-bounds');});

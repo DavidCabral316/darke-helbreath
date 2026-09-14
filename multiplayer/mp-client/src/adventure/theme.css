@@ -1,0 +1,58 @@
+/* Obsidian & jade: retain the fantasy identity without changing rail geometry. */
+body.adventure-workspace {--ui-jade:#7edfc3;--ui-gold:#ddbc80;--ui-ink:#101d28;--ui-border:#47606b;}
+.adventure-workspace .adventure-hud,.adventure-workspace .draggable-dialog,.adventure-workspace .hotbar {background:linear-gradient(140deg,#182a35f5,#101620f5);border:1px solid var(--ui-border);border-radius:12px;box-shadow:0 10px 30px #0006,inset 0 1px #c0e9df18;color:#e5e8dd;}
+.adventure-workspace .draggable-dialog-header {background:linear-gradient(100deg,#223c46,#182632);border-bottom:1px solid #729b9855;color:#e6cf9e;letter-spacing:1px;}
+.adventure-workspace .character-stats-card {background:#101e29dd;border-color:#47606b;color:#c7d9dd;}
+.adventure-workspace .inventory-equipped-area,.adventure-workspace .inventory-bag-area {background:#0d1823b3;border-color:#526a70;border-radius:9px;}
+.adventure-workspace .inventory-slot {background:radial-gradient(ellipse,#29424e,#15232d);border-color:#536b71;}
+.adventure-workspace .hotbar {padding:10px 12px;}
+.adventure-workspace .hotbar header {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;}
+.adventure-workspace .hotbar header strong {font:10px Arial,sans-serif;letter-spacing:2px;color:var(--ui-jade);}
+.adventure-workspace .hotbar button,.adventure-workspace .hotbar select {border:1px solid #527379;border-radius:7px;background:#223740;color:#e2e9e5;}
+.adventure-workspace .hotbar .hotbar-slots {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;}
+.adventure-workspace .hotbar .hotbar-slot {position:relative;min-width:0;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;background:linear-gradient(160deg,#304751,#13212d);transition:border-color .15s,transform .15s;}
+.adventure-workspace .hotbar .hotbar-slot:not(:disabled):hover {border-color:var(--ui-jade);transform:translateY(-2px);}
+.adventure-workspace .hotbar-slot kbd {position:absolute;top:3px;left:5px;font:10px monospace;color:#eddbad;}
+.adventure-workspace .hotbar-slot i {font:26px Georgia,serif;color:#92d8e6;text-shadow:0 0 14px #69cdff66;}
+.adventure-workspace .hotbar-slot.life i {color:#ff97a3;text-shadow:0 0 16px #ff546577;}
+.adventure-workspace .hotbar-slot.mana i {color:#8dadff;}
+.adventure-workspace .hotbar-slot span {font:9px/1.15 Arial,sans-serif;overflow-wrap:anywhere;}
+.adventure-workspace .hotbar .hotbar-slot.empty {border-style:dashed;background:#0e1b2577;color:#a1b6bd;}
+.adventure-workspace .hotbar .hotbar-slot:disabled {opacity:.55;}
+.adventure-workspace .hotbar p {font:10px/1.4 Arial,sans-serif;color:#b1c4ca;margin:8px 0 0;}
+.adventure-workspace .hotbar-config select {min-width:0;max-width:100%;}
+body .economy-overlay .economy {color:#e0e9e7;background:linear-gradient(120deg,#182d3be8,#101822eb);border:1px solid #6c9297;border-radius:16px;box-shadow:0 24px 80px #000c,inset 0 1px #ccebe033;backdrop-filter:blur(14px);width:min(1050px,86vw);}
+body .economy-overlay .economy::before,body .economy-overlay .economy::after {display:none;}
+body .economy-overlay .economy-heading {border-bottom-color:#68888955;background:linear-gradient(100deg,#294754aa,transparent);}
+body .economy-overlay .economy-heading h2 {color:#ebd8ad;font-size:28px;}
+body .economy-overlay .economy-heading small {color:#8edec8;}
+body .economy-overlay .economy-heading strong {color:#f2cd7d;white-space:nowrap;}
+body .economy-overlay .economy-heading button {background:#203742;color:#e3e9e8;border-color:#79928a;}
+body .economy-overlay .economy-body {color:#e0e9e7;scrollbar-color:#638b91 transparent;}
+body .economy-overlay .economy h3 {color:#b5e7d8;}
+body .economy-overlay .economy-row {border:1px solid #57798466;background:linear-gradient(140deg,#2a404eb3,#16232fbb);border-radius:10px;box-shadow:none;min-height:120px;padding:13px;transition:border-color .2s;}
+body .economy-overlay .economy-row:hover {border-color:#91c3b3;}
+body .economy-overlay .economy-row .economy-icon {background:radial-gradient(circle,#4c6267,#142330);border-color:#8db2a666;border-radius:9px;}
+body .economy-overlay .economy-row small {color:#b7c9d0;line-height:1.5;}
+body .economy-overlay .economy-row button,body .economy-overlay .quest-card button {color:#e7f5ed;background:linear-gradient(120deg,#326453,#264847);border:1px solid #79ab9588;border-radius:6px;}
+body .economy-overlay .economy-row button:disabled {opacity:.6;}
+body .economy-overlay .quest-list {border-color:#4d777a;background:#12232c88;border-radius:8px;}
+body .economy-overlay .quest-card strong {color:#c3e3cd;}
+body .economy-overlay .quest-card p,body .economy-overlay .quest-card small {color:#b7c9d0;}
+body .economy-overlay .economy-footer {color:#b0c7cb;border-color:#658c8955;}
+.economy-toolbar {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.economy-toolbar input:not([type=checkbox]),.economy-toolbar select {background:#0c1b26;color:#e4e9e7;border:1px solid #64858e;border-radius:7px;padding:9px;min-width:0;}
+.economy-toolbar input:not([type=checkbox]) {flex:1;min-width:130px;}
+.economy-toolbar label {display:flex;align-items:center;gap:6px;}
+.economy-toolbar label,.economy-result-count {font:12px Arial,sans-serif;color:#b9cdd1;}
+.lumi-event {position:fixed;right:calc(var(--rail-right,0px) + 20px);bottom:calc(var(--dock-bottom,0px) + 16px);width:min(440px,calc(100vw - 32px));z-index:240010;pointer-events:none;animation:lumi-arrive .35s ease-out;}
+.lumi-event>img {display:block;margin-left:auto;width:160px;height:235px;object-fit:cover;object-position:top;border-radius:80px 80px 0 0;mask-image:linear-gradient(#000 75%,transparent);margin-bottom:-35px;}
+.lumi-event section {position:relative;padding:16px;background:linear-gradient(125deg,#173c42f5,#14212ff5);border:1px solid #93b6a5;border-radius:12px;box-shadow:0 10px 35px #0009;color:#e8efe6;pointer-events:auto;}
+.lumi-event header {display:flex;justify-content:space-between;align-items:center;color:#e1c78d;font:11px Arial,sans-serif;letter-spacing:1px;}
+.lumi-event header button {background:transparent;border:0;color:#e5eddf;font-size:22px;cursor:pointer;}
+.lumi-event p {font:14px/1.6 Georgia,serif;margin:8px 0;}
+.lumi-event small {font:10px Arial,sans-serif;color:#adc6ca;}
+@keyframes lumi-arrive {from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:1500px){.adventure-workspace .hotbar .hotbar-slots{grid-template-columns:repeat(5,minmax(0,1fr));}.adventure-workspace .hotbar .hotbar-slot{min-height:49px;}.adventure-workspace .hotbar-slot i{font-size:20px;}.adventure-workspace .hotbar-slot span{font-size:8px;}}
+@media(max-width:900px){.lumi-event{right:16px;bottom:60px;}.lumi-event>img{height:150px;width:105px;}body .economy-overlay .economy{width:calc(100vw - 24px);}.economy-toolbar{align-items:stretch;}}
+@media(prefers-reduced-motion:reduce){.lumi-event,.adventure-workspace .hotbar .hotbar-slot{animation:none;transition:none;}}

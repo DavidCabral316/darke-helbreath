@@ -6,6 +6,8 @@ import {EventBus} from '../game/EventBus';
 import {NATIVE_OVERLAY_RESIZE_REQUESTED} from '../constants/EventNames';
 import {Hotbar} from './Hotbar';
 import './workspace.css';
+import './theme.css';
+import {LumiEventOverlay} from './LumiEventOverlay';
 
 export function AdventureWorkspace({children,phaserRef}:{children:ReactNode;phaserRef:RefObject<IRefPhaserGame|null>}) {
     const target=useFullscreenPortalTarget();
@@ -20,5 +22,5 @@ export function AdventureWorkspace({children,phaserRef}:{children:ReactNode;phas
         window.addEventListener('resize',resize);document.addEventListener('fullscreenchange',resize);resize();
         return()=>{document.body.classList.remove('adventure-workspace');observer.disconnect();cancelAnimationFrame(frame);window.removeEventListener('resize',resize);document.removeEventListener('fullscreenchange',resize);};
     },[phaserRef]);
-    return target?createPortal(<>{children}<Hotbar /></>,target):null;
+    return target?createPortal(<>{children}<Hotbar /><LumiEventOverlay /></>,target):null;
 }
