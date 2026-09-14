@@ -300,6 +300,8 @@ public sealed partial class GameWorld : IWorkerWorld {
             GroundStatesLeftByCellScratch = groundStatesLeftByCellScratch,
         };
 
+        if (TravelCorridors.DenseWorlds.Contains(id))
+            transitSpawnExclusions = TravelCorridors.Build(occupancyTracker, this.teleportLocs.SelectMany(t=>t.Locs).Select(p=>(p.X,p.Y)));
         SpawnConfiguredNpcs(initialNpcs);
         if (dwellAreas is not null && dwellAreas.Count > 0) {
             SpawnDwellAreaMonsters(dwellAreas, monstersById);
@@ -1284,6 +1286,9 @@ public sealed partial class GameWorld : IWorkerWorld {
             }
         }
         var profileMonsterAi = settings.Debug.ProfileMonstersAILoop;
+        // Keep persistence, corpse expiry and respawn timers running, but do not spend
+        // CPU on thousands of wandering NPCs in maps nobody is currently playing.
+        if (!playersBySessionId.Values.Any(p=>!p.Disconnected)) return;
         if (monstersByMonsterId.Count > 0) {
             if (profileMonsterAi) {
                 monsterAiProfileWindowEndUtc ??= now.AddSeconds(1);
@@ -1390,7 +1395,9 @@ public sealed partial class GameWorld : IWorkerWorld {
         return new MonsterDwellArea(xLo, yLo, xHi, yHi);
     }
 
-    /// <summary>Random then scan for a walkable non-teleport cell inside the inclusive dwell rectangle.</summary>
+    private readonly HashSet<(int X,int Y)> transitSpawnExclusions = new();
+
+    /// <summary>Random then scan for a walkable non-teleport cell outside transit corridors.</summary>
     private bool TryFindFreeCellInDwell(MonsterDwellArea dwell, Random random, out int spawnX, out int spawnY) {
         var xMin = Math.Min(dwell.X1, dwell.X2);
         var xMax = Math.Max(dwell.X1, dwell.X2);
@@ -1400,7 +1407,7 @@ public sealed partial class GameWorld : IWorkerWorld {
         for (var attempt = 0; attempt < maxRandomAttempts; attempt++) {
             var rx = random.Next(xMin, xMax + 1);
             var ry = random.Next(yMin, yMax + 1);
-            if (occupancyTracker.IsFreeAndNotTeleportCell(rx, ry)) {
+            if (occupancyTracker.IsFreeAndNotTeleportCell(rx, ry) && !transitSpawnExclusions.Contains((rx,ry))) {
                 spawnX = rx;
                 spawnY = ry;
                 return true;
@@ -1409,7 +1416,7 @@ public sealed partial class GameWorld : IWorkerWorld {
 
         for (var ry = yMin; ry <= yMax; ry++) {
             for (var rx = xMin; rx <= xMax; rx++) {
-                if (occupancyTracker.IsFreeAndNotTeleportCell(rx, ry)) {
+                if (occupancyTracker.IsFreeAndNotTeleportCell(rx, ry) && !transitSpawnExclusions.Contains((rx,ry))) {
                     spawnX = rx;
                     spawnY = ry;
                     return true;

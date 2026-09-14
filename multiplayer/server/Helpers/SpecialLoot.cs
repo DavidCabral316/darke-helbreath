@@ -34,17 +34,28 @@ public static class SpecialLoot {
 
     public sealed record Roll(int ItemId, ItemEffectConfig[] Effects, string DisplayName, int RarityTier);
 
-    public static Roll? TryRoll(GameWorldRef wr, MonsterReward reward) {
+    public static double DropChance(int experience, bool isGameMaster = false, string characterName = "") =>
+        isGameMaster && string.Equals(characterName, "Darkeruz", StringComparison.OrdinalIgnoreCase)
+            ? .75 : new[] { .0025, .0035, .005, .0075, .010, .014, .020, .030, .045 }[TierForExperience(experience) - 1];
+
+    public static (int Min, int Max) LevelRange(int experience) {
+        var tier = TierForExperience(experience);
+        var cap = new[] { 10, 30, 50, 70, 90, 110, 130, 180, 190 }[tier - 1];
+        return (Math.Max(1, cap - (tier <= 2 ? 20 : 35)), cap);
+    }
+    public static int[] CandidateItemIds(int experience, IReadOnlyDictionary<int, ItemConfig> items) {
+        var range = LevelRange(experience);
+        return Adventure.Rules.Equipment.Where(e=>e.Value.Level>=range.Min && e.Value.Level<=range.Max &&
+            items.TryGetValue(e.Key,out var item) && EquipmentTypes.Contains(item.ItemType)).Select(e=>e.Key).ToArray();
+    }
+
+    public static Roll? TryRoll(GameWorldRef wr, MonsterReward reward, GameWorldPlayer winner) {
         var monsterTier = TierForExperience(reward.Experience);
-        var chance = new[] { .0025, .0035, .005, .0075, .010, .014, .020, .030, .045 }[monsterTier - 1];
+        var chance = DropChance(reward.Experience, winner.IsGameMaster, winner.CharacterName);
         if (Random.Shared.NextDouble() >= chance) return null;
 
-        var levelCap = new[] { 10, 30, 50, 70, 90, 110, 130, 180, 190 }[monsterTier - 1];
-        var levelFloor = Math.Max(1, levelCap - (monsterTier <= 2 ? 20 : 35));
-        var candidates = Adventure.Rules.Equipment
-            .Where(e => e.Value.Level >= levelFloor && e.Value.Level <= levelCap &&
-                wr.ItemsById.TryGetValue(e.Key, out var item) && EquipmentTypes.Contains(item.ItemType))
-            .ToArray();
+        var candidates = CandidateItemIds(reward.Experience, wr.ItemsById)
+            .Select(id=>new KeyValuePair<int,EquipmentBonus>(id,Adventure.Rules.Equipment[id])).ToArray();
         if (candidates.Length == 0) return null;
         var chosen = candidates[Random.Shared.Next(candidates.Length)];
         var itemDef = wr.ItemsById[chosen.Key];

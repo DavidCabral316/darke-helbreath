@@ -91,6 +91,7 @@ public static class Inventory {
         }
         player.DrinkPotion(itemId);
         ApplyInventoryMutation(wr, player, result);
+        Adventure.Send(wr, player, "Poción consumida.");
         NetworkManager.SendToPlayer(player, NetworkManager.CreateHpUpdated(player.Hp, player.MaxHp));
         Adventure.Checkpoint(wr, player);
     }

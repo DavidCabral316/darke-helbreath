@@ -559,7 +559,7 @@
     "dwellAreas": [
       {
         "monsterId": 14,
-        "count": 60,
+        "count": 180,
         "area": {
           "x1": 115,
           "y1": 106,
@@ -569,7 +569,7 @@
       },
       {
         "monsterId": 47,
-        "count": 20,
+        "count": 60,
         "area": {
           "x1": 111,
           "y1": 196,
@@ -579,7 +579,7 @@
       },
       {
         "monsterId": 48,
-        "count": 40,
+        "count": 120,
         "area": {
           "x1": 73,
           "y1": 197,
@@ -589,7 +589,7 @@
       },
       {
         "monsterId": 60,
-        "count": 40,
+        "count": 120,
         "area": {
           "x1": 36,
           "y1": 149,
@@ -599,7 +599,7 @@
       },
       {
         "monsterId": 60,
-        "count": 40,
+        "count": 120,
         "area": {
           "x1": 35,
           "y1": 65,
@@ -609,7 +609,7 @@
       },
       {
         "monsterId": 0,
-        "count": 40,
+        "count": 120,
         "area": {
           "x1": 31,
           "y1": 27,
@@ -619,7 +619,7 @@
       },
       {
         "monsterId": 14,
-        "count": 60,
+        "count": 180,
         "area": {
           "x1": 143,
           "y1": 33,
@@ -629,7 +629,7 @@
       },
       {
         "monsterId": 47,
-        "count": 50,
+        "count": 150,
         "area": {
           "x1": 139,
           "y1": 69,
@@ -639,7 +639,7 @@
       },
       {
         "monsterId": 32,
-        "count": 30,
+        "count": 90,
         "area": {
           "x1": 192,
           "y1": 105,
@@ -649,7 +649,7 @@
       },
       {
         "monsterId": 0,
-        "count": 40,
+        "count": 120,
         "area": {
           "x1": 190,
           "y1": 173,
@@ -1552,7 +1552,7 @@
     "dwellAreas": [
       {
         "monsterId": 47,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 130,
           "y1": 330,
@@ -1562,7 +1562,7 @@
       },
       {
         "monsterId": 47,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 410,
           "y1": 300,
@@ -1572,7 +1572,7 @@
       },
       {
         "monsterId": 47,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 34,
           "y1": 69,
@@ -1582,7 +1582,7 @@
       },
       {
         "monsterId": 47,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 400,
           "y1": 180,
@@ -1592,7 +1592,7 @@
       },
       {
         "monsterId": 61,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 157,
           "y1": 460,
@@ -1602,7 +1602,7 @@
       },
       {
         "monsterId": 61,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 309,
           "y1": 40,
@@ -1612,7 +1612,7 @@
       },
       {
         "monsterId": 50,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 275,
           "y1": 458,
@@ -1622,7 +1622,7 @@
       },
       {
         "monsterId": 50,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 78,
           "y1": 108,
@@ -1632,7 +1632,7 @@
       },
       {
         "monsterId": 51,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 78,
           "y1": 386,
@@ -1642,7 +1642,7 @@
       },
       {
         "monsterId": 40,
-        "count": 20,
+        "count": 60,
         "area": {
           "x1": 280,
           "y1": 175,
@@ -1652,7 +1652,7 @@
       },
       {
         "monsterId": 36,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 292,
           "y1": 188,
@@ -1662,7 +1662,7 @@
       },
       {
         "monsterId": 60,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 318,
           "y1": 418,
@@ -1672,7 +1672,7 @@
       },
       {
         "monsterId": 14,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 226,
           "y1": 336,
@@ -1682,7 +1682,7 @@
       },
       {
         "monsterId": 53,
-        "count": 22,
+        "count": 66,
         "area": {
           "x1": 107,
           "y1": 202,
@@ -1692,7 +1692,7 @@
       },
       {
         "monsterId": 53,
-        "count": 22,
+        "count": 66,
         "area": {
           "x1": 315,
           "y1": 235,
@@ -1702,7 +1702,7 @@
       },
       {
         "monsterId": 33,
-        "count": 5,
+        "count": 15,
         "area": {
           "x1": 162,
           "y1": 256,
@@ -1712,7 +1712,7 @@
       },
       {
         "monsterId": 12,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 35,
           "y1": 300,
@@ -1722,7 +1722,7 @@
       },
       {
         "monsterId": 58,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 350,
           "y1": 85,
@@ -1732,7 +1732,7 @@
       },
       {
         "monsterId": 28,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 210,
           "y1": 80,
@@ -1742,7 +1742,7 @@
       },
       {
         "monsterId": 32,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 430,
           "y1": 390,
@@ -1752,7 +1752,7 @@
       },
       {
         "monsterId": 7,
-        "count": 6,
+        "count": 18,
         "area": {
           "x1": 35,
           "y1": 165,
@@ -1762,7 +1762,7 @@
       },
       {
         "monsterId": 15,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 250,
           "y1": 255,
@@ -2108,7 +2108,7 @@
     "dwellAreas": [
       {
         "monsterId": 47,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 20,
           "y1": 20,
@@ -2118,7 +2118,7 @@
       },
       {
         "monsterId": 60,
-        "count": 15,
+        "count": 45,
         "area": {
           "x1": 75,
           "y1": 20,
@@ -2128,7 +2128,7 @@
       },
       {
         "monsterId": 14,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 130,
           "y1": 20,
@@ -2138,7 +2138,7 @@
       },
       {
         "monsterId": 12,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 20,
           "y1": 75,
@@ -2148,7 +2148,7 @@
       },
       {
         "monsterId": 58,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 80,
           "y1": 75,
@@ -2158,7 +2158,7 @@
       },
       {
         "monsterId": 28,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 140,
           "y1": 80,
@@ -2168,7 +2168,7 @@
       },
       {
         "monsterId": 33,
-        "count": 6,
+        "count": 18,
         "area": {
           "x1": 45,
           "y1": 135,
@@ -2262,7 +2262,7 @@
     "dwellAreas": [
       {
         "monsterId": 47,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 20,
           "y1": 20,
@@ -2272,7 +2272,7 @@
       },
       {
         "monsterId": 60,
-        "count": 15,
+        "count": 45,
         "area": {
           "x1": 75,
           "y1": 20,
@@ -2282,7 +2282,7 @@
       },
       {
         "monsterId": 14,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 130,
           "y1": 20,
@@ -2292,7 +2292,7 @@
       },
       {
         "monsterId": 12,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 20,
           "y1": 75,
@@ -2302,7 +2302,7 @@
       },
       {
         "monsterId": 58,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 80,
           "y1": 75,
@@ -2312,7 +2312,7 @@
       },
       {
         "monsterId": 28,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 140,
           "y1": 80,
@@ -2322,7 +2322,7 @@
       },
       {
         "monsterId": 33,
-        "count": 6,
+        "count": 18,
         "area": {
           "x1": 45,
           "y1": 135,
@@ -2348,7 +2348,7 @@
     "dwellAreas": [
       {
         "monsterId": 60,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 15,
           "y1": 15,
@@ -2358,7 +2358,7 @@
       },
       {
         "monsterId": 14,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 70,
           "y1": 15,
@@ -2368,7 +2368,7 @@
       },
       {
         "monsterId": 12,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 130,
           "y1": 15,
@@ -2378,7 +2378,7 @@
       },
       {
         "monsterId": 58,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 20,
           "y1": 70,
@@ -2388,7 +2388,7 @@
       },
       {
         "monsterId": 28,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 90,
           "y1": 70,
@@ -2398,7 +2398,7 @@
       },
       {
         "monsterId": 33,
-        "count": 7,
+        "count": 21,
         "area": {
           "x1": 150,
           "y1": 75,
@@ -2446,7 +2446,7 @@
     "dwellAreas": [
       {
         "monsterId": 28,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 15,
           "y1": 15,
@@ -2456,7 +2456,7 @@
       },
       {
         "monsterId": 32,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 65,
           "y1": 15,
@@ -2466,7 +2466,7 @@
       },
       {
         "monsterId": 7,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 20,
           "y1": 70,
@@ -2476,7 +2476,7 @@
       },
       {
         "monsterId": 46,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 75,
           "y1": 70,
@@ -2486,7 +2486,7 @@
       },
       {
         "monsterId": 18,
-        "count": 6,
+        "count": 18,
         "area": {
           "x1": 25,
           "y1": 130,
@@ -2496,7 +2496,7 @@
       },
       {
         "monsterId": 15,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 90,
           "y1": 130,
@@ -2515,7 +2515,7 @@
     "dwellAreas": [
       {
         "monsterId": 18,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 25,
           "y1": 25,
@@ -2525,7 +2525,7 @@
       },
       {
         "monsterId": 46,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 110,
           "y1": 25,
@@ -2535,7 +2535,7 @@
       },
       {
         "monsterId": 15,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 25,
           "y1": 115,
@@ -2588,7 +2588,7 @@
     "dwellAreas": [
       {
         "monsterId": 20,
-        "count": 24,
+        "count": 72,
         "area": {
           "x1": 28,
           "y1": 23,
@@ -2598,7 +2598,7 @@
       },
       {
         "monsterId": 34,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 179,
           "y1": 217,
@@ -2608,7 +2608,7 @@
       },
       {
         "monsterId": 32,
-        "count": 15,
+        "count": 45,
         "area": {
           "x1": 174,
           "y1": 26,
@@ -2618,7 +2618,7 @@
       },
       {
         "monsterId": 46,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 102,
           "y1": 219,
@@ -2654,7 +2654,7 @@
     "dwellAreas": [
       {
         "monsterId": 28,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 20,
           "y1": 20,
@@ -2664,7 +2664,7 @@
       },
       {
         "monsterId": 32,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 90,
           "y1": 20,
@@ -2674,7 +2674,7 @@
       },
       {
         "monsterId": 7,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 30,
           "y1": 90,
@@ -2684,7 +2684,7 @@
       },
       {
         "monsterId": 46,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 100,
           "y1": 90,
@@ -2703,7 +2703,7 @@
     "dwellAreas": [
       {
         "monsterId": 32,
-        "count": 15,
+        "count": 45,
         "area": {
           "x1": 20,
           "y1": 20,
@@ -2713,7 +2713,7 @@
       },
       {
         "monsterId": 7,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 90,
           "y1": 20,
@@ -2723,7 +2723,7 @@
       },
       {
         "monsterId": 46,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 30,
           "y1": 90,
@@ -2733,7 +2733,7 @@
       },
       {
         "monsterId": 18,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 100,
           "y1": 90,
@@ -2822,7 +2822,7 @@
     "dwellAreas": [
       {
         "monsterId": 12,
-        "count": 22,
+        "count": 66,
         "area": {
           "x1": 30,
           "y1": 30,
@@ -2832,7 +2832,7 @@
       },
       {
         "monsterId": 58,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 170,
           "y1": 30,
@@ -2842,7 +2842,7 @@
       },
       {
         "monsterId": 28,
-        "count": 15,
+        "count": 45,
         "area": {
           "x1": 320,
           "y1": 30,
@@ -2852,7 +2852,7 @@
       },
       {
         "monsterId": 32,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 80,
           "y1": 260,
@@ -2862,7 +2862,7 @@
       },
       {
         "monsterId": 7,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 270,
           "y1": 270,
@@ -2881,7 +2881,7 @@
     "dwellAreas": [
       {
         "monsterId": 28,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 30,
           "y1": 30,
@@ -2891,7 +2891,7 @@
       },
       {
         "monsterId": 32,
-        "count": 16,
+        "count": 48,
         "area": {
           "x1": 180,
           "y1": 30,
@@ -2901,7 +2901,7 @@
       },
       {
         "monsterId": 7,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 340,
           "y1": 30,
@@ -2911,7 +2911,7 @@
       },
       {
         "monsterId": 46,
-        "count": 10,
+        "count": 30,
         "area": {
           "x1": 80,
           "y1": 280,
@@ -2921,7 +2921,7 @@
       },
       {
         "monsterId": 18,
-        "count": 8,
+        "count": 24,
         "area": {
           "x1": 270,
           "y1": 280,
@@ -2940,7 +2940,7 @@
     "dwellAreas": [
       {
         "monsterId": 7,
-        "count": 18,
+        "count": 54,
         "area": {
           "x1": 30,
           "y1": 30,
@@ -2950,7 +2950,7 @@
       },
       {
         "monsterId": 46,
-        "count": 14,
+        "count": 42,
         "area": {
           "x1": 180,
           "y1": 30,
@@ -2960,7 +2960,7 @@
       },
       {
         "monsterId": 18,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 340,
           "y1": 30,
@@ -2970,7 +2970,7 @@
       },
       {
         "monsterId": 15,
-        "count": 12,
+        "count": 36,
         "area": {
           "x1": 80,
           "y1": 280,

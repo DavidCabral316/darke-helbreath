@@ -13,6 +13,31 @@ var settings = await Config.LoadSettings();
 var monsters = Config.BuildMonsterCatalog(await Config.LoadMonstersConfig());
 var spells = Config.BuildSpellCatalog(await Config.LoadSpellsConfig());
 var items = Config.BuildItemCatalog(await Config.LoadItemsConfig());
+if(args.Contains("--loot-report")) {
+    var report = new List<string> {"# Botín de Darke Helbreath", "", "Generado desde las reglas que utiliza el servidor. Probabilidades por muerte con recompensa; cada drop normal es una tirada independiente. El oro se otorga directamente. El especial es una tirada adicional, no reemplaza los objetos normales.", "", "Sólo **Darkeruz autenticado como GM** tiene 75 % de especial. No cambia el nivel de los objetos, sus requisitos, sus rarezas ni el botín de otros jugadores. En combate compartido cuenta quien recibe la recompensa (mayor daño elegible). Sin sitio libre en el suelo no se materializa el objeto.", "", "## Monstruos", "", "| Monstruo | XP | Oro | Drops normales (cantidad; probabilidad) | Especial | Grupo |", "|---|---:|---:|---|---:|---|"};
+    string P(double p)=> (p*100).ToString("0.#####",System.Globalization.CultureInfo.InvariantCulture)+" %";
+    foreach(var (name,r) in Adventure.Rules.Monsters.OrderBy(m=>m.Value.Experience)) {
+        var range=SpecialLoot.LevelRange(r.Experience);
+        var drops=string.Join("; ",r.Drops.Select(d=>$"{items[d.ItemId].Name} (×{d.Min}–{d.Max}; {P(d.Chance)})"));
+        report.Add($"| {name} | {r.Experience} | {r.GoldMin}–{r.GoldMax} | {drops} | {P(SpecialLoot.DropChance(r.Experience))} | [Base {range.Min}–{range.Max}](#grupo-{range.Max}) |");
+    }
+    report.AddRange(new[]{"", "## Objetos especiales posibles", "", "Cada base del grupo tiene la misma probabilidad de elección. La columna normal ya incluye la probabilidad de que caiga un especial; no es sólo una probabilidad condicional. El objeto recibe de 1 a 4 afijos. Su requisito final de nivel aumenta en 2 por cada rareza por encima de Superior (máximo +6).", ""});
+    foreach(var xp in new[]{1,100,500,1500,5000,10000,20000,40000,80000}) {
+        var range=SpecialLoot.LevelRange(xp);var pool=SpecialLoot.CandidateItemIds(xp,items);
+        report.AddRange(new[]{ $"## Grupo {range.Max}", "", $"Niveles base {range.Min}–{range.Max}; {pool.Length} bases; elección condicional por base: {P(1d/pool.Length)}.", "", "| Base | Nivel | Normal por muerte | Darkeruz GM por muerte |", "|---|---:|---:|---:|"});
+        foreach(var id in pool.OrderBy(id=>Adventure.Rules.Equipment[id].Level))report.Add($"| {items[id].Name} | {Adventure.Rules.Equipment[id].Level} | {P(SpecialLoot.DropChance(xp)/pool.Length)} | {P(.75/pool.Length)} |");
+        report.Add("");
+    }
+    report.AddRange(new[]{"## Rareza condicionada a conseguir un especial", "", "| XP base del monstruo | Superior (1 afijo) | Excepcional (2) | Heroico (3) | Mítico (4) |", "|---|---:|---:|---:|---:|", "| Menos de 5.000 | 52 % | 48 % | 0 % | 0 % |", "| 5.000–39.999 | 52 % | 32 % | 16 % | 0 % |", "| 40.000 o más | 52 % | 32 % | 12 % | 4 % |", "", "Armas: daño, velocidad, crítico, veneno, fuego, hielo, parálisis, robo de vida/maná, oro o experiencia. Armaduras: defensa, vida, maná, oro o experiencia. Los afijos se eligen sin repetir dentro de sus grupos; el primero decide el color y brillo. No todos los monstruos pueden generar todas las rarezas.", "", "La tirada no garantiza una caída tras cierto número de intentos: son eventos aleatorios independientes. Las cifras mostradas pueden tener redondeo."});
+    File.WriteAllLines("../../docs/TABLA-DROPS.md",report);
+    Console.WriteLine("Generated docs/TABLA-DROPS.md");return;
+}
+Check(SpecialLoot.DropChance(20,true,"Darkeruz")==.75,"Darkeruz GM receives 75 percent special loot chance");
+Check(SpecialLoot.DropChance(20,false,"Darkeruz")==.0025 && SpecialLoot.DropChance(20,true,"Other")==.0025,"name alone or another GM cannot gain test loot boost");
+Check(SpecialLoot.CandidateItemIds(20,items).All(id=>Adventure.Rules.Equipment[id].Level<=10),"weak monsters cannot drop high-level special bases");
+var corridorMap=new GameWorldOccupancyTracker(40,40,Enumerable.Range(0,39).Select(y=>(20,y)));
+var corridors=TravelCorridors.Build(corridorMap,new[]{(2,2),(37,2)});
+Check(corridors.Contains((20,39))&&corridors.Contains((2,2))&&corridors.Contains((37,2)),"transit routes go around walls and protect entrances");
 Check(Adventure.MaxLevel==200 && Adventure.Rules.LevelThresholds[^1]==195235276,"hardcore curve defines exactly 200 levels");
 Check(Adventure.Rules.Spells.Count==26 && Adventure.Rules.Spells[23].Intelligence==260,"all currently executable spells have progression requirements");
 Check(items.Keys.Count(id=>id>=329&&id<=408)==80 && Adventure.Rules.Equipment[408].Level==190,"ten colour tiers provide eighty level-gated equipment pieces");

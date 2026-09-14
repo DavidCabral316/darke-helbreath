@@ -85,8 +85,8 @@ public static class Adventure {
         foreach (var drop in reward.Drops) {
             if (Random.Shared.NextDouble() < drop.Chance) wr.World.DropAdventureLoot(monster, winner, drop.ItemId, Random.Shared.Next(drop.Min, drop.Max + 1));
         }
-        var special = SpecialLoot.TryRoll(wr, reward);
-        if (special is not null) wr.World.DropAdventureLoot(monster, winner, special.ItemId, 1, special.Effects);
+        var special = SpecialLoot.TryRoll(wr, reward, winner);
+        if (special is not null && !wr.World.DropAdventureLoot(monster, winner, special.ItemId, 1, special.Effects)) special = null;
         if (winner.Progress.Level != before) Spawn.SendInitialState(wr, winner, includeSpells: true);
         Send(wr, winner, special is not null ? $"✦ HALLAZGO ESPECIAL: {special.DisplayName}" : winner.Progress.Level > before ? $"¡Nivel {winner.Progress.Level}! Tenés {winner.Progress.Points} puntos para distribuir." :
             winner.Progress.Level == MaxLevel ? $"+{gold} oro · Seguí explorando y consiguiendo equipo." : $"+{experience} XP · +{gold} oro · {monster.Name}");
