@@ -149,7 +149,11 @@ app.Map("/ws", async context => {
     var expectedOrigin = app.Configuration["Portal:Origin"] ?? "http://localhost:8080";
     var lanMode = app.Configuration.GetValue<bool>("Portal:LanMode");
     if (context.User.Identity?.IsAuthenticated != true) { context.Response.StatusCode = 401; return; }
-    if (!LanAccess.IsAllowedWebSocketOrigin(context.Request.Headers.Origin, context.Request.Host.Host, expectedOrigin, lanMode)) { context.Response.StatusCode = 403; return; }
+    if (!LanAccess.IsAllowedWebSocketOrigin(context.Request.Headers.Origin, context.Request.Host.Host, expectedOrigin, lanMode)) {
+        Console.Error.WriteLine($"[Server] Rejected WebSocket origin '{context.Request.Headers.Origin}' for host '{context.Request.Host}' (LAN mode: {lanMode}).");
+        context.Response.StatusCode = 403;
+        return;
+    }
     var accountId = context.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     var userManager = context.RequestServices.GetRequiredService<UserManager<Account>>();
     var account = await userManager.FindByIdAsync(accountId);

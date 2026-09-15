@@ -45,7 +45,8 @@ var highGlow = SpecialLoot.NormalizeProceduralEffects(53,[new(SpecialLoot.Freeze
 Check(!lowGlow.Any(effect=>effect.Effect==3)&&highGlow.Any(effect=>effect.Effect==3)&&SpecialLoot.Value(highGlow,SpecialLoot.ItemLevel)==100,"special equipment glows only from iLvl 100 while preserving its special tint");
 Check(PortalEndpoints.CharacterRecoveryDays==3,"deleted characters reserve their slot for three days");
 Check(LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",true)
-    && !LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.81:8080","192.168.1.80","http://localhost:8080",true)
+    && LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","127.0.0.1","http://localhost:8080",true)
+    && !LanAccess.IsAllowedWebSocketOrigin("http://8.8.8.8:8080","127.0.0.1","http://localhost:8080",true)
     && !LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",false),"LAN mode accepts only the same web host and keeps local mode strict");
 var corridorMap=new GameWorldOccupancyTracker(40,40,Enumerable.Range(0,39).Select(y=>(20,y)));
 var corridors=TravelCorridors.Build(corridorMap,new[]{(2,2),(37,2)});

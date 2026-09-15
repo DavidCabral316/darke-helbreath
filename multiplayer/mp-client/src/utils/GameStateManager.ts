@@ -4,6 +4,7 @@ import {
     OUT_UI_SET_MUSIC_VOLUME,
     OUT_UI_SET_SOUND_VOLUME,
 } from '../constants/EventNames';
+import { createUuid } from './Uuid';
 
 /**
  * Represents the saved game state structure stored in localStorage.
@@ -40,7 +41,7 @@ export class GameStateManager {
     private readonly STORAGE_KEY = 'gameState';
 
     private static createNetworkId(): string {
-        return crypto.randomUUID();
+        return createUuid();
     }
 
     constructor() {

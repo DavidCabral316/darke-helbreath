@@ -64,6 +64,7 @@ import { EventBus, type ToastRequestedEvent } from '../game/EventBus';
 import { selectedCharacterId } from '../portal/api';
 import { LOAD_PLAYER_ITEM_APPEARANCE_ASSETS_ON_DEMAND } from '../Config';
 import { runSafeSync } from './SafeEntry';
+import { createUuid } from './Uuid';
 import {
     CAST_AOE_SPELL_RECEIVED,
     CAST_DIRECTIONAL_AOE_SPELL_RECEIVED,
@@ -469,11 +470,19 @@ export class NetworkManager {
                     : `ws://${ip}:${port}/ws`;
                 const socket = new WebSocket(websocketUrl);
                 socket.binaryType = 'arraybuffer';
+                let opened = false;
+                const connectionTimeout = window.setTimeout(() => {
+                    if (opened || socket.readyState === WebSocket.OPEN) return;
+                    socket.close();
+                    reject(new Error(`[NetworkManager] Connection timed out: ${websocketUrl}`));
+                }, 12000);
 
                 this.socket = socket;
 
                 socket.addEventListener('open', () => {
                     runSafeSync('NetworkManager:open', () => {
+                        opened = true;
+                        window.clearTimeout(connectionTimeout);
                         console.log(`[NetworkManager] Connected to ${websocketUrl}`);
                         this.sendAuthentication();
                         resolve();
@@ -504,6 +513,8 @@ export class NetworkManager {
 
                 socket.addEventListener('close', (event: CloseEvent) => {
                     runSafeSync('NetworkManager:close', () => {
+                        window.clearTimeout(connectionTimeout);
+                        if (!opened) reject(new Error(`[NetworkManager] Connection closed before opening: ${websocketUrl}`));
                         console.log('[NetworkManager] WebSocket connection closed.');
                         this.clearPingInterval();
                         this.pingSentAt = undefined;
@@ -548,6 +559,7 @@ export class NetworkManager {
 
                 socket.addEventListener('error', (event) => {
                     runSafeSync('NetworkManager:error', () => {
+                        window.clearTimeout(connectionTimeout);
                         console.warn(`[NetworkManager] Failed to connect to ${websocketUrl}`, event);
                         if (this.socket === socket) {
                             this.socket = undefined;
@@ -1257,7 +1269,7 @@ export class NetworkManager {
                         if ('potion' in action) this.sendConsumeItemRequest(action.potion);
                         else if ('economy' in action) this.sendPacket(ClientMessage.encode({payload:{$case:'economyRequest',value:{
                             action:action.economy.action,offerId:action.economy.offerId??'',itemUid:BigInt(action.economy.itemUid??0),
-                            requestId:crypto.randomUUID(),revision:action.economy.revision
+                            requestId:createUuid(),revision:action.economy.revision
                         }}}).finish());
                         else this.sendPacket(ClientMessage.encode({payload:{$case:'allocateAttributeRequest',value:{attribute:action.attribute}}}).finish());
                     });
