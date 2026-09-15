@@ -43,6 +43,7 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await page.getByRole('button',{name:/^Crear personaje/}).click();
     await expect(page).toHaveURL(/\/characters$/);
     await expect(page.getByRole('heading',{name:`Hero${suffix}`})).toBeVisible();
+    await page.screenshot({path:'test-results/character-selection.png',fullPage:true});
     const chars = await (await context.request.get('/api/characters')).json();
     const id = chars[0].id;
     expect(chars[0].gender).toBe(1); expect(chars[0].hair).toBe(3); expect(chars[0].level).toBe(1);

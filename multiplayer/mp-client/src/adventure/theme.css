@@ -1,23 +1,35 @@
-/* Obsidian & jade: retain the fantasy identity without changing rail geometry. */
-body.adventure-workspace {--ui-jade:#7edfc3;--ui-gold:#ddbc80;--ui-ink:#101d28;--ui-border:#47606b;}
-.adventure-workspace .adventure-hud,.adventure-workspace .draggable-dialog,.adventure-workspace .hotbar {background:linear-gradient(140deg,#182a35f5,#101620f5);border:1px solid var(--ui-border);border-radius:12px;box-shadow:0 10px 30px #0006,inset 0 1px #c0e9df18;color:#e5e8dd;}
-.adventure-workspace .draggable-dialog-header {background:linear-gradient(100deg,#223c46,#182632);border-bottom:1px solid #729b9855;color:#e6cf9e;letter-spacing:1px;}
-.adventure-workspace .character-stats-card {background:#101e29dd;border-color:#47606b;color:#c7d9dd;}
-.adventure-workspace .inventory-equipped-area,.adventure-workspace .inventory-bag-area {background:#0d1823b3;border-color:#526a70;border-radius:9px;}
-.adventure-workspace .inventory-slot {background:radial-gradient(ellipse,#29424e,#15232d);border-color:#536b71;}
+/* Dark arcane shell shared with the portal. Geometry remains in workspace.css. */
+body.adventure-workspace {--ui-jade:#bd8cff;--ui-violet:#8b5cf6;--ui-rose:#d95b9e;--ui-gold:#e2bd77;--ui-ink:#0d0915;--ui-border:#8458b9;background:radial-gradient(circle at 50% 30%,#371c4b66,transparent 48%),linear-gradient(#07060d,#0b0812);}
+.adventure-workspace .adventure-hud,.adventure-workspace .draggable-dialog,.adventure-workspace .hotbar {background:linear-gradient(145deg,#171024f5,#0b0913f8);border:1px solid #895ab766;border-radius:13px;box-shadow:0 14px 38px #0009,inset 0 1px #e2c8ff12;color:#eee8f6;backdrop-filter:blur(15px);}
+.adventure-workspace .adventure-hud {border-top-color:#bd86ff;}
+.adventure-workspace .adventure-hud header span {color:#bc89ff;}
+.adventure-workspace .adventure-hud header strong {color:#f0dcff;text-shadow:0 0 18px #9d58d95c;}
+.adventure-workspace .adventure-location {color:#a69bad;}
+.adventure-workspace .adventure-gold {color:var(--ui-gold);}
+.adventure-workspace .adventure-meter {height:22px;border-color:#6e4a805e;background:#050309;border-radius:6px;}
+.adventure-workspace .adventure-meter>div {background:linear-gradient(90deg,#8d274f,#e35289);box-shadow:0 0 13px #e3528955;}
+.adventure-workspace .adventure-meter.mana>div {background:linear-gradient(90deg,#4939a6,#8b71f2);box-shadow:0 0 13px #846df055;}
+.adventure-workspace .adventure-meter.stamina>div {background:linear-gradient(90deg,#237569,#4bc4a4);box-shadow:0 0 13px #4bc4a455;}
+.adventure-workspace .adventure-meter.xp>div {background:linear-gradient(90deg,#8a5a31,#e2bd77);box-shadow:0 0 13px #e2bd7755;}
+.adventure-workspace .adventure-hud button {background:linear-gradient(145deg,#291b39,#171020);border-color:#865eb0;color:#eaddf2;border-radius:7px;transition:transform .15s,border-color .15s,background .15s;}
+.adventure-workspace .adventure-hud button:hover {background:#39234f;border-color:#b47bea;transform:translateY(-1px);}
+.adventure-workspace .draggable-dialog-header {background:linear-gradient(100deg,#28183b,#151020);border-bottom:1px solid #9c68ca55;color:#e6c7ff;letter-spacing:1.2px;}
+.adventure-workspace .character-stats-card {background:#100b1bdd;border-color:#724995;color:#cabdd6;}
+.adventure-workspace .inventory-equipped-area,.adventure-workspace .inventory-bag-area {background:#0a0711b8;border-color:#704c8f;border-radius:10px;}
+.adventure-workspace .inventory-slot {background:radial-gradient(ellipse,#322044,#120c1d);border-color:#704b91;box-shadow:inset 0 0 18px #9d5be711;}
 .adventure-workspace .hotbar {padding:10px 12px;}
 .adventure-workspace .hotbar header {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;}
 .adventure-workspace .hotbar header strong {font:10px Arial,sans-serif;letter-spacing:2px;color:var(--ui-jade);}
-.adventure-workspace .hotbar button,.adventure-workspace .hotbar select {border:1px solid #527379;border-radius:7px;background:#223740;color:#e2e9e5;}
+.adventure-workspace .hotbar button,.adventure-workspace .hotbar select {border:1px solid #76509a;border-radius:8px;background:#21152f;color:#eee6f6;}
 .adventure-workspace .hotbar .hotbar-slots {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;}
-.adventure-workspace .hotbar .hotbar-slot {position:relative;min-width:0;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;background:linear-gradient(160deg,#304751,#13212d);transition:border-color .15s,transform .15s;}
-.adventure-workspace .hotbar .hotbar-slot:not(:disabled):hover {border-color:var(--ui-jade);transform:translateY(-2px);}
+.adventure-workspace .hotbar .hotbar-slot {position:relative;min-width:0;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;background:linear-gradient(160deg,#332146,#130c1e);transition:border-color .15s,transform .15s,box-shadow .15s;}
+.adventure-workspace .hotbar .hotbar-slot:not(:disabled):hover {border-color:var(--ui-jade);transform:translateY(-2px);box-shadow:0 0 18px #9f64e633;}
 .adventure-workspace .hotbar-slot kbd {position:absolute;top:3px;left:5px;font:10px monospace;color:#eddbad;}
 .adventure-workspace .hotbar-slot i {font:26px Georgia,serif;color:#92d8e6;text-shadow:0 0 14px #69cdff66;}
 .adventure-workspace .hotbar-slot.life i {color:#ff97a3;text-shadow:0 0 16px #ff546577;}
 .adventure-workspace .hotbar-slot.mana i {color:#8dadff;}
 .adventure-workspace .hotbar-slot span {font:9px/1.15 Arial,sans-serif;overflow-wrap:anywhere;}
-.adventure-workspace .hotbar .hotbar-slot.empty {border-style:dashed;background:#0e1b2577;color:#a1b6bd;}
+.adventure-workspace .hotbar .hotbar-slot.empty {border-style:dashed;background:#0b071277;color:#a89bb4;}
 .adventure-workspace .hotbar .hotbar-slot:disabled {opacity:.55;}
 .adventure-workspace .hotbar p {font:10px/1.4 Arial,sans-serif;color:#b1c4ca;margin:8px 0 0;}
 .adventure-workspace .hotbar-config select {min-width:0;max-width:100%;}
