@@ -25,6 +25,8 @@ interface ConnectDialogProps {
     onBringToFront?: () => void;
 }
 
+const browserHost = () => window.location.hostname || 'localhost';
+
 export function ConnectDialog({
     position,
     zIndex,
@@ -32,7 +34,7 @@ export function ConnectDialog({
 }: ConnectDialogProps) {
     const { isOpen, defaultCharacterName, lastAttempt } = useStore(connectDialogStore, (s) => s);
     const [characterName, setCharacterName] = useState('');
-    const [host, setHost] = useState('localhost');
+    const [host, setHost] = useState(browserHost);
     const [portText, setPortText] = useState('1337');
 
     useEffect(() => {
@@ -41,7 +43,7 @@ export function ConnectDialog({
         }
         const init = lastAttempt ?? {
             characterName: defaultCharacterName,
-            host: 'localhost',
+            host: browserHost(),
             port: 1337,
         };
         setCharacterName(init.characterName);

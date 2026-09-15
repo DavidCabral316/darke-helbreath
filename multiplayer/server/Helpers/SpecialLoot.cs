@@ -5,6 +5,7 @@ namespace Server.Helpers;
 
 /// <summary>Server-owned procedural loot affixes stored in the existing per-instance effect payload.</summary>
 public static class SpecialLoot {
+    public const int GlowItemLevelThreshold = 100;
     public const int Damage = 100, Defense = 101, AttackSpeed = 102, CriticalChance = 103,
         PoisonChance = 104, BurnChance = 105, FreezeChance = 106, ParalysisChance = 107,
         LifeSteal = 108, ManaSteal = 109, Health = 110, Mana = 111, GoldFind = 112,
@@ -71,10 +72,11 @@ public static class SpecialLoot {
         var primary = pool[0];
         effects.Add(new ItemEffectConfig(RequiredLevel, Math.Min(Adventure.MaxLevel, chosen.Value.Level + Math.Max(0, rarity - 1) * 2)));
         effects.Add(new ItemEffectConfig(Rarity, rarity));
-        effects.Add(new ItemEffectConfig(3, primary.Color)); // GLOW
+        var itemLevel = CalculateItemLevel(chosen.Value, effects);
+        effects.Add(new ItemEffectConfig(ItemLevel, itemLevel));
+        if (itemLevel >= GlowItemLevelThreshold) effects.Add(new ItemEffectConfig(3, primary.Color)); // GLOW
         effects.Add(new ItemEffectConfig(4, primary.Color)); // inventory tint
         effects.Add(new ItemEffectConfig(5, primary.Color)); // equipped tint
-        effects.Add(new ItemEffectConfig(ItemLevel, CalculateItemLevel(chosen.Value, effects)));
         var quality = rarity switch { 1 => "Superior", 2 => "Excepcional", 3 => "Heroico", _ => "Mítico" };
         return new Roll(chosen.Key, effects.ToArray(), $"{itemDef.Name} {primary.Name} · {quality}", rarity);
     }
@@ -116,15 +118,28 @@ public static class SpecialLoot {
         return Math.Clamp((int)Math.Round(score, MidpointRounding.AwayFromZero), 1, 999);
     }
 
-    /// <summary>Adds the derived field to procedural items saved before iLvl existed.</summary>
+    /// <summary>Normalizes persisted procedural visuals and adds the derived field to items saved before iLvl existed.</summary>
     public static void BackfillItemLevels(InventoryManager inventory) {
         foreach (var item in inventory.BagItems.Concat(inventory.EquippedItems.Values)) {
             var effects = item.EffectOverrides;
-            if (effects is null || effects.Any(e => e.Effect == ItemLevel) ||
-                !effects.Any(e => e.Effect is >= Damage and <= ExperienceFind) ||
-                !Adventure.Rules.Equipment.TryGetValue(item.ItemId, out var equipment)) continue;
-            item.EffectOverrides = effects.Append(new ItemEffectConfig(ItemLevel, CalculateItemLevel(equipment, effects))).ToArray();
+            if (effects is null || !effects.Any(e => e.Effect is >= Damage and <= ExperienceFind)) continue;
+            item.EffectOverrides = NormalizeProceduralEffects(item.ItemId, effects);
         }
+    }
+
+    public static ItemEffectConfig[]? NormalizeProceduralEffects(int itemId, IEnumerable<ItemEffectConfig>? source) {
+        if (source is null) return null;
+        var effects = source.ToList();
+        if (!effects.Any(e => e.Effect is >= Damage and <= ExperienceFind) ||
+            !Adventure.Rules.Equipment.TryGetValue(itemId, out var equipment)) return effects.ToArray();
+        var itemLevel = Value(effects, ItemLevel);
+        if (itemLevel <= 0) itemLevel = CalculateItemLevel(equipment, effects);
+        var glowColor = Value(effects, 3);
+        if (glowColor == 0) glowColor = Value(effects, 4);
+        effects.RemoveAll(e => e.Effect is ItemLevel or 3);
+        effects.Add(new ItemEffectConfig(ItemLevel, itemLevel));
+        if (itemLevel >= GlowItemLevelThreshold) effects.Add(new ItemEffectConfig(3, glowColor == 0 ? 0xffffff : glowColor));
+        return effects.ToArray();
     }
 
     private static int TierForExperience(int xp) => xp switch {

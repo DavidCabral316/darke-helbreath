@@ -40,6 +40,13 @@ Check(SpecialLoot.CandidateItemIds(20,items).All(id=>Adventure.Rules.Equipment[i
 var plainItemLevel=SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[53]);
 var enchantedItemLevel=SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[53],[new(SpecialLoot.FreezeChance,50),new(SpecialLoot.Health,40)]);
 Check(plainItemLevel>0&&enchantedItemLevel>plainItemLevel&&SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[401])>plainItemLevel,"item level compares base stats and weighted special powers without using required level");
+var lowGlow = SpecialLoot.NormalizeProceduralEffects(53,[new(SpecialLoot.FreezeChance,50),new(4,0x55ccff),new(3,0x55ccff),new(SpecialLoot.ItemLevel,99)])!;
+var highGlow = SpecialLoot.NormalizeProceduralEffects(53,[new(SpecialLoot.FreezeChance,50),new(4,0x55ccff),new(SpecialLoot.ItemLevel,100)])!;
+Check(!lowGlow.Any(effect=>effect.Effect==3)&&highGlow.Any(effect=>effect.Effect==3)&&SpecialLoot.Value(highGlow,SpecialLoot.ItemLevel)==100,"special equipment glows only from iLvl 100 while preserving its special tint");
+Check(PortalEndpoints.CharacterRecoveryDays==3,"deleted characters reserve their slot for three days");
+Check(LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",true)
+    && !LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.81:8080","192.168.1.80","http://localhost:8080",true)
+    && !LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",false),"LAN mode accepts only the same web host and keeps local mode strict");
 var corridorMap=new GameWorldOccupancyTracker(40,40,Enumerable.Range(0,39).Select(y=>(20,y)));
 var corridors=TravelCorridors.Build(corridorMap,new[]{(2,2),(37,2)});
 Check(corridors.Contains((20,39))&&corridors.Contains((2,2))&&corridors.Contains((37,2)),"transit routes go around walls and protect entrances");

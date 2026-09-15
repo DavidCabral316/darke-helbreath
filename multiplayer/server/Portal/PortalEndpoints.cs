@@ -13,6 +13,7 @@ using Server.World.Game;
 namespace Server.Portal;
 
 public static class PortalEndpoints {
+    public const int CharacterRecoveryDays = 3;
     private static readonly SemaphoreSlim LifecycleGate = new(1, 1);
     public static async Task<IDisposable> LockCharacters() { await LifecycleGate.WaitAsync(); return new GateLease(); }
     private sealed class GateLease : IDisposable { public void Dispose() => LifecycleGate.Release(); }
@@ -168,7 +169,7 @@ public static class PortalEndpoints {
         characters.MapGet("", async (ClaimsPrincipal principal, PortalDb db) => {
             var id = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var list = await db.Characters.AsNoTracking().Where(c => c.AccountId == id).OrderBy(c => c.CreatedAt).ToListAsync();
-            return Results.Ok(list.Where(c => c.DeletedAt == null || c.DeletedAt > DateTimeOffset.UtcNow.AddDays(-7)).Select(ToResponse));
+            return Results.Ok(list.Where(c => c.DeletedAt == null || c.DeletedAt > DateTimeOffset.UtcNow.AddDays(-CharacterRecoveryDays)).Select(ToResponse));
         });
         characters.MapPost("", async (CharacterRequest request, ClaimsPrincipal principal, PortalDb db) => {
             if (!Regex.IsMatch(request.Name ?? "", "^[a-zA-Z][a-zA-Z0-9]{2,15}$") || request.Town is not ("aresden" or "elvine") ||
@@ -178,9 +179,9 @@ public static class PortalEndpoints {
             await using var transaction = await db.Database.BeginTransactionAsync();
             // Serialize slot operations per account, including simultaneous browser requests.
             await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtext({id}))");
-            var cutoff = DateTimeOffset.UtcNow.AddDays(-7);
+            var cutoff = DateTimeOffset.UtcNow.AddDays(-CharacterRecoveryDays);
             if (await db.Characters.CountAsync(c => c.AccountId == id && (c.DeletedAt == null || c.DeletedAt > cutoff)) >= 3)
-                return Results.Conflict(new { error = "Tu cuenta ya tiene tres personajes. Los eliminados reservan su ranura durante siete días." });
+                return Results.Conflict(new { error = $"Tu cuenta ya tiene tres personajes. Los eliminados reservan su ranura durante {CharacterRecoveryDays} días." });
             // Characters enter their faction's shared city from the first session.
             // The old isolated `training` world made players see a different monster population.
             var state = new PlayerPersistenceState(request.Town, 150, 150, 220, 1200, 600, 1, 16, 500, 2, true, true, true,
@@ -208,7 +209,7 @@ public static class PortalEndpoints {
         });
         characters.MapPost("/{id:guid}/restore", async (Guid id, ClaimsPrincipal principal, PortalDb db) => {
             var account = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var cutoff = DateTimeOffset.UtcNow.AddDays(-7);
+            var cutoff = DateTimeOffset.UtcNow.AddDays(-CharacterRecoveryDays);
             var character = await db.Characters.SingleOrDefaultAsync(c => c.Id == id && c.AccountId == account && c.DeletedAt > cutoff);
             if (character is null) return Results.NotFound();
             character.DeletedAt = null;
@@ -230,6 +231,11 @@ public static class PortalEndpoints {
         var state = JsonSerializer.Deserialize<PlayerPersistenceState>(c.StateJson)!;
         return new { c.Id, c.Name, c.Town, c.Level, c.Experience, c.DeletedAt, c.LastPlayedAt,
             world = state.GameWorldId, gender = state.GenderValue, skin = state.SkinColorValue, hair = state.HairStyleIndex, clothes = state.UnderwearColorIndex,
+            equipment = (state.EquippedItems ?? Array.Empty<PersistedEquippedInventoryItem>()).Select(row => new {
+                slot = row.Slot,
+                itemId = row.Item.ItemId,
+                effectOverrides = Server.Helpers.SpecialLoot.NormalizeProceduralEffects(row.Item.ItemId, row.Item.EffectOverrides)
+            }),
             isGameMaster = state.IsGameMaster, online = IsOnline(c.Id) };
     }
     public record RegisterRequest(string Username, string Email, string Password, bool AcceptRules);

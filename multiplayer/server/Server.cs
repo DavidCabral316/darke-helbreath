@@ -147,8 +147,9 @@ app.UseWebSockets();
 // Per-connection state machine: authenticate → route binary ClientMessage to GameWorld; teardown notifies world and drains send queue.
 app.Map("/ws", async context => {
     var expectedOrigin = app.Configuration["Portal:Origin"] ?? "http://localhost:8080";
+    var lanMode = app.Configuration.GetValue<bool>("Portal:LanMode");
     if (context.User.Identity?.IsAuthenticated != true) { context.Response.StatusCode = 401; return; }
-    if (context.Request.Headers.Origin != expectedOrigin) { context.Response.StatusCode = 403; return; }
+    if (!LanAccess.IsAllowedWebSocketOrigin(context.Request.Headers.Origin, context.Request.Host.Host, expectedOrigin, lanMode)) { context.Response.StatusCode = 403; return; }
     var accountId = context.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     var userManager = context.RequestServices.GetRequiredService<UserManager<Account>>();
     var account = await userManager.FindByIdAsync(accountId);
@@ -453,7 +454,8 @@ var autosaveTask = Task.Run(async () => {
             await PersistAllPlayerStatesOnShutdownAsync(worldRegistry, sessionsByServerId, charsDirectory);
     } catch (OperationCanceledException) { }
 }, autosaveCts.Token);
-await app.RunAsync($"http://127.0.0.1:{settings.Port}");
+var listenAddress = app.Configuration.GetValue<bool>("Portal:LanMode") ? "0.0.0.0" : "127.0.0.1";
+await app.RunAsync($"http://{listenAddress}:{settings.Port}");
 await autosaveTask;
 disconnectedPlayerCleanupCts.Cancel();
 worldTransferCts.Cancel();

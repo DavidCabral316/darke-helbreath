@@ -25,6 +25,27 @@ Abre <http://localhost:8080/>. Para detener cliente, servidor y PostgreSQL local
 powershell -ExecutionPolicy Bypass -File .\scripts\Stop-WebMultiplayer.ps1
 ```
 
+### Jugar con otra PC en la misma red
+
+Una sola vez, ejecutá como administrador:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Enable-WebMultiplayerLan.ps1
+```
+
+Luego iniciá el mundo en modo LAN:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Start-WebMultiplayer.ps1 -Lan
+```
+
+El lanzador muestra la dirección que debe abrir la segunda PC (por ejemplo,
+`http://192.168.1.80:8080/`). Cada jugador usa su propia cuenta y personaje. No
+hace falta configurar Starlink ni abrir puertos del router: las reglas permiten
+solamente la subred local y PostgreSQL continúa escuchando sólo en este equipo.
+Para retirar más adelante ese acceso, ejecutá
+`scripts\Disable-WebMultiplayerLan.ps1` como administrador.
+
 El contenido clásico de terceros y las partidas locales no forman parte de este
 repositorio. El estado actual es una alfa jugable y todavía no representa un MMORPG terminado.
 

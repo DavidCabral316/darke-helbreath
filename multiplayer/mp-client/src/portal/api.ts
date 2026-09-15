@@ -1,5 +1,6 @@
 export interface Account { userName: string; email: string; isGameMaster: boolean }
-export interface Character { id: string; name: string; town: string; world: string; level: number; experience: number; gender: number; skin: number; hair: number; clothes: number; isGameMaster: boolean; deletedAt: string | null; online: boolean }
+export interface CharacterEquipmentEntry { slot: string; itemId: number; effectOverrides?: {effect: number; effectColor?: number}[] }
+export interface Character { id: string; name: string; town: string; world: string; level: number; experience: number; gender: number; skin: number; hair: number; clothes: number; equipment: CharacterEquipmentEntry[]; isGameMaster: boolean; deletedAt: string | null; online: boolean }
 export async function api<T>(path: string, body?: unknown): Promise<T> {
     const headers: Record<string, string> = {};
     if (body !== undefined) {

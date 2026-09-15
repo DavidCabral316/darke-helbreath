@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, setActiveCharacterGameMaster, setActiveCharacterName, type Account, type Character } from './api';
+import { effectsFromDirectoryEntries, isEquipmentSlot, type EquipmentSlot, type InventoryItem } from '../constants/Items';
 import { CharacterPreview } from './Preview';
 import './portal.css';
 
@@ -100,11 +101,20 @@ function Characters() {
     async function change(id: string, action: string, body: unknown = {}) { setBusy(true); setError(''); try { await api(`/characters/${id}/${action}`, body); setDeleting(null); await refresh(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }
     return <section className="characters-page"><div className="section-heading"><div><p className="eyebrow">ELEGÍ TU DESTINO</p><h1>Tus personajes.</h1><p>Tres historias posibles. ¿Cuál vas a continuar hoy?</p></div><Link to="/account">Mi cuenta →</Link></div>
         {error && <Message>{error}</Message>}{!ready ? <Loading /> : <div className="character-grid">{characters.map(c => <article className={`character-card ${c.deletedAt ? 'deleted' : ''}`} key={c.id}>
-            <span className="tag">{c.town.toUpperCase()} · NIVEL {c.level}</span><CharacterPreview gender={c.gender} skin={c.skin} hair={c.hair} clothes={c.clothes} /><h2>{c.name}</h2><p>{c.deletedAt ? 'Eliminación pendiente · recuperable por 7 días' : `Última ubicación: ${c.world}`}</p>
+            <span className="tag">{c.town.toUpperCase()} · NIVEL {c.level}</span><CharacterPreview gender={c.gender} skin={c.skin} hair={c.hair} clothes={c.clothes} equippedItems={previewEquipment(c)} /><h2>{c.name}</h2><p>{c.deletedAt ? 'Eliminación pendiente · recuperable por 3 días' : `Última ubicación: ${c.world}`}</p>
             {c.deletedAt ? <button className="button" disabled={busy} onClick={() => change(c.id, 'restore')}>Restaurar personaje</button> : <><Link className="button" to={`/play/${c.id}`}>Entrar al mundo →</Link><button className="text-button delete-button" onClick={() => setDeleting(c)}>Eliminar personaje</button></>}
         </article>)}{Array.from({ length: Math.max(0, 3 - characters.length) }, (_, i) => <Link className="empty-character" key={i} to="/characters/new"><span>＋</span><h2>Una historia por escribir.</h2><p>Crear nuevo personaje</p></Link>)}</div>}
-        {deleting && <div className="modal-backdrop"><form className="auth-card" role="dialog" aria-modal="true" aria-label="Eliminar personaje" onSubmit={e => { e.preventDefault(); change(deleting.id, 'delete', { name: new FormData(e.currentTarget).get('name') }); }}><h2>Eliminar {deleting.name}</h2><p>Podrás restaurarlo durante siete días. La ranura queda reservada durante ese plazo.</p><label>Escribí el nombre exacto<input autoFocus name="name" required /></label><button className="button" disabled={busy}>Confirmar eliminación</button><button className="text-button" type="button" onClick={() => setDeleting(null)}>Cancelar</button>{error && <Message>{error}</Message>}</form></div>}
+        {deleting && <div className="modal-backdrop"><form className="auth-card" role="dialog" aria-modal="true" aria-label="Eliminar personaje" onSubmit={e => { e.preventDefault(); change(deleting.id, 'delete', { name: new FormData(e.currentTarget).get('name') }); }}><h2>Eliminar {deleting.name}</h2><p>Podrás restaurarlo durante tres días. La ranura queda reservada durante ese plazo.</p><label>Escribí el nombre exacto<input autoFocus name="name" required /></label><button className="button" disabled={busy}>Confirmar eliminación</button><button className="text-button" type="button" onClick={() => setDeleting(null)}>Cancelar</button>{error && <Message>{error}</Message>}</form></div>}
     </section>;
+}
+
+function previewEquipment(character: Character): Partial<Record<EquipmentSlot, InventoryItem>> {
+    const result: Partial<Record<EquipmentSlot, InventoryItem>> = {};
+    for (const row of character.equipment ?? []) {
+        if (!isEquipmentSlot(row.slot)) continue;
+        result[row.slot] = { itemId: row.itemId, itemUid: `preview:${character.id}:${row.slot}`, effectOverrides: effectsFromDirectoryEntries(row.effectOverrides ?? []) };
+    }
+    return result;
 }
 
 function CreateCharacter() {

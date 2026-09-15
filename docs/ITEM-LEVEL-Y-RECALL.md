@@ -21,6 +21,8 @@
 
 El resultado se redondea y se limita entre 1 y 999. Rareza, color, brillo y nivel requerido no suman por sí solos: evitan inflar dos veces la valoración de los atributos que representan. Los objetos especiales antiguos reciben el campo automáticamente al cargarse.
 
+El color especial continúa identificando el afijo principal, pero el resplandor queda reservado para objetos de **iLvl 100 o superior**. Los objetos especiales inferiores siguen siendo valiosos y coloreados sin convertir el brillo en algo común entre todos los personajes.
+
 ## Recall
 
 Recall se aprende en la casa de magia desde nivel 1 por 250 de oro, requiere 10 INT y consume 12 de maná. No necesita elegir un objetivo: al terminar la animación, el servidor elige al azar uno de los cinco círculos clásicos de reaparición de la ciudad natal del personaje.
