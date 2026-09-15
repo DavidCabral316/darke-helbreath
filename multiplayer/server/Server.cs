@@ -60,6 +60,7 @@ var spellsById = Config.BuildSpellCatalog(spellsConfig);
 Config.ValidateMonsterSpellReferences(monstersById, spellsById);
 var itemsConfig = await Config.LoadItemsConfig();
 var itemsById = Config.BuildItemCatalog(itemsConfig);
+PortalEndpoints.ItemCatalog = itemsById;
 var npcsConfig = await Config.LoadNpcsConfig();
 var npcsById = Config.BuildNpcCatalog(npcsConfig);
 var mapsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Config", "maps");

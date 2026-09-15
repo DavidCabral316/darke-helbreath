@@ -1,7 +1,7 @@
 import type { Scene } from 'phaser';
 import { GameAsset } from './GameAsset';
 import { convertWorldPosToPixelPos } from '../../utils/CoordinateUtils';
-import { getItemById, getItemSheetIndex, getDroppedItemSpriteIndex, getGlowEffectColor, getGlareEffectColor, getTintAppearanceEffectColor, getTintInventoryEffectColorWithOverrides, type Effect } from '../../constants/Items';
+import { getItemById, getItemSheetIndex, getDroppedItemSpriteIndex, getGlowEffectColor, getGlareEffectColor, getTintAppearanceEffectColor, getTintInventoryEffectColorWithOverrides, mergeItemEffects, type Effect } from '../../constants/Items';
 import { Gender } from '../../Types';
 import type { InventoryItemHoverInfo } from '../../ui/store/InventoryItemHoverOverlay.store';
 import { TILE_SIZE } from '../assets/HBMap';
@@ -69,7 +69,11 @@ export class GroundItem extends GameAsset {
         this.tintColor = resolvedTint;
         this.effectOverrides = effectOverrides;
 
-        // Apply tint after super() - GameAsset.applyItemEffects clears tint when effects is empty
+        // Ground drops used to apply only their tint. Apply the complete merged
+        // effect list so procedurally rolled equipment visibly pulses on the map.
+        this.setItemEffects(mergeItemEffects(itemDef.effects, effectOverrides));
+
+        // Keep the procedural colour after applying the animated glow pipeline.
         if (resolvedTint !== undefined) {
             this.sprite.setTint(resolvedTint);
         }

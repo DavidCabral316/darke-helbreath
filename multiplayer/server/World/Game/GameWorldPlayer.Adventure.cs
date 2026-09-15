@@ -66,7 +66,8 @@ public partial class GameWorldPlayer {
     public bool SpendSpellMana(int spellId) {
         if (!CanUseSpell(spellId)) return false;
         if (!IsGameMaster) Progress = Progress with { Mana = Progress.Mana - Adventure.Rules.Spells[spellId].Mana };
-        MarkCombat(); return true;
+        if (spellId != Casting.RecallSpellId) MarkCombat();
+        return true;
     }
     public void MarkCombat() => lastCombatAt = DateTimeOffset.UtcNow;
     public bool CanTrade => !IsDead && !Disconnected && (DateTimeOffset.UtcNow - lastCombatAt).TotalSeconds >= 8;

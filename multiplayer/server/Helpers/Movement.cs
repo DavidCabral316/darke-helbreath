@@ -215,6 +215,21 @@ public static class Movement {
         Console.WriteLine($"[GameWorld:{worldIdForLog}] Player {player.PlayerId} teleported to ({destX}, {destY})");
     }
 
+    /// <summary>Server-owned long jump to the nearest valid cell, used by non-client-authoritative travel such as Recall.</summary>
+    public static bool TryTeleportPlayerNear(GameWorldRef wr, GameWorldPlayer player, int targetX, int targetY, int maxRadius = 12) {
+        var destination = Location.FindNearestFreeLocation(wr.OccupancyTracker.IsFreeAndNotTeleportCell, targetX, targetY, maxRadius);
+        if (!destination.HasValue) return false;
+        var previousX = player.PosX;
+        var previousY = player.PosY;
+        wr.OccupancyTracker.SetFree(previousX, previousY);
+        wr.OccupancyTracker.SetOccupied(destination.Value.X, destination.Value.Y);
+        SetPlayerPosition(wr, player, destination.Value.X, destination.Value.Y);
+        SyncPlayerVisibilityAfterMovement(wr, player, previousX, previousY, destination.Value.X, destination.Value.Y,
+            broadcastPlayerMoved: true, playerMovedTeleport: true);
+        NetworkManager.SendToPlayer(player, NetworkManager.CreatePlayerTeleported(destination.Value.X, destination.Value.Y));
+        return true;
+    }
+
     /// <summary>
     /// Validates client-reported step against occupancy, optional course correction, jump distance, paralysis, and movement cadence;
     /// applies anti-cheat paralysis and rollback on excessive speed.

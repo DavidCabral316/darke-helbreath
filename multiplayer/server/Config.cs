@@ -235,6 +235,11 @@ public static class Config {
                 throw new InvalidOperationException($"Duplicate spell id {spell.Id} in Spells.json.");
             }
             if (!spell.DamageType.HasValue) {
+                if (spell.Utility == true) {
+                    if (spell.TemporaryEffects is not null || spell.AoeRadius is not null)
+                        throw new InvalidOperationException($"Spells.json utility entry at index {i} must not define combat effects.");
+                    continue;
+                }
                 if (spell.TemporaryEffects is not { Length: > 0 } buffRows) {
                     throw new InvalidOperationException(
                         $"Spells.json entry at index {i} (id {spell.Id}) has no damageType and must define temporaryEffects.");
@@ -783,7 +788,9 @@ public record SpellConfig(
     /// <summary>When true, clients may send optional aim-assist target ids on <c>SpellCastRequest</c> to snap the cast cell to that entity.</summary>
     bool? AimAssist = null,
     /// <summary>Buff-only and/or on-hit timed effects; JSON <c>temporaryEffects</c>; each <c>duration</c> is ms.</summary>
-    SpellTimedEffectSpec[]? TemporaryEffects = null);
+    SpellTimedEffectSpec[]? TemporaryEffects = null,
+    /// <summary>Server-resolved non-combat spell, such as Recall.</summary>
+    bool? Utility = null);
 
 /// <summary>Optional axis-aligned dwell rectangle in map tiles; when omitted, worlds use full map bounds for that dwell entry.</summary>
 public record GameWorldDwellAreaBoundsConfig(int X1, int Y1, int X2, int Y2);

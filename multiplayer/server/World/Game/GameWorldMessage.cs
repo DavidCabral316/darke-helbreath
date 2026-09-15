@@ -61,7 +61,9 @@ public sealed record PlayerPersistenceState(
     long SnapshotVersion = 0,
     Server.Helpers.ProgressState? Progress = null,
     string PersistenceKey = "",
-    bool IsGameMaster = false);
+    bool IsGameMaster = false,
+    /// <summary>Faction capital used by Recall; populated from the protected character row.</summary>
+    string HomeTown = "aresden");
 
 /// <summary>State carried across worlds during a transfer: session identity plus the player settings snapshot to reapply in the target world.</summary>
 public sealed record TransferredPlayerState(Guid SessionId, PlayerPersistenceState State);

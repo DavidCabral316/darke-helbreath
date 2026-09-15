@@ -25,3 +25,4 @@ export const SPELL_EARTH_SHOCK_WAVE_ID = 22;
 export const SPELL_MASS_BLIZZARD_ID = 23;
 export const SPELL_INVISIBILITY_ID = 24;
 export const SPELL_BERSERK_ID = 25;
+export const SPELL_RECALL_ID = 26;

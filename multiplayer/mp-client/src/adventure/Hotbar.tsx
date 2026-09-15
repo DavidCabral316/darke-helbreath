@@ -9,7 +9,7 @@ import {IN_UI_CAST_SPELL} from '../constants/EventNames';
 import {selectedCharacterId} from '../portal/api';
 
 type Binding={code:string;action:string};
-const spellNames=['Energy Bolt','Fire Ball','Fire Strike','Chill Wind','Poison Cloud','Triple Energy Bolt','Lightning Bolt','Spike Field','Fire Field','Ice Storm','Ice Strike','Energy Strike','Mass Fire Strike','Mass Chill Wind','Earthworm Strike','Armor Break','Bloody Shock Wave','Mass Ice Strike','Lightning Strike','Meteor Strike','Mass Lightning Strike','Blizzard','Earth Shock Wave','Mass Blizzard','Invisibility','Berserk'];
+const spellNames=['Energy Bolt','Fire Ball','Fire Strike','Chill Wind','Poison Cloud','Triple Energy Bolt','Lightning Bolt','Spike Field','Fire Field','Ice Storm','Ice Strike','Energy Strike','Mass Fire Strike','Mass Chill Wind','Earthworm Strike','Armor Break','Bloody Shock Wave','Mass Ice Strike','Lightning Strike','Meteor Strike','Mass Lightning Strike','Blizzard','Earth Shock Wave','Mass Blizzard','Invisibility','Berserk','Recall'];
 const actions=[['','Espacio libre'],['potion:36','Vida · pequeña'],['potion:165','Maná · pequeña'],['potion:164','Vida · mediana'],['potion:307','Vida · grande'],['potion:166','Maná · mediana'],['potion:308','Maná · grande'],...spellNames.map((name,id)=>[`spell:${id}`,name])];
 const defaultActions=['potion:36','potion:165','','','','','','','',''];
 const defaults:Binding[]=defaultActions.map((action,i)=>({code:i===9?'Digit0':`Digit${i+1}`,action}));

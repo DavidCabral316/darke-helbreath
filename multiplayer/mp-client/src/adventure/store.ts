@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from 'react';
 import type { ProgressionUpdated } from '../proto/generated/network';
-import { SPECIAL_LOOT_DROP_SOUND } from '../constants/SoundFileNames';
 import { soundDialogStore } from '../ui/store/SoundDialog.store';
 import {EventBus} from '../game/EventBus';
+import {playSpecialLootChime} from './specialLootChime';
 export const LUMI_EVENT='darke:lumi-event';
 export type LumiEvent={kind:'level'|'loot'|'death';level?:number;points?:number};
 export type EconomyAction={economy:{action:string;offerId?:string;itemUid?:string;revision:bigint}};
@@ -15,7 +15,7 @@ export function publishAdventure(stats: ProgressionUpdated, source:object, send:
     owner = source; sender = send;
     if (stats.notice.startsWith('✦ HALLAZGO ESPECIAL:')) {
         const volume=soundDialogStore.state.soundVolume/100;
-        if(volume>0){const audio=new Audio(`/assets/sounds/${SPECIAL_LOOT_DROP_SOUND}`);audio.volume=volume;void audio.play().catch(()=>undefined);}
+        playSpecialLootChime(volume);
         EventBus.emit(LUMI_EVENT,{kind:'loot'} satisfies LumiEvent);
     }
     if(stats.notice==='Poción consumida.'){

@@ -67,7 +67,7 @@ public static class CharacterPersistence {
         if (character is null) throw new InvalidOperationException("Character no longer available.");
         var state = JsonSerializer.Deserialize<PlayerPersistenceState>(character.StateJson)
             ?? throw new InvalidOperationException("Invalid character snapshot.");
-        return state with { PersistenceKey = key };
+        return state with { PersistenceKey = key, HomeTown = character.Town };
     }
     public static void Save(string key, PlayerPersistenceState state) {
         using var db = Factory.CreateDbContext();

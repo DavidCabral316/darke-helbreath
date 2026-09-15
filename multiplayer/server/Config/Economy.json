@@ -1399,6 +1399,16 @@
       "level": 115,
       "intelligence": 140,
       "itemId": 0
+    },
+    {
+      "id": "spell-26",
+      "name": "Aprender Recall · regreso a la ciudad",
+      "service": "magic",
+      "price": 250,
+      "spellId": 26,
+      "level": 1,
+      "intelligence": 10,
+      "itemId": 0
     }
   ],
   "quests": [

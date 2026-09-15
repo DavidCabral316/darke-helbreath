@@ -91,6 +91,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
     private int underwearColorIndex;
     /// <summary>Client-supplied character display name from authenticate; persisted in <see cref="PlayerPersistenceState"/>.</summary>
     private string characterName = "";
+    private string homeTown = "aresden";
     private bool isGameMaster;
     private bool gameMasterInvulnerable;
 
@@ -180,6 +181,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
 
     /// <summary>Client-supplied character display name from authenticate; persisted with player saves.</summary>
     public string CharacterName => characterName;
+    public string HomeTown => homeTown;
     public bool IsGameMaster => isGameMaster;
     public bool GameMasterInvulnerable => gameMasterInvulnerable;
 
@@ -357,6 +359,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
         // Existing characters retain spells already unlocked before the shop release.
         if (Progress.KnownSpellsMask == 0) Progress = Progress with { KnownSpellsMask = Adventure.Rules.Spells.Where(s => s.Value.Level <= Progress.Level).Aggregate(0, (mask, s) => mask | (1 << s.Key)) };
         PersistenceKey = state.PersistenceKey;
+        homeTown = state.HomeTown == "elvine" ? "elvine" : "aresden";
         isGameMaster = state.IsGameMaster;
         snapshotVersion = state.SnapshotVersion;
         maxHp = Math.Clamp(state.MaxHp ?? 1000, 1, 1000000);
@@ -378,6 +381,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
         }
         if (state.BagItems is not null || state.EquippedItems is not null) {
             inventoryManager.LoadFromPersistence(state.BagItems, state.EquippedItems);
+            SpecialLoot.BackfillItemLevels(inventoryManager);
             inventoryManager.TryUnequipAllGenderMismatchedEquipment(genderValue, out _);
         }
         if (!string.IsNullOrWhiteSpace(state.CharacterName)) {
@@ -413,7 +417,7 @@ public partial class GameWorldPlayer : GameWorldActionableEntity {
             characterName,
             hp,
             maxHp,
-            ++snapshotVersion, Progress, PersistenceKey, isGameMaster);
+            ++snapshotVersion, Progress, PersistenceKey, isGameMaster, homeTown);
     }
 
     /// <summary>Sets the display name from authenticate or loaded persistence.</summary>

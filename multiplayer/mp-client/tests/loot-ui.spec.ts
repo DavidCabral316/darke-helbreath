@@ -14,15 +14,17 @@ test('hotbar defaults, learned-only spells, potion audio and Lumi limit',async({
     await page.getByRole('button',{name:'Listo',exact:true}).click();
     const events=await page.evaluate(async()=>{
         const s=await import('/src/adventure/store.ts');const p=await import('/src/proto/generated/network.ts');
-        const sounds:string[]=[];const original=window.Audio;
+        const sounds:string[]=[];const original=window.Audio;const OriginalContext=window.AudioContext;let chimeNotes=0;
         (window as any).Audio=class {volume=1;constructor(url:string){sounds.push(url)}play(){return Promise.resolve()}};
+        (window as any).AudioContext=class {state='running';currentTime=0;destination={};resume(){return Promise.resolve()}createOscillator(){return {type:'sine',frequency:{setValueAtTime(){}},connect(){return this},start(){chimeNotes++},stop(){}}}createGain(){return {gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){return this}}}};
         const stats=p.ProgressionUpdated.fromPartial({level:30,hp:100});const owner={};
         s.publishAdventure({...stats,notice:'No necesitás esa poción, o debés esperar dos segundos entre usos.'},owner,()=>{});
         s.publishAdventure({...stats,notice:'Poción consumida.'},owner,()=>{});
         s.publishAdventure({...stats,notice:'✦ HALLAZGO ESPECIAL: Espada'},owner,()=>{});
-        window.Audio=original;return sounds;
+        window.Audio=original;window.AudioContext=OriginalContext;return {sounds,chimeNotes};
     });
-    expect(events).toEqual(['/assets/sounds/E21.mp3','/assets/sounds/E37.mp3']);
+    expect(events.sounds).toEqual(['/assets/sounds/E21.mp3']);
+    expect(events.chimeNotes).toBe(4);
     await expect(page.getByLabel('Consejo de Lumi')).toBeVisible();
     await page.screenshot({path:'test-results/lumi-and-hotbar.png'});
     await page.getByLabel('Cerrar consejo').click();

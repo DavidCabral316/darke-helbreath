@@ -1420,6 +1420,12 @@
       "mana": 110,
       "intelligence": 140,
       "powerPercent": 100
+    },
+    "26": {
+      "level": 1,
+      "mana": 12,
+      "intelligence": 10,
+      "powerPercent": 100
     }
   }
 }

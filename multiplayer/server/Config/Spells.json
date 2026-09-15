@@ -269,5 +269,10 @@
         "castSpeedModifier": 0.5
       }
     ]
+  },
+  {
+    "id": 26,
+    "name": "Recall",
+    "utility": true
   }
 ]

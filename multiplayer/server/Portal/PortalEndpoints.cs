@@ -20,6 +20,7 @@ public static class PortalEndpoints {
     public static Action<string> DisconnectAccount { get; set; } = _ => { };
     public static Action RequestShutdown { get; set; } = () => { };
     public static Func<object> Status { get; set; } = () => new { online = true };
+    public static IReadOnlyDictionary<int, ItemConfig> ItemCatalog { get; set; } = new Dictionary<int, ItemConfig>();
 
     public static void AddPortal(this WebApplicationBuilder builder) {
         builder.Configuration.AddJsonFile(Path.GetFullPath("../../.run/portal.local.json"), optional: true).AddEnvironmentVariables();
@@ -90,7 +91,16 @@ public static class PortalEndpoints {
         });
         app.MapGet("/api/csrf", (HttpContext ctx, IAntiforgery antiforgery) => new { token = antiforgery.GetAndStoreTokens(ctx).RequestToken });
         app.MapGet("/api/status", () => Status());
-        app.MapGet("/api/game/equipment-rules", () => new { equipment = Server.Helpers.Adventure.Rules.Equipment }).RequireAuthorization();
+        app.MapGet("/api/game/equipment-rules", () => new {
+            equipment = ItemCatalog.Values.Where(item => Server.Helpers.SpecialLoot.IsEquipmentType(item.ItemType)).ToDictionary(item => item.Id, item => {
+                var bonus = Server.Helpers.Adventure.Rules.Equipment.GetValueOrDefault(item.Id) ?? new Server.Helpers.EquipmentBonus();
+                return new {
+                    bonus.Damage, bonus.Defense, bonus.Level, bonus.Magic,
+                    bonus.Mana, bonus.AttackSpeed,
+                    ItemLevel = Server.Helpers.SpecialLoot.CalculateItemLevel(bonus)
+                };
+            })
+        }).RequireAuthorization();
         app.MapGet("/api/game/economy", () => Server.Helpers.Economy.Rules).RequireAuthorization();
         var auth = app.MapGroup("/api/account").RequireRateLimiting("account");
         auth.MapPost("/register", async (RegisterRequest request, UserManager<Account> users, PortalDb db) => {
@@ -176,7 +186,7 @@ public static class PortalEndpoints {
             var state = new PlayerPersistenceState(request.Town, 150, 150, 220, 1200, 600, 1, 16, 500, 2, true, true, true,
                 request.Gender, request.Skin, request.Hair, request.Clothes, 4,
                 new[] { new PersistedInventoryItem(36, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, 0, 0, 5, 0, null), new PersistedInventoryItem(165, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, 35, 0, 3, 1, null) },
-                new[] { new PersistedEquippedInventoryItem("weapon", new PersistedEquippedItem(3, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, null, null, null)) }, request.Name!, 100, 100, Progress: new Server.Helpers.ProgressState(KnownSpellsMask: 1));
+                new[] { new PersistedEquippedInventoryItem("weapon", new PersistedEquippedItem(3, BitConverter.ToInt64(Guid.NewGuid().ToByteArray()) & long.MaxValue, null, null, null)) }, request.Name!, 100, 100, Progress: new Server.Helpers.ProgressState(KnownSpellsMask: 1), HomeTown: request.Town);
             var character = new Character { AccountId = id, Name = request.Name!, NormalizedName = request.Name!.ToUpperInvariant(), Town = request.Town, StateJson = JsonSerializer.Serialize(state) };
             db.Characters.Add(character);
             db.Audit.Add(new AuditEntry { AccountId = id, Action = "character.create", Target = character.Id.ToString() });

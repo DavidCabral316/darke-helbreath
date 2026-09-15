@@ -12,6 +12,12 @@ namespace Server.Helpers;
 /// projectile-delayed damage scheduling where applicable, and deferred damage delivery using combat rules.
 /// </summary>
 public static class Casting {
+    public const int RecallSpellId = 26;
+    private static readonly IReadOnlyDictionary<string, (int X, int Y)[]> RecallDestinations =
+        new Dictionary<string, (int X, int Y)[]>(StringComparer.Ordinal) {
+            ["aresden"] = [(170,146), (140,206), (140,50), (116,246), (68,126)],
+            ["elvine"] = [(170,146), (158,58), (158,250), (242,130), (110,90)],
+        };
     /// <summary>Client <c>EFFECT_INVISIBILITY</c> key for <see cref="CastEffect"/>.</summary>
     private const string InvisibilityCastEffectKey = "invisibility";
 
@@ -34,7 +40,8 @@ public static class Casting {
         if (!spellsById.TryGetValue(request.SpellId, out var spell)) {
             return;
         }
-        if (!player.CanUseSpell(request.SpellId) || Adventure.IsSanctuary(wr, player)) {
+        var isRecall = request.SpellId == RecallSpellId;
+        if (!player.CanUseSpell(request.SpellId) || (!isRecall && Adventure.IsSanctuary(wr, player))) {
             NetworkManager.SendToPlayer(player, NetworkManager.CreateSpellCastFailed());
             Adventure.Send(wr, player, "Hechizo no disponible, maná insuficiente o zona segura."); return;
         }
@@ -106,6 +113,7 @@ public static class Casting {
             return;
         }
 
+        var isRecall = spell.Id == RecallSpellId;
         var targetX = request.X;
         var targetY = request.Y;
         TryApplySpellAimAssist(wr, player, spell, request, ref targetX, ref targetY);
@@ -119,12 +127,17 @@ public static class Casting {
             return;
         }
 
-        if (Adventure.IsSanctuary(wr, player) || !player.SpendSpellMana(spell.Id)) {
+        if ((!isRecall && Adventure.IsSanctuary(wr, player)) || !player.SpendSpellMana(spell.Id)) {
             player.ClearRequestedSpell(); NetworkManager.SendToPlayer(player, NetworkManager.CreateSpellCastFailed()); return;
         }
         Adventure.Send(wr, player);
         player.ClearRequestedSpell();
         TemporaryEffects.BreakInvisibilityIfPresent(wr, player);
+
+        if (isRecall) {
+            ResolveRecall(wr, player);
+            return;
+        }
 
         if (!spell.DamageType.HasValue) {
             var buffCastMessage = NetworkManager.CreateCastDirectionalAoeSpell(
@@ -267,6 +280,28 @@ public static class Casting {
             case (int)DamageType.GroundEffect:
                 ApplyGroundEffectSpell(wr, player, targetX, targetY, spell);
                 break;
+        }
+    }
+
+    private static void ResolveRecall(GameWorldRef wr, GameWorldPlayer player) {
+        var town = player.HomeTown == "elvine" ? "elvine" : "aresden";
+        var destinations = RecallDestinations[town];
+        var destination = destinations[Random.Shared.Next(destinations.Length)];
+        var castEffect = NetworkManager.CreateCastEffect(wr.WorldId, InvisibilityCastEffectKey, player.PosX, player.PosY);
+        NetworkManager.SendToPlayer(player, castEffect);
+        foreach (var nearby in wr.PlayerSpatialGrid.GetNearbyPlayers(player.PosX, player.PosY, player.SessionId))
+            NetworkManager.SendToPlayer(nearby, castEffect);
+
+        if (!string.Equals(wr.WorldId, town, StringComparison.Ordinal)) {
+            Adventure.Send(wr, player, $"Recall: regresando a {town}.");
+            player.RequestWorldChange(new WorldTransferDestination(town, destination.X, destination.Y));
+            return;
+        }
+        if (Movement.TryTeleportPlayerNear(wr, player, destination.X, destination.Y)) {
+            Adventure.Checkpoint(wr, player);
+            Adventure.Send(wr, player, $"Recall: portal de {town}.");
+        } else {
+            Adventure.Send(wr, player, "Recall no encontró un portal libre. Intentá nuevamente.");
         }
     }
 

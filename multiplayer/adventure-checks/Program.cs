@@ -3,6 +3,7 @@ using System.Text.Json;
 using Mmorpg.Network;
 using Server;
 using Server.Helpers;
+using Server.Portal;
 using Server.Utils;
 using Server.World.Game;
 
@@ -13,6 +14,7 @@ var settings = await Config.LoadSettings();
 var monsters = Config.BuildMonsterCatalog(await Config.LoadMonstersConfig());
 var spells = Config.BuildSpellCatalog(await Config.LoadSpellsConfig());
 var items = Config.BuildItemCatalog(await Config.LoadItemsConfig());
+PortalEndpoints.ItemCatalog = items;
 if(args.Contains("--loot-report")) {
     var report = new List<string> {"# Botín de Darke Helbreath", "", "Generado desde las reglas que utiliza el servidor. Probabilidades por muerte con recompensa; cada drop normal es una tirada independiente. El oro se otorga directamente. El especial es una tirada adicional, no reemplaza los objetos normales.", "", "Sólo **Darkeruz autenticado como GM** tiene 75 % de especial. No cambia el nivel de los objetos, sus requisitos, sus rarezas ni el botín de otros jugadores. En combate compartido cuenta quien recibe la recompensa (mayor daño elegible). Sin sitio libre en el suelo no se materializa el objeto.", "", "## Monstruos", "", "| Monstruo | XP | Oro | Drops normales (cantidad; probabilidad) | Especial | Grupo |", "|---|---:|---:|---|---:|---|"};
     string P(double p)=> (p*100).ToString("0.#####",System.Globalization.CultureInfo.InvariantCulture)+" %";
@@ -35,11 +37,15 @@ if(args.Contains("--loot-report")) {
 Check(SpecialLoot.DropChance(20,true,"Darkeruz")==.75,"Darkeruz GM receives 75 percent special loot chance");
 Check(SpecialLoot.DropChance(20,false,"Darkeruz")==.0025 && SpecialLoot.DropChance(20,true,"Other")==.0025,"name alone or another GM cannot gain test loot boost");
 Check(SpecialLoot.CandidateItemIds(20,items).All(id=>Adventure.Rules.Equipment[id].Level<=10),"weak monsters cannot drop high-level special bases");
+var plainItemLevel=SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[53]);
+var enchantedItemLevel=SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[53],[new(SpecialLoot.FreezeChance,50),new(SpecialLoot.Health,40)]);
+Check(plainItemLevel>0&&enchantedItemLevel>plainItemLevel&&SpecialLoot.CalculateItemLevel(Adventure.Rules.Equipment[401])>plainItemLevel,"item level compares base stats and weighted special powers without using required level");
 var corridorMap=new GameWorldOccupancyTracker(40,40,Enumerable.Range(0,39).Select(y=>(20,y)));
 var corridors=TravelCorridors.Build(corridorMap,new[]{(2,2),(37,2)});
 Check(corridors.Contains((20,39))&&corridors.Contains((2,2))&&corridors.Contains((37,2)),"transit routes go around walls and protect entrances");
 Check(Adventure.MaxLevel==200 && Adventure.Rules.LevelThresholds[^1]==195235276,"hardcore curve defines exactly 200 levels");
-Check(Adventure.Rules.Spells.Count==26 && Adventure.Rules.Spells[23].Intelligence==260,"all currently executable spells have progression requirements");
+Check(Adventure.Rules.Spells.Count==27 && Adventure.Rules.Spells[23].Intelligence==260 && Adventure.Rules.Spells[26].Level==1,"all executable spells, including early Recall, have progression requirements");
+Check(Economy.Rules.Offers.Single(o=>o.SpellId==Casting.RecallSpellId) is {Level:1,Intelligence:10,Price:250},"Recall is an inexpensive early magic-shop spell");
 Check(items.Keys.Count(id=>id>=329&&id<=408)==80 && Adventure.Rules.Equipment[408].Level==190,"ten colour tiers provide eighty level-gated equipment pieces");
 var npcs = Config.BuildNpcCatalog(await Config.LoadNpcsConfig());
 var worldConfigs = await Config.LoadGameWorldsConfig();
@@ -124,6 +130,16 @@ var gmMana=gmPlayer.Progress.Mana;
 Check(gmPlayer.CanUseSpell(23)&&gmPlayer.SpendSpellMana(23)&&gmPlayer.Progress.Mana==gmMana,"GM can cast every unlocked spell without progression or mana restrictions");
 var magicBeforeStrength=gmPlayer.MagicDamage;gmPlayer.TryAllocateAttribute("strength");
 Check(gmPlayer.MagicDamage==magicBeforeStrength,"Strength allocation never increases magic damage");
+WorldTransferDestination? recallTransfer=null;var recallSession=Guid.NewGuid();
+Dispatch(new PlayerConnectedMessage(recallSession,_=>{},_=>{},d=>recallTransfer=d,
+    State("Recaller",195,195) with {HomeTown="elvine",Progress=new(KnownSpellsMask:1<<Casting.RecallSpellId)},"Recaller",()=>{}));
+Check(world.TryGetPlayerBySessionId(recallSession,out var recaller),"Recall fixture joins");
+typeof(Casting).GetMethod("ResolveRecall",BindingFlags.Static|BindingFlags.NonPublic)!.Invoke(null,new object[]{wr,recaller!});
+var elvineRecallPoints=new HashSet<(int,int)>{(170,146),(158,58),(158,250),(242,130),(110,90)};
+Check(recallTransfer is not null&&recallTransfer.WorldId=="elvine"&&recallTransfer.SpawnX.HasValue&&recallTransfer.SpawnY.HasValue&&elvineRecallPoints.Contains((recallTransfer.SpawnX.Value,recallTransfer.SpawnY.Value)),"Recall selects one classic portal in the protected home city");
+var legacySpecialState=State("LegacySpecial",225,225) with {BagItems=[new PersistedInventoryItem(53,9001,0,0,1,0,[new ItemEffectConfig(SpecialLoot.FreezeChance,50)])]};
+var legacySpecial=Join("LegacySpecial",legacySpecialState);
+Check(SpecialLoot.Value(legacySpecial.InventoryManager.BagItems.Single().EffectOverrides,SpecialLoot.ItemLevel)>plainItemLevel,"older procedural items receive their missing iLvl while loading");
 // Ground ownership survives reconnect via a stable character key, not ephemeral player ID.
 var loot=new GroundItemState(53,555,1,null,180,180){OwnerKey="owner",ReservedUntil=DateTimeOffset.UtcNow.AddSeconds(60)};
 wr.GroundStateTracker.TryAddGroundItem(loot,out _,out _);

@@ -8,11 +8,12 @@ public static class SpecialLoot {
     public const int Damage = 100, Defense = 101, AttackSpeed = 102, CriticalChance = 103,
         PoisonChance = 104, BurnChance = 105, FreezeChance = 106, ParalysisChance = 107,
         LifeSteal = 108, ManaSteal = 109, Health = 110, Mana = 111, GoldFind = 112,
-        ExperienceFind = 113, RequiredLevel = 114, Rarity = 115;
+        ExperienceFind = 113, RequiredLevel = 114, Rarity = 115, ItemLevel = 116;
 
     private static readonly HashSet<string> EquipmentTypes = new(StringComparer.Ordinal) {
         "weapon", "shield", "armor", "hauberk", "leggings", "helmet", "cape", "boots"
     };
+    public static bool IsEquipmentType(string itemType) => EquipmentTypes.Contains(itemType) || itemType is "accessory" or "necklace" or "ring";
 
     private sealed record Affix(int Effect, string Name, int Color, bool WeaponOnly = false, bool ArmorOnly = false);
     private static readonly Affix[] Affixes = {
@@ -64,7 +65,7 @@ public static class SpecialLoot {
         var rarity = RollRarity(monsterTier);
         var pool = Affixes.Where(a => !a.WeaponOnly || isWeapon).Where(a => !a.ArmorOnly || !isWeapon).OrderBy(_ => Random.Shared.Next()).ToArray();
         var affixCount = Math.Min(rarity, pool.Length);
-        var effects = new List<ItemEffectConfig>(affixCount + 5);
+        var effects = new List<ItemEffectConfig>(affixCount + 6);
         for (var i = 0; i < affixCount; i++) effects.Add(new ItemEffectConfig(pool[i].Effect, Magnitude(pool[i].Effect, chosen.Value.Level, rarity)));
 
         var primary = pool[0];
@@ -73,6 +74,7 @@ public static class SpecialLoot {
         effects.Add(new ItemEffectConfig(3, primary.Color)); // GLOW
         effects.Add(new ItemEffectConfig(4, primary.Color)); // inventory tint
         effects.Add(new ItemEffectConfig(5, primary.Color)); // equipped tint
+        effects.Add(new ItemEffectConfig(ItemLevel, CalculateItemLevel(chosen.Value, effects)));
         var quality = rarity switch { 1 => "Superior", 2 => "Excepcional", 3 => "Heroico", _ => "Mítico" };
         return new Roll(chosen.Key, effects.ToArray(), $"{itemDef.Name} {primary.Name} · {quality}", rarity);
     }
@@ -82,6 +84,48 @@ public static class SpecialLoot {
 
     public static int RequiredLevelFor(InventoryItemState item, int catalogLevel) =>
         Math.Max(catalogLevel, Value(item.EffectOverrides, RequiredLevel));
+
+    /// <summary>
+    /// Quality score used by the UI to compare equipment. It deliberately ignores the
+    /// character level requirement: only real combat/economy power contributes.
+    /// Chance affixes are stored per mille, so their coefficients include that scale.
+    /// </summary>
+    public static int CalculateItemLevel(EquipmentBonus equipment, IEnumerable<ItemEffectConfig>? effects = null) {
+        var score = 5d
+            + equipment.Damage * 2.0
+            + equipment.Defense * 4.0
+            + equipment.Magic * 3.0
+            + equipment.Mana * 0.20
+            - equipment.AttackSpeed * 0.10;
+        if (effects is not null) {
+            score += Value(effects, Damage) * 2.0
+                + Value(effects, Defense) * 4.0
+                + Value(effects, AttackSpeed) * 0.40
+                + Value(effects, CriticalChance) * 0.18
+                + Value(effects, PoisonChance) * 0.12
+                + Value(effects, BurnChance) * 0.14
+                + Value(effects, FreezeChance) * 0.20
+                + Value(effects, ParalysisChance) * 0.25
+                + Value(effects, LifeSteal) * 2.5
+                + Value(effects, ManaSteal) * 1.2
+                + Value(effects, Health) * 0.10
+                + Value(effects, Mana) * 0.08
+                + Value(effects, GoldFind) * 0.25
+                + Value(effects, ExperienceFind) * 0.40;
+        }
+        return Math.Clamp((int)Math.Round(score, MidpointRounding.AwayFromZero), 1, 999);
+    }
+
+    /// <summary>Adds the derived field to procedural items saved before iLvl existed.</summary>
+    public static void BackfillItemLevels(InventoryManager inventory) {
+        foreach (var item in inventory.BagItems.Concat(inventory.EquippedItems.Values)) {
+            var effects = item.EffectOverrides;
+            if (effects is null || effects.Any(e => e.Effect == ItemLevel) ||
+                !effects.Any(e => e.Effect is >= Damage and <= ExperienceFind) ||
+                !Adventure.Rules.Equipment.TryGetValue(item.ItemId, out var equipment)) continue;
+            item.EffectOverrides = effects.Append(new ItemEffectConfig(ItemLevel, CalculateItemLevel(equipment, effects))).ToArray();
+        }
+    }
 
     private static int TierForExperience(int xp) => xp switch {
         < 100 => 1, < 500 => 2, < 1500 => 3, < 5000 => 4, < 10000 => 5,

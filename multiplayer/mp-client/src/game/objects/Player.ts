@@ -29,6 +29,7 @@ import { DEFAULT_GEAR, GearConfig, PlayerAppearanceManager, type PlayerAppearanc
 import { PlayerMovementManager, type PendingSyncCommand } from '../../utils/PlayerMovementManager';
 import { PlayerRangedCombatManager } from '../../utils/PlayerRangedCombatManager';
 import type { GameWorld as GameWorldScene } from '../scenes/GameWorld';
+import { SPELL_RECALL_ID } from '../../constants/Spells';
 
 type CombatTarget = Monster | Player;
 
@@ -2516,7 +2517,13 @@ export class Player extends GameObject {
         if (this.currentState === PlayerState.Cast && !this.isPrimaryAssetAnimationPlaying()) {
             this.switchPlayerState(PlayerState.CastReady);
             if (this.isLocalPlayer) {
-                EventBus.emit(OUT_UI_CAST_READY);
+                if (this.pendingSpellId === SPELL_RECALL_ID) {
+                    // Recall has no target selection: the server chooses one of the
+                    // character faction's city portals after the normal cast time.
+                    this.onLeftClickAt(this.getAnimatedPixelX(), this.getAnimatedPixelY());
+                } else {
+                    EventBus.emit(OUT_UI_CAST_READY);
+                }
             }
             return;
         }

@@ -23,7 +23,6 @@ export const ITEM_EQUIP_SOUND = 'E28.mp3';
 export const ITEM_ADDED_SOUND = 'E20.mp3';
 export const ITEM_DROPPED_SOUND = 'E12.mp3';
 /** Bright one-shot reserved for procedurally affixed monster loot. */
-export const SPECIAL_LOOT_DROP_SOUND = 'E37.mp3';
 export const RAIN_SOUND = 'E38.mp3';
 export const ENERGY_BOLT_LAUNCH_SOUND = 'E1.mp3';
 export const ENERGY_STRIKE_SOUND = 'E1.mp3';

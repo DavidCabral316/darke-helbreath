@@ -68,7 +68,7 @@ export enum ItemEffect {
     AFFIX_FREEZE = 'AFFIX_FREEZE', AFFIX_PARALYSIS = 'AFFIX_PARALYSIS', AFFIX_LIFE_STEAL = 'AFFIX_LIFE_STEAL',
     AFFIX_MANA_STEAL = 'AFFIX_MANA_STEAL', AFFIX_HEALTH = 'AFFIX_HEALTH', AFFIX_MANA = 'AFFIX_MANA',
     AFFIX_GOLD_FIND = 'AFFIX_GOLD_FIND', AFFIX_EXPERIENCE_FIND = 'AFFIX_EXPERIENCE_FIND',
-    AFFIX_REQUIRED_LEVEL = 'AFFIX_REQUIRED_LEVEL', AFFIX_RARITY = 'AFFIX_RARITY',
+    AFFIX_REQUIRED_LEVEL = 'AFFIX_REQUIRED_LEVEL', AFFIX_RARITY = 'AFFIX_RARITY', AFFIX_ITEM_LEVEL = 'AFFIX_ITEM_LEVEL',
 }
 
 /** Single item effect with optional color (e.g. hex for GLARE, GLOW, TINT_APPEARANCE). */
@@ -283,7 +283,7 @@ const ITEM_EFFECT_FROM_PROTO_INDEX: Partial<Record<number, ItemEffect>> = {
     106: ItemEffect.AFFIX_FREEZE, 107: ItemEffect.AFFIX_PARALYSIS, 108: ItemEffect.AFFIX_LIFE_STEAL,
     109: ItemEffect.AFFIX_MANA_STEAL, 110: ItemEffect.AFFIX_HEALTH, 111: ItemEffect.AFFIX_MANA,
     112: ItemEffect.AFFIX_GOLD_FIND, 113: ItemEffect.AFFIX_EXPERIENCE_FIND,
-    114: ItemEffect.AFFIX_REQUIRED_LEVEL, 115: ItemEffect.AFFIX_RARITY,
+    114: ItemEffect.AFFIX_REQUIRED_LEVEL, 115: ItemEffect.AFFIX_RARITY, 116: ItemEffect.AFFIX_ITEM_LEVEL,
 };
 
 export function effectsFromDirectoryEntries(entries: ReadonlyArray<{ effect: number; effectColor?: number }>): Effect[] | undefined {
