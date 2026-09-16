@@ -140,6 +140,49 @@ export function ChatDialog({
                     )}
                 </div>
 
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                    <input
+                        type="text"
+                        value={draft}
+                        maxLength={256}
+                        aria-label="Mensaje de chat"
+                        placeholder="Escribí un mensaje…"
+                        onChange={(e) => setDraft(e.target.value)}
+                        onFocus={suppressPointerLeak}
+                        onPointerDown={(e) => {
+                            e.stopPropagation();
+                            suppressPointerLeak();
+                        }}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                sendMessage();
+                            }
+                        }}
+                        style={{
+                            flex: 1,
+                            minWidth: 0,
+                            padding: '8px 10px',
+                            border: '1px solid rgba(240, 220, 180, 0.35)',
+                            background: 'rgba(12, 8, 4, 0.85)',
+                            color: 'var(--rpg-parchment)',
+                            fontSize: 14,
+                        }}
+                    />
+                    <RpgButton
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            sendMessage();
+                        }}
+                        disabled={!draft.trim()}
+                        style={{ width: 90 }}
+                    >
+                        Enviar
+                    </RpgButton>
+                </div>
+
                 <div
                     aria-label="Controles de grupo"
                     style={{
@@ -204,7 +247,7 @@ export function ChatDialog({
                             ? 'XP y botín compartidos con tu compañero.'
                             : 'Invitá a otro jugador del mismo mapa por su nombre.'}
                     </div>
-                    <div style={{ display: 'flex', gap: 6 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     <input
                         type="text"
                         value={partyName}
@@ -226,9 +269,9 @@ export function ChatDialog({
                             }
                         }}
                         style={{
-                            flex: 1,
-                            minWidth: 0,
-                            padding: '9px 10px',
+                            width: '100%',
+                            boxSizing: 'border-box',
+                            padding: '10px 12px',
                             border: '1px solid rgba(206, 175, 255, 0.45)',
                             borderRadius: 6,
                             background: 'rgba(10, 7, 17, 0.85)',
@@ -242,7 +285,7 @@ export function ChatDialog({
                             sendPartyCommand(`/party invitar ${partyName.trim()}`);
                             setPartyName('');
                         }}
-                        style={{ flexShrink: 0 }}
+                        style={{ width: '100%' }}
                     >
                         Invitar
                     </RpgButton>
@@ -254,49 +297,6 @@ export function ChatDialog({
                     </div>
                     </>
                     )}
-                </div>
-
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <input
-                        type="text"
-                        value={draft}
-                        maxLength={256}
-                        aria-label="Mensaje de chat"
-                        placeholder="Escribí un mensaje…"
-                        onChange={(e) => setDraft(e.target.value)}
-                        onFocus={suppressPointerLeak}
-                        onPointerDown={(e) => {
-                            e.stopPropagation();
-                            suppressPointerLeak();
-                        }}
-                        onKeyDown={(e) => {
-                            e.stopPropagation();
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                sendMessage();
-                            }
-                        }}
-                        style={{
-                            flex: 1,
-                            minWidth: 0,
-                            padding: '8px 10px',
-                            border: '1px solid rgba(240, 220, 180, 0.35)',
-                            background: 'rgba(12, 8, 4, 0.85)',
-                            color: 'var(--rpg-parchment)',
-                            fontSize: 14,
-                        }}
-                    />
-                    <RpgButton
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            sendMessage();
-                        }}
-                        disabled={!draft.trim()}
-                        style={{ width: 90 }}
-                    >
-                        Enviar
-                    </RpgButton>
                 </div>
             </div>
         </DraggableDialog>
