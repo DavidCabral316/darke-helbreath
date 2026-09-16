@@ -159,6 +159,10 @@ export const PLAYER_SPAWN_PROTECTION_DISABLED_RECEIVED = 'player-spawn-protectio
 export const SERVER_MESSAGE_RECEIVED = 'server-message-received';
 /** Emitted when server broadcasts a chat message. Payload: { senderCharacterName: string, timestampMs: number, message: string } */
 export const CHAT_MESSAGE_RECEIVED = 'chat-message-received';
+/** Emitted when server reports party membership. Payload: { inParty: boolean, partnerPlayerId: string, partnerName: string } */
+export const PARTY_STATUS_UPDATED = 'party-status-updated';
+/** Emitted when the party partner moves (authoritative, works out of range). Payload: { playerId: string, characterName: string, x: number, y: number } */
+export const PARTY_MEMBER_MOVED_RECEIVED = 'party-member-moved-received';
 /** Emitted when server applies paralysis. Payload: { durationSeconds: number } */
 export const PLAYER_PARALYZED_RECEIVED = 'player-paralyzed-received';
 export const SERVER_INVENTORY_SNAPSHOT_RECEIVED = 'server-inventory-snapshot-received';

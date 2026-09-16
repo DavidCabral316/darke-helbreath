@@ -1,4 +1,5 @@
 import { publishAdventure, disconnectAdventure, LUMI_EVENT } from '../adventure/store';
+import { resetPartyState } from '../ui/store/Party.store';
 import {
     CastAoeSpell,
     CastDirectionalAoeSpell,
@@ -29,6 +30,8 @@ import {
     NpcsEnteredRange,
     NpcsLeftRange,
     MonsterTakeDamageByMonster,
+    PartyMemberMoved,
+    PartyStatusUpdated,
     PingResponse,
     PlayerAppearanceChanged,
     PlayerAttackModeChanged,
@@ -115,6 +118,8 @@ import {
     PLAYER_IDLE_DIRECTION_CHANGED_RECEIVED,
     PLAYER_JOINED_RECEIVED,
     PLAYER_LEFT_RECEIVED,
+    PARTY_MEMBER_MOVED_RECEIVED,
+    PARTY_STATUS_UPDATED,
     PLAYER_MOVED_RECEIVED,
     PLAYER_MOVEMENT_STATE_CHANGED_RECEIVED,
     PLAYER_PARALYZED_RECEIVED,
@@ -948,6 +953,7 @@ export class NetworkManager {
             this.monsters = [];
             this.npcDirectoryByCatalogId.clear();
             this.spells = [];
+            resetPartyState();
             EventBus.emit(OUT_UI_SET_GAME_WORLDS, []);
             EventBus.emit(OUT_UI_SET_MONSTERS, []);
             EventBus.emit(OUT_UI_SET_NPC_DIRECTORY, []);
@@ -1385,6 +1391,12 @@ export class NetworkManager {
                     break;
                 case 'castEffect':
                     this.handleCastEffect(message.payload.value);
+                    break;
+                case 'partyStatusUpdated':
+                    this.handlePartyStatusUpdated(message.payload.value);
+                    break;
+                case 'partyMemberMoved':
+                    this.handlePartyMemberMoved(message.payload.value);
                     break;
             }
         } catch (error) {
@@ -2490,6 +2502,23 @@ export class NetworkManager {
             senderCharacterName: data.senderCharacterName,
             timestampMs: Number(data.timestampMs),
             message: data.message,
+        });
+    }
+
+    private handlePartyStatusUpdated(data: PartyStatusUpdated): void {
+        EventBus.emit(PARTY_STATUS_UPDATED, {
+            inParty: data.inParty,
+            partnerPlayerId: String(data.partnerPlayerId),
+            partnerName: data.partnerName,
+        });
+    }
+
+    private handlePartyMemberMoved(data: PartyMemberMoved): void {
+        EventBus.emit(PARTY_MEMBER_MOVED_RECEIVED, {
+            playerId: String(data.playerId),
+            characterName: data.characterName,
+            x: data.x,
+            y: data.y,
         });
     }
 

@@ -171,6 +171,7 @@ public static class Movement {
         Npc.SyncPlayerNpcVisibilityAfterMovement(wr, movedPlayer);
         GroundStateVisibility.SyncPlayerGroundStateAfterMovement(wr, movedPlayer);
         MonsterChase.EvaluateChaseForPlayer(wr, movedPlayer);
+        wr.World.NotifyPartyMemberMoved(movedPlayer);
     }
 
     /// <summary>Admin/debug: marks a map cell occupied without moving a player.</summary>

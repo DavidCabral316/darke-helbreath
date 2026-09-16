@@ -468,7 +468,22 @@ export interface ServerMessage {
     | { $case: "npcsLeftRange"; value: NpcsLeftRange }
     | { $case: "logoutCancelled"; value: LogoutCancelled }
     | { $case: "progressionUpdated"; value: ProgressionUpdated }
+    | { $case: "partyStatusUpdated"; value: PartyStatusUpdated }
+    | { $case: "partyMemberMoved"; value: PartyMemberMoved }
     | undefined;
+}
+
+export interface PartyStatusUpdated {
+  inParty: boolean;
+  partnerPlayerId: bigint;
+  partnerName: string;
+}
+
+export interface PartyMemberMoved {
+  playerId: bigint;
+  characterName: string;
+  x: number;
+  y: number;
 }
 
 export interface AllocateAttributeRequest {
@@ -5445,6 +5460,12 @@ export const ServerMessage: MessageFns<ServerMessage> = {
       case "progressionUpdated":
         ProgressionUpdated.encode(message.payload.value, writer.uint32(514).fork()).join();
         break;
+      case "partyStatusUpdated":
+        PartyStatusUpdated.encode(message.payload.value, writer.uint32(522).fork()).join();
+        break;
+      case "partyMemberMoved":
+        PartyMemberMoved.encode(message.payload.value, writer.uint32(530).fork()).join();
+        break;
     }
     return writer;
   },
@@ -6024,6 +6045,22 @@ export const ServerMessage: MessageFns<ServerMessage> = {
           message.payload = { $case: "progressionUpdated", value: ProgressionUpdated.decode(reader, reader.uint32()) };
           continue;
         }
+        case 65: {
+          if (tag !== 522) {
+            break;
+          }
+
+          message.payload = { $case: "partyStatusUpdated", value: PartyStatusUpdated.decode(reader, reader.uint32()) };
+          continue;
+        }
+        case 66: {
+          if (tag !== 530) {
+            break;
+          }
+
+          message.payload = { $case: "partyMemberMoved", value: PartyMemberMoved.decode(reader, reader.uint32()) };
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -6495,7 +6532,180 @@ export const ServerMessage: MessageFns<ServerMessage> = {
         }
         break;
       }
+      case "partyStatusUpdated": {
+        if (object.payload?.value !== undefined && object.payload?.value !== null) {
+          message.payload = {
+            $case: "partyStatusUpdated",
+            value: PartyStatusUpdated.fromPartial(object.payload.value),
+          };
+        }
+        break;
+      }
+      case "partyMemberMoved": {
+        if (object.payload?.value !== undefined && object.payload?.value !== null) {
+          message.payload = { $case: "partyMemberMoved", value: PartyMemberMoved.fromPartial(object.payload.value) };
+        }
+        break;
+      }
     }
+    return message;
+  },
+};
+
+function createBasePartyStatusUpdated(): PartyStatusUpdated {
+  return { inParty: false, partnerPlayerId: 0n, partnerName: "" };
+}
+
+export const PartyStatusUpdated: MessageFns<PartyStatusUpdated> = {
+  encode(message: PartyStatusUpdated, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.inParty !== false) {
+      writer.uint32(8).bool(message.inParty);
+    }
+    if (message.partnerPlayerId !== 0n) {
+      if (BigInt.asIntN(64, message.partnerPlayerId) !== message.partnerPlayerId) {
+        throw new globalThis.Error("value provided for field message.partnerPlayerId of type int64 too large");
+      }
+      writer.uint32(16).int64(message.partnerPlayerId);
+    }
+    if (message.partnerName !== "") {
+      writer.uint32(26).string(message.partnerName);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PartyStatusUpdated {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePartyStatusUpdated();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.inParty = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.partnerPlayerId = reader.int64() as bigint;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.partnerName = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  create<I extends Exact<DeepPartial<PartyStatusUpdated>, I>>(base?: I): PartyStatusUpdated {
+    return PartyStatusUpdated.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PartyStatusUpdated>, I>>(object: I): PartyStatusUpdated {
+    const message = createBasePartyStatusUpdated();
+    message.inParty = object.inParty ?? false;
+    message.partnerPlayerId = object.partnerPlayerId ?? 0n;
+    message.partnerName = object.partnerName ?? "";
+    return message;
+  },
+};
+
+function createBasePartyMemberMoved(): PartyMemberMoved {
+  return { playerId: 0n, characterName: "", x: 0, y: 0 };
+}
+
+export const PartyMemberMoved: MessageFns<PartyMemberMoved> = {
+  encode(message: PartyMemberMoved, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.playerId !== 0n) {
+      if (BigInt.asIntN(64, message.playerId) !== message.playerId) {
+        throw new globalThis.Error("value provided for field message.playerId of type int64 too large");
+      }
+      writer.uint32(8).int64(message.playerId);
+    }
+    if (message.characterName !== "") {
+      writer.uint32(18).string(message.characterName);
+    }
+    if (message.x !== 0) {
+      writer.uint32(24).int32(message.x);
+    }
+    if (message.y !== 0) {
+      writer.uint32(32).int32(message.y);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PartyMemberMoved {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePartyMemberMoved();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.playerId = reader.int64() as bigint;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.characterName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.x = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.y = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  create<I extends Exact<DeepPartial<PartyMemberMoved>, I>>(base?: I): PartyMemberMoved {
+    return PartyMemberMoved.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PartyMemberMoved>, I>>(object: I): PartyMemberMoved {
+    const message = createBasePartyMemberMoved();
+    message.playerId = object.playerId ?? 0n;
+    message.characterName = object.characterName ?? "";
+    message.x = object.x ?? 0;
+    message.y = object.y ?? 0;
     return message;
   },
 };

@@ -3,6 +3,7 @@ import { useStore } from '@tanstack/react-store';
 import { HeadlessDraggableDialog } from './HeadlessDraggableDialog';
 import { cameraDialogStore } from '../store/CameraDialog.store';
 import { minimapDialogStore } from '../store/MinimapDialog.store';
+import { partyStore } from '../store/Party.store';
 import { convertPixelPosToWorldPos, convertWorldPosToPixelPos } from '../../utils/CoordinateUtils';
 import { activeCharacterIsGameMaster } from '../../portal/api';
 import { EventBus } from '../../game/EventBus';
@@ -116,8 +117,10 @@ export function MinimapDialog({
     const minimapScale = useStore(minimapDialogStore, (state) => state.minimapScale);
     const minimapOriginalSize = useStore(minimapDialogStore, (state) => state.minimapOriginalSize);
     const portalLocs = useStore(minimapDialogStore, (state) => state.portalLocs);
+    const partyState = useStore(partyStore, (state) => state);
     const [minimapSize, setMinimapSize] = useState(DEFAULT_MINIMAP_SIZE);
     const [minimapPlayerDot, setMinimapPlayerDot] = useState<{ x: number; y: number } | undefined>(undefined);
+    const [minimapPartyDot, setMinimapPartyDot] = useState<{ x: number; y: number } | undefined>(undefined);
     const [resizingCorner, setResizingCorner] = useState<ResizeCorner>(undefined);
     const isGameMaster = activeCharacterIsGameMaster();
     const resizeStartRef = useRef<{ 
@@ -153,6 +156,18 @@ export function MinimapDialog({
         
         setMinimapPlayerDot({ x: minimapX, y: minimapY });
     }, [playerPosition.worldX, playerPosition.worldY, minimapScale]);
+
+    // Update party partner dot when the server pushes authoritative positions.
+    useEffect(() => {
+        if (!partyState.inParty || partyState.partnerX === undefined || partyState.partnerY === undefined || minimapScale <= 0) {
+            setMinimapPartyDot(undefined);
+            return;
+        }
+
+        const partnerPixelX = convertWorldPosToPixelPos(partyState.partnerX);
+        const partnerPixelY = convertWorldPosToPixelPos(partyState.partnerY);
+        setMinimapPartyDot({ x: partnerPixelX * minimapScale, y: partnerPixelY * minimapScale });
+    }, [partyState.inParty, partyState.partnerX, partyState.partnerY, minimapScale]);
 
     const handleResizeStart = (corner: Exclude<ResizeCorner, undefined>) => (e: React.PointerEvent) => {
         // Only left mouse button - avoid conflict with right-click close
@@ -305,6 +320,27 @@ export function MinimapDialog({
                                 transform: 'translate(-50%, -50%)',
                                 pointerEvents: 'none',
                                 boxShadow: '0 0 4px rgba(66, 135, 245, 0.8)'
+                            }}
+                        />
+                    )}
+                    {minimapPartyDot && minimapOriginalSize > 0 && partyState.inParty && (
+                        <div
+                            role="img"
+                            aria-label={`Compañero de grupo: ${partyState.partnerName ?? 'compañero'}`}
+                            title={`Compañero: ${partyState.partnerName ?? 'compañero'}`}
+                            style={{
+                                position: 'absolute',
+                                left: `${(minimapPartyDot.x / minimapOriginalSize) * 100}%`,
+                                top: `${(minimapPartyDot.y / minimapOriginalSize) * 100}%`,
+                                width: `${PLAYER_DOT_SIZE}px`,
+                                height: `${PLAYER_DOT_SIZE}px`,
+                                backgroundColor: '#43dc68',
+                                borderRadius: '50%',
+                                border: `${PLAYER_DOT_BORDER}px solid white`,
+                                transform: 'translate(-50%, -50%)',
+                                pointerEvents: 'auto',
+                                boxShadow: '0 0 5px rgba(67, 220, 104, 0.9)',
+                                zIndex: 4,
                             }}
                         />
                     )}

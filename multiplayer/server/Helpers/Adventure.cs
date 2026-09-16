@@ -24,6 +24,8 @@ public static class Adventure {
     public const int SpawnX = 150, SpawnY = 150;
     public static AdventureRules Rules { get; } = LoadRules();
     public static int MaxLevel => Rules.LevelThresholds.Length;
+    public static int ExperienceShare(int baseExperience, bool sharedPartyKill) =>
+        sharedPartyKill ? Math.Max(1, baseExperience * 60 / 100) : baseExperience;
     private static AdventureRules LoadRules() {
         var rules = JsonSerializer.Deserialize<AdventureRules>(File.ReadAllText("Config/Adventure.json"), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         if (rules.LevelThresholds.Length < 2 || rules.LevelThresholds[0] != 0 || rules.PointsPerLevel < 1 ||
@@ -77,9 +79,16 @@ public static class Adventure {
                 Math.Abs(candidate.PosX - monster.PosX) <= 24 && Math.Abs(candidate.PosY - monster.PosY) <= 24) { winner = candidate; break; }
         }
         if (winner is null) return;
-        var before = winner.Progress.Level;
-        var experience = winner.ApplyExperienceFind(reward.Experience);
-        winner.AwardExperience(experience);
+        var partner = wr.World.FindEligiblePartyPartner(winner, monster.PosX, monster.PosY);
+        var sharedPartyKill = partner is not null;
+        var recipients = partner is null ? new[] { winner } : new[] { winner, partner };
+        var awards = recipients.Select(recipient => {
+            var beforeLevel = recipient.Progress.Level;
+            var experience = recipient.ApplyExperienceFind(ExperienceShare(reward.Experience, sharedPartyKill));
+            recipient.AwardExperience(experience);
+            return (Player: recipient, BeforeLevel: beforeLevel, Experience: experience);
+        }).ToArray();
+        var winnerAward = awards[0];
         var gold = winner.ApplyGoldFind(Random.Shared.Next(reward.GoldMin, reward.GoldMax + 1));
         winner.AddGold(gold);
         foreach (var drop in reward.Drops) {
@@ -87,9 +96,17 @@ public static class Adventure {
         }
         var special = SpecialLoot.TryRoll(wr, reward, winner);
         if (special is not null && !wr.World.DropAdventureLoot(monster, winner, special.ItemId, 1, special.Effects)) special = null;
-        if (winner.Progress.Level != before) Spawn.SendInitialState(wr, winner, includeSpells: true);
-        Send(wr, winner, special is not null ? $"✦ HALLAZGO ESPECIAL: {special.DisplayName}" : winner.Progress.Level > before ? $"¡Nivel {winner.Progress.Level}! Tenés {winner.Progress.Points} puntos para distribuir." :
-            winner.Progress.Level == MaxLevel ? $"+{gold} oro · Seguí explorando y consiguiendo equipo." : $"+{experience} XP · +{gold} oro · {monster.Name}");
-        Checkpoint(wr, winner);
+        foreach (var award in awards) {
+            if (award.Player.Progress.Level != award.BeforeLevel) Spawn.SendInitialState(wr, award.Player, includeSpells: true);
+            if (award.Player == winner) {
+                Send(wr, winner, special is not null ? $"✦ HALLAZGO ESPECIAL: {special.DisplayName}" : winner.Progress.Level > winnerAward.BeforeLevel ? $"¡Nivel {winner.Progress.Level}! Tenés {winner.Progress.Points} puntos para distribuir." :
+                    winner.Progress.Level == MaxLevel ? $"+{gold} oro · Seguí explorando y consiguiendo equipo." : $"+{winnerAward.Experience} XP{(sharedPartyKill ? " de grupo" : "")} · +{gold} oro · {monster.Name}");
+            } else {
+                Send(wr, award.Player, award.Player.Progress.Level > award.BeforeLevel
+                    ? $"¡Nivel {award.Player.Progress.Level} gracias al grupo! Tenés {award.Player.Progress.Points} puntos para distribuir."
+                    : $"+{award.Experience} XP de grupo · {monster.Name}");
+            }
+            Checkpoint(wr, award.Player);
+        }
     }
 }

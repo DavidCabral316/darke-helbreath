@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useStore } from '@tanstack/react-store';
 import { DraggableDialog } from './DraggableDialog';
 import { RpgButton } from '../components/RpgButton';
 import { EventBus } from '../../game/EventBus';
 import { IN_UI_SUPPRESS_POINTER_INPUT } from '../../constants/EventNames';
 import { getNetworkManager } from '../../utils/RegistryUtils';
+import { partyStore } from '../store/Party.store';
 import type { IRefPhaserGame } from '../../PhaserGame';
 import type { ChatMessageEntry } from '../store/ChatDialog.store';
 
@@ -25,6 +27,8 @@ export function ChatDialog({
     onBringToFront,
 }: ChatDialogProps) {
     const [draft, setDraft] = useState('');
+    const [partyName, setPartyName] = useState('');
+    const partyState = useStore(partyStore, (state) => state);
     const messagesRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -69,6 +73,14 @@ export function ChatDialog({
 
         networkManager.sendChatMessage(message);
         setDraft('');
+        suppressPointerLeak();
+    };
+
+    const sendPartyCommand = (command: string) => {
+        const game = phaserRef.current?.game;
+        const networkManager = game ? getNetworkManager(game) : undefined;
+        if (!networkManager) return;
+        networkManager.sendChatMessage(command);
         suppressPointerLeak();
     };
 
@@ -124,6 +136,75 @@ export function ChatDialog({
                             </div>
                         ))
                     )}
+                </div>
+
+                <div
+                    aria-label="Controles de grupo"
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 6,
+                        padding: 8,
+                        border: '1px solid rgba(163, 111, 255, 0.45)',
+                        borderRadius: 8,
+                        background: 'linear-gradient(90deg, rgba(37, 20, 62, 0.86), rgba(15, 11, 25, 0.78))',
+                    }}
+                >
+                    <div
+                        aria-live="polite"
+                        style={{
+                            fontSize: 13,
+                            color: partyState.inParty ? '#9df0b5' : 'var(--rpg-parchment)',
+                            opacity: partyState.inParty ? 1 : 0.8,
+                        }}
+                    >
+                        {partyState.inParty
+                            ? `En grupo con ${partyState.partnerName ?? 'compañero'} · XP y botín compartidos`
+                            : 'Sin grupo · invitá a otro jugador del mismo mapa'}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto auto', gap: 6 }}>
+                    <input
+                        type="text"
+                        value={partyName}
+                        maxLength={24}
+                        aria-label="Nombre del jugador para invitar"
+                        placeholder="Nombre del jugador"
+                        disabled={partyState.inParty}
+                        onChange={(e) => setPartyName(e.target.value)}
+                        onPointerDown={(e) => {
+                            e.stopPropagation();
+                            suppressPointerLeak();
+                        }}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter' && partyName.trim()) {
+                                e.preventDefault();
+                                sendPartyCommand(`/party invitar ${partyName.trim()}`);
+                                setPartyName('');
+                            }
+                        }}
+                        style={{
+                            minWidth: 0,
+                            padding: '7px 9px',
+                            border: '1px solid rgba(206, 175, 255, 0.45)',
+                            borderRadius: 6,
+                            background: 'rgba(10, 7, 17, 0.85)',
+                            color: 'var(--rpg-parchment)',
+                        }}
+                    />
+                    <RpgButton
+                        disabled={!partyName.trim() || partyState.inParty}
+                        onClick={() => {
+                            sendPartyCommand(`/party invitar ${partyName.trim()}`);
+                            setPartyName('');
+                        }}
+                    >
+                        Invitar
+                    </RpgButton>
+                    <RpgButton onClick={() => sendPartyCommand('/party aceptar')}>Aceptar</RpgButton>
+                    <RpgButton onClick={() => sendPartyCommand('/party rechazar')}>Rechazar</RpgButton>
+                    <RpgButton onClick={() => sendPartyCommand('/party salir')}>Salir</RpgButton>
+                    </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: 8 }}>

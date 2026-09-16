@@ -170,6 +170,10 @@ public static class Combat {
             return;
         }
 
+        if (wr.World.IsInSameParty(player.PlayerId, targetPlayer.PlayerId)) {
+            return;
+        }
+
         var attackType = (AttackType)request.AttackType;
         var distanceNow = Location.GetDistance(player.PosX, player.PosY, targetPlayer.PosX, targetPlayer.PosY);
         if (distanceNow > player.AttackRange + 1) {
@@ -215,6 +219,9 @@ public static class Combat {
                 return;
             }
             if (delayedTargetPlayer.HasTemporaryEffect(TemporaryEffectType.Invisibility)) {
+                return;
+            }
+            if (wr.World.IsInSameParty(attacker.PlayerId, delayedTargetPlayer.PlayerId)) {
                 return;
             }
             if (!attacker.IsPlayerInRange(targetPlayerId)) {
@@ -277,6 +284,9 @@ public static class Combat {
             return;
         }
         if (targetPlayer.HasTemporaryEffect(TemporaryEffectType.Invisibility)) {
+            return;
+        }
+        if (wr.World.IsInSameParty(attacker.PlayerId, targetPlayer.PlayerId)) {
             return;
         }
         if (!attacker.IsPlayerInRange(requestMovement.PlayerId)) {
@@ -350,6 +360,10 @@ public static class Combat {
         ArgumentNullException.ThrowIfNull(targetPlayer);
 
         if (targetPlayer.IsDead || targetPlayer.SpawnProtection) {
+            return;
+        }
+
+        if (wr.World.IsInSameParty(attacker.PlayerId, targetPlayer.PlayerId)) {
             return;
         }
 
@@ -568,6 +582,11 @@ public static class Combat {
     public static void ApplyGroundEffectDamageToPlayer(GameWorldRef wr, long attackerPlayerId, int damage, GameWorldPlayer targetPlayer, AttackType attackType, int spellId) {
         ArgumentNullException.ThrowIfNull(targetPlayer);
         if (damage <= 0 || targetPlayer.IsDead || targetPlayer.SpawnProtection) {
+            return;
+        }
+
+        if (wr.World.TryGetConnectedPlayerById(attackerPlayerId, out var attackerForParty) &&
+            wr.World.IsInSameParty(attackerForParty.PlayerId, targetPlayer.PlayerId)) {
             return;
         }
 

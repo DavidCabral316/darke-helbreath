@@ -75,6 +75,12 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await page.screenshot({path:'test-results/game-entered.png',fullPage:true});
     await page.getByRole('button',{name:/Comenzar a explorar/}).click();
     await expect(page.getByRole('dialog',{name:'Lumi'})).toBeHidden();
+    await expect(page.getByLabel('Controles de grupo')).toBeVisible();
+    await expect(page.getByText('Sin grupo · invitá a otro jugador del mismo mapa')).toBeVisible();
+    await expect(page.getByRole('button',{name:'Invitar',exact:true})).toBeDisabled();
+    await expect(page.getByRole('button',{name:'Rechazar',exact:true})).toBeVisible();
+    await page.getByRole('button',{name:'Aceptar',exact:true}).click();
+    await expect(page.getByText('No tenés una invitación de grupo vigente.')).toBeVisible();
     await page.evaluate(async()=>{
         const [{EventBus},{OUT_UI_PLAYER_LEVEL_UP}]=await Promise.all([import('/src/game/EventBus.ts'),import('/src/constants/EventNames.ts')]);
         EventBus.emit(OUT_UI_PLAYER_LEVEL_UP,{level:2,previousLevel:1,gender:'female'});

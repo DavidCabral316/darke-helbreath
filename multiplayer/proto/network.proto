@@ -445,7 +445,22 @@ message ServerMessage {
     NpcsLeftRange npcs_left_range = 62;
     LogoutCancelled logout_cancelled = 63;
     ProgressionUpdated progression_updated = 64;
+    PartyStatusUpdated party_status_updated = 65;
+    PartyMemberMoved party_member_moved = 66;
   }
+}
+
+message PartyStatusUpdated {
+  bool in_party = 1;
+  int64 partner_player_id = 2;
+  string partner_name = 3;
+}
+
+message PartyMemberMoved {
+  int64 player_id = 1;
+  string character_name = 2;
+  int32 x = 3;
+  int32 y = 4;
 }
 
 message AllocateAttributeRequest { string attribute = 1; }

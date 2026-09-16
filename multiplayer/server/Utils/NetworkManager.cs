@@ -1356,4 +1356,25 @@ public static class NetworkManager {
             },
         };
     }
+
+    public static ServerMessage CreatePartyStatusUpdated(bool inParty, long partnerPlayerId, string partnerName) {
+        return new ServerMessage {
+            PartyStatusUpdated = new PartyStatusUpdated {
+                InParty = inParty,
+                PartnerPlayerId = partnerPlayerId,
+                PartnerName = partnerName ?? string.Empty,
+            },
+        };
+    }
+
+    public static ServerMessage CreatePartyMemberMoved(long playerId, string characterName, int x, int y) {
+        return new ServerMessage {
+            PartyMemberMoved = new PartyMemberMoved {
+                PlayerId = playerId,
+                CharacterName = characterName ?? string.Empty,
+                X = x,
+                Y = y,
+            },
+        };
+    }
 }
