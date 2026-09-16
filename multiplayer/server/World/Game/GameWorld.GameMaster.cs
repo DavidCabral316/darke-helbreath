@@ -4,13 +4,12 @@ namespace Server.World.Game;
 
 public sealed partial class GameWorld {
     private void HandleGameMasterCommand(GameWorldPlayer player, string rawCommand) {
+        var parts = rawCommand.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length < 2 || !parts[0].Equals("/gm", StringComparison.OrdinalIgnoreCase)) return;
         if (!player.IsGameMaster) {
             Adventure.Send(gameWorldRef, player, "Este personaje no tiene permisos de Game Master.");
             return;
         }
-
-        var parts = rawCommand.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (parts.Length < 2 || !parts[0].Equals("/gm", StringComparison.OrdinalIgnoreCase)) return;
 
         var notice = "Comando GM no reconocido.";
         switch (parts[1].ToLowerInvariant()) {

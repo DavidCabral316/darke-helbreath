@@ -191,6 +191,11 @@ public sealed class GlobalWorld : IWorkerWorld {
             return;
         }
 
+        // Game-world commands have private responses and must not be echoed to
+        // every connected player's public chat.
+        if (message.StartsWith("/party", StringComparison.OrdinalIgnoreCase) ||
+            message.StartsWith("/gm", StringComparison.OrdinalIgnoreCase)) return;
+
         var chatMessage = NetworkManager.CreateChatMessageReceived(
             sender.CharacterName,
             DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),

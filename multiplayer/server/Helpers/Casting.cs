@@ -395,6 +395,9 @@ public static class Casting {
             if (targetPlayer.PlayerId == caster.PlayerId) {
                 continue;
             }
+            if (wr.World.IsInSameParty(caster.PlayerId, targetPlayer.PlayerId)) {
+                continue;
+            }
             if (!IsWithinSpellDamageArea(targetPlayer.PosX, targetPlayer.PosY, targetX, targetY, aoeRadius)) {
                 continue;
             }

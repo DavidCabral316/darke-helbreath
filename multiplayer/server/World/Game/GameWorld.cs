@@ -563,6 +563,7 @@ public sealed partial class GameWorld : IWorkerWorld {
 
         occupancyTracker.SetFree(disconnectedPlayer.PosX, disconnectedPlayer.PosY);
         playerSpatialGrid.Remove(disconnectedPlayer);
+        LeaveParty(disconnectedPlayer, notifyPlayer: false);
         playersMap.Remove(disconnectedPlayer.PlayerId);
         playersBySessionId.Remove(removeDisconnectedPlayerMessage.SessionId);
         Console.WriteLine($"[GameWorld:{id}] Removed disconnected player after grace period. Players on world: {playersBySessionId.Count}");
@@ -585,6 +586,7 @@ public sealed partial class GameWorld : IWorkerWorld {
 
         occupancyTracker.SetFree(player.PosX, player.PosY);
         playerSpatialGrid.Remove(player);
+        LeaveParty(player, notifyPlayer: false);
         playersMap.Remove(player.PlayerId);
         playersBySessionId.Remove(transferPlayerOutMessage.SessionId);
         player.DetachConnection();
@@ -632,7 +634,9 @@ public sealed partial class GameWorld : IWorkerWorld {
                 Economy.Handle(gameWorldRef, playerConnection, message.Message.EconomyRequest);
                 break;
             case ClientMessage.PayloadOneofCase.ChatMessageSendRequest:
-                HandleGameMasterCommand(playerConnection, message.Message.ChatMessageSendRequest.Message);
+                var chatCommand = message.Message.ChatMessageSendRequest.Message.Trim();
+                if (chatCommand.StartsWith("/party", StringComparison.OrdinalIgnoreCase)) HandlePartyCommand(playerConnection, chatCommand);
+                else if (chatCommand.StartsWith("/gm", StringComparison.OrdinalIgnoreCase)) HandleGameMasterCommand(playerConnection, chatCommand);
                 break;
             case ClientMessage.PayloadOneofCase.AllocateAttributeRequest:
                 Adventure.Allocate(gameWorldRef, playerConnection, message.Message.AllocateAttributeRequest.Attribute);
@@ -985,7 +989,7 @@ public sealed partial class GameWorld : IWorkerWorld {
         if (!groundStateTracker.TryGetTopGroundItemAtCell(player.PosX, player.PosY, out var removedItem)) {
             return;
         }
-        if (removedItem.OwnerKey is not null && removedItem.OwnerKey != player.PersistenceKey && removedItem.ReservedUntil > DateTimeOffset.UtcNow) {
+        if (removedItem.OwnerKey is not null && removedItem.OwnerKey != player.PersistenceKey && removedItem.ReservedUntil > DateTimeOffset.UtcNow && !CanPickupSharedLoot(removedItem.OwnerKey, player)) {
             Adventure.Send(gameWorldRef, player, "Ese botín está reservado temporalmente para otro aventurero."); return;
         }
         if (!Inventory.TryAddGroundItemToBag(gameWorldRef, player, removedItem)) {

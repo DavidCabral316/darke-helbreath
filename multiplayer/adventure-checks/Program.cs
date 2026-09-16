@@ -44,7 +44,8 @@ var lowGlow = SpecialLoot.NormalizeProceduralEffects(53,[new(SpecialLoot.FreezeC
 var highGlow = SpecialLoot.NormalizeProceduralEffects(53,[new(SpecialLoot.FreezeChance,50),new(4,0x55ccff),new(SpecialLoot.ItemLevel,100)])!;
 Check(!lowGlow.Any(effect=>effect.Effect==3)&&highGlow.Any(effect=>effect.Effect==3)&&SpecialLoot.Value(highGlow,SpecialLoot.ItemLevel)==100,"special equipment glows only from iLvl 100 while preserving its special tint");
 Check(PortalEndpoints.CharacterRecoveryDays==3,"deleted characters reserve their slot for three days");
-Check(LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",true)
+Check(Adventure.ExperienceShare(100,false)==100 && Adventure.ExperienceShare(100,true)==60,
+    "two-player parties grant 60 percent XP each and preserve full solo XP");Check(LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",true)
     && LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","127.0.0.1","http://localhost:8080",true)
     && !LanAccess.IsAllowedWebSocketOrigin("http://8.8.8.8:8080","127.0.0.1","http://localhost:8080",true)
     && !LanAccess.IsAllowedWebSocketOrigin("http://192.168.1.80:8080","192.168.1.80","http://localhost:8080",false),"LAN mode accepts only the same web host and keeps local mode strict");
@@ -159,6 +160,18 @@ wr.GroundStateTracker.TryAddGroundItem(publicLoot,out _,out _);
 Packet(restored,new ClientMessage{PlayerItemPickupRequested=new()});
 Packet(restored,new ClientMessage{PlayerItemPickupRequested=new()});
 Check(restored.InventoryManager.BagItems.Count(i=>i.ItemUid==556)==1 && !wr.GroundStateTracker.TryGetTopGroundItem(556,out _),"expired reservation permits pickup exactly once");
+var partyOne = Join("PartyOne", State("PartyOne",137,140) with { PersistenceKey = "party-key-one" });
+var partyTwo = Join("PartyTwo", State("PartyTwo",139,140) with { PersistenceKey = "party-key-two" });
+Packet(partyOne,new ClientMessage{ChatMessageSendRequest=new(){Message="/party invitar PartyTwo"}});
+Packet(partyTwo,new ClientMessage{ChatMessageSendRequest=new(){Message="/party aceptar"}});
+Check(world.IsInSameParty(partyOne.PlayerId,partyTwo.PlayerId),"party invite and accept link both players");
+Check(world.CanPickupSharedLoot(partyOne.PersistenceKey,partyTwo) && world.CanPickupSharedLoot(partyTwo.PersistenceKey,partyOne),"party partners share reserved loot");
+Check(!world.CanPickupSharedLoot("unknown-key",partyTwo),"strangers still cannot take reserved loot");
+var partyHp=partyTwo.Hp;
+Combat.ApplyPlayerDamageToPlayer(wr,partyOne,partyTwo,AttackType.NoInterrupt);
+Check(partyTwo.Hp==partyHp,"party members cannot damage each other");
+Packet(partyOne,new ClientMessage{ChatMessageSendRequest=new(){Message="/party salir"}});
+Check(!world.IsInSameParty(partyOne.PlayerId,partyTwo.PlayerId) && !world.CanPickupSharedLoot(partyOne.PersistenceKey,partyTwo),"leaving the party ends shared loot");
 Inventory.HandleEquipItemRequest(wr,restored,new EquipItemRequest{ItemUid=556,TargetSlot="weapon"});
 Check(restored.InventoryManager.EquippedItems["weapon"].ItemId==3,"cannot equip level-three sword at level two");
 restored.AwardExperience(120);
