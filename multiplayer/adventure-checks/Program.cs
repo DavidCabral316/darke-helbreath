@@ -129,6 +129,7 @@ Packet(player,new ClientMessage{ChatMessageSendRequest=new(){Message="/gm level 
 Check(player.Progress.Level==ordinaryLevel,"ordinary character cannot execute GM commands");
 var gmPlayer=Join("GameMaster",State("GameMaster",210,210) with {IsGameMaster=true});
 Check(!Server.World.Global.GlobalPacketRouting.ShouldRouteToGlobalWorld(new ClientMessage{ChatMessageSendRequest=new(){Message="/gm heal"}}),"GM command envelope routes to the authoritative game world");
+Check(!Server.World.Global.GlobalPacketRouting.ShouldRouteToGlobalWorld(new ClientMessage{ChatMessageSendRequest=new(){Message="/party invitar PartyTwo"}}),"party command envelope routes to the authoritative game world");
 Packet(gmPlayer,new ClientMessage{ChatMessageSendRequest=new(){Message="/gm level 30"}});
 Check(gmPlayer.Progress.Level==30&&gmPlayer.Progress.Points==87,"GM can raise level with the correct attribute budget");
 Packet(gmPlayer,new ClientMessage{ChatMessageSendRequest=new(){Message="/gm god"}});var gmHp=gmPlayer.Hp;gmPlayer.ApplyDamage(99999);
