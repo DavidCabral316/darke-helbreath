@@ -76,7 +76,9 @@ test('portal, cuenta, personaje, mundo y persistencia', async ({ page, context }
     await page.getByRole('button',{name:/Comenzar a explorar/}).click();
     await expect(page.getByRole('dialog',{name:'Lumi'})).toBeHidden();
     await expect(page.getByLabel('Controles de grupo')).toBeVisible();
-    await expect(page.getByText('Sin grupo · invitá a otro jugador del mismo mapa')).toBeVisible();
+    await expect(page.getByRole('button',{name:/Grupo.*sin grupo/})).toBeVisible();
+    await page.getByRole('button',{name:/Grupo.*sin grupo/}).click();
+    await expect(page.getByText('Invitá a otro jugador del mismo mapa por su nombre.')).toBeVisible();
     await expect(page.getByRole('button',{name:'Invitar',exact:true})).toBeDisabled();
     await expect(page.getByRole('button',{name:'Rechazar',exact:true})).toBeVisible();
     await page.getByRole('button',{name:'Aceptar',exact:true}).click();

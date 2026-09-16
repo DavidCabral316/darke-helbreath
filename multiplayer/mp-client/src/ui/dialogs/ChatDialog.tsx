@@ -28,6 +28,7 @@ export function ChatDialog({
 }: ChatDialogProps) {
     const [draft, setDraft] = useState('');
     const [partyName, setPartyName] = useState('');
+    const [partyOpen, setPartyOpen] = useState(false);
     const partyState = useStore(partyStore, (state) => state);
     const messagesRef = useRef<HTMLDivElement | null>(null);
 
@@ -102,8 +103,8 @@ export function ChatDialog({
                     display: 'flex',
                     flexDirection: 'column',
                     width: 420,
-                    height: 320,
-                    gap: 12,
+                    maxHeight: '70vh',
+                    gap: 8,
                 }}
                 onPointerDown={(e) => {
                     e.stopPropagation();
@@ -114,7 +115,8 @@ export function ChatDialog({
                     ref={messagesRef}
                     style={{
                         flex: 1,
-                        minHeight: 0,
+                        minHeight: 140,
+                        maxHeight: 260,
                         overflowY: 'auto',
                         padding: 8,
                         border: '1px solid rgba(240, 220, 180, 0.35)',
@@ -143,13 +145,53 @@ export function ChatDialog({
                     style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 6,
+                        gap: 8,
                         padding: 8,
                         border: '1px solid rgba(163, 111, 255, 0.45)',
                         borderRadius: 8,
                         background: 'linear-gradient(90deg, rgba(37, 20, 62, 0.86), rgba(15, 11, 25, 0.78))',
+                        flexShrink: 0,
                     }}
                 >
+                    <button
+                        type="button"
+                        aria-expanded={partyOpen}
+                        onClick={() => {
+                            setPartyOpen((open) => !open);
+                            suppressPointerLeak();
+                        }}
+                        onPointerDown={(e) => {
+                            e.stopPropagation();
+                            suppressPointerLeak();
+                        }}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 8,
+                            width: '100%',
+                            padding: '6px 4px',
+                            border: 'none',
+                            background: 'transparent',
+                            color: partyState.inParty ? '#9df0b5' : 'var(--rpg-parchment)',
+                            fontFamily: '"Trebuchet MS", sans-serif',
+                            fontSize: 14,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                        }}
+                    >
+                        <span>
+                            {partyOpen ? '▾' : '▸'} Grupo{' '}
+                            <span style={{ fontWeight: 400, opacity: 0.85, fontSize: 13 }}>
+                                {partyState.inParty
+                                    ? `· con ${partyState.partnerName ?? 'compañero'}`
+                                    : '· sin grupo'}
+                            </span>
+                        </span>
+                    </button>
+                    {partyOpen && (
+                    <>
                     <div
                         aria-live="polite"
                         style={{
@@ -159,10 +201,10 @@ export function ChatDialog({
                         }}
                     >
                         {partyState.inParty
-                            ? `En grupo con ${partyState.partnerName ?? 'compañero'} · XP y botín compartidos`
-                            : 'Sin grupo · invitá a otro jugador del mismo mapa'}
+                            ? 'XP y botín compartidos con tu compañero.'
+                            : 'Invitá a otro jugador del mismo mapa por su nombre.'}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto auto', gap: 6 }}>
+                    <div style={{ display: 'flex', gap: 6 }}>
                     <input
                         type="text"
                         value={partyName}
@@ -184,12 +226,14 @@ export function ChatDialog({
                             }
                         }}
                         style={{
+                            flex: 1,
                             minWidth: 0,
-                            padding: '7px 9px',
+                            padding: '9px 10px',
                             border: '1px solid rgba(206, 175, 255, 0.45)',
                             borderRadius: 6,
                             background: 'rgba(10, 7, 17, 0.85)',
                             color: 'var(--rpg-parchment)',
+                            fontSize: 14,
                         }}
                     />
                     <RpgButton
@@ -198,13 +242,18 @@ export function ChatDialog({
                             sendPartyCommand(`/party invitar ${partyName.trim()}`);
                             setPartyName('');
                         }}
+                        style={{ flexShrink: 0 }}
                     >
                         Invitar
                     </RpgButton>
-                    <RpgButton onClick={() => sendPartyCommand('/party aceptar')}>Aceptar</RpgButton>
-                    <RpgButton onClick={() => sendPartyCommand('/party rechazar')}>Rechazar</RpgButton>
-                    <RpgButton onClick={() => sendPartyCommand('/party salir')}>Salir</RpgButton>
                     </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                    <RpgButton onClick={() => sendPartyCommand('/party aceptar')} style={{ flex: 1 }}>Aceptar</RpgButton>
+                    <RpgButton onClick={() => sendPartyCommand('/party rechazar')} style={{ flex: 1 }}>Rechazar</RpgButton>
+                    <RpgButton onClick={() => sendPartyCommand('/party salir')} style={{ flex: 1 }}>Salir</RpgButton>
+                    </div>
+                    </>
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', gap: 8 }}>
